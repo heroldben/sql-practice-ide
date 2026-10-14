@@ -1,0 +1,15 @@
+# Dependencies — only needed by the optional catalog scripts (npm install).
+# The app itself runs with zero install: see vendor/ below.
+node_modules/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# Local scratch output (progress exports produced by the app)
+progress-*.json
+
+# NOTE: vendor/ is intentionally committed. It holds the vendored PGlite engine,
+# CodeMirror and the Kumbh Sans webfont so the app works offline with no install.

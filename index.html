@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SQL Practice IDE — 200 PostgreSQL problems</title>
+<script>
+  // Applied before first paint so the page never flashes the wrong theme.
+  // First visit is light (the DataLemur-style look); the header button persists the choice.
+  (function () {
+    try {
+      document.documentElement.dataset.theme = localStorage.getItem('sql-practice-ide/theme/v1') || 'light';
+    } catch (error) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>
+<link rel="stylesheet" href="vendor/fonts/kumbh-sans.css" />
+<link rel="stylesheet" href="vendor/codemirror/codemirror.min.css" />
+<link rel="stylesheet" href="vendor/codemirror/addon/hint/show-hint.min.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="brand" href="#/">
+      <span class="brand-mark">SQL</span>
+      <span class="brand-name">Practice IDE</span>
+    </a>
+
+    <nav class="site-nav">
+      <a class="site-nav-link is-active" href="#/">Problems</a>
+      <span class="site-nav-note">200 curated interview questions</span>
+    </nav>
+
+    <div class="site-header-actions">
+      <span id="transfer-status" class="transfer-status"></span>
+      <button id="export-progress" class="btn btn-ghost" type="button">Export</button>
+      <label class="btn btn-ghost" for="import-progress">Import</label>
+      <input id="import-progress" type="file" accept="application/json,.json" hidden />
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">
+        <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" fill="currentColor"></circle>
+          <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.4 5.4l2.1 2.1M16.5 16.5l2.1 2.1M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1"></path>
+          </g>
+        </svg>
+        <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z" fill="currentColor"></path>
+        </svg>
+        <span class="theme-label">Theme</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+  <section class="list-view" id="list-view">
+    <div class="page-head">
+      <h1>SQL &amp; Data Interview Questions</h1>
+      <p class="page-sub">
+        Practice <strong>200</strong> curated PostgreSQL problems from LeetCode, DataLemur and StrataScratch.
+        Queries run against real PostgreSQL (PGlite) in your browser — no server, no account.
+      </p>
+    </div>
+
+    <div class="filter-bar">
+      <label class="field">
+        <span>Category</span>
+        <select id="filter-source">
+          <option value="">All</option>
+          <option value="leetcode">LeetCode</option>
+          <option value="datalemur">DataLemur</option>
+          <option value="stratascratch">StrataScratch</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Difficulty</span>
+        <select id="filter-difficulty">
+          <option value="">All</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Status</span>
+        <select id="filter-status">
+          <option value="">All</option>
+          <option value="not_solved">Not solved</option>
+          <option value="solved">Solved</option>
+          <option value="starred">Starred</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Sort by</span>
+        <select id="sort">
+          <option value="difficulty">Difficulty</option>
+          <option value="title">Title</option>
+          <option value="status">Status</option>
+        </select>
+      </label>
+      <label class="field field-search">
+        <span>Search</span>
+        <input id="search" type="search" placeholder="Search questions by title…" autocomplete="off" />
+      </label>
+      <button id="clear-filters" class="link-btn" type="button">Clear filters</button>
+      <span class="filter-chip" id="topic-filter" hidden></span>
+    </div>
+
+    <div class="question-grid">
+      <div class="card table-card">
+        <div class="table-wrap">
+          <table class="question-table">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Title</th>
+                <th>Topics</th>
+                <th>Difficulty</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="problem-list"></tbody>
+          </table>
+        </div>
+        <p class="table-foot" id="list-count"></p>
+      </div>
+
+      <aside class="side-col">
+        <div class="card">
+          <h2 class="card-title">Your Progress</h2>
+          <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+          <div id="stats" class="stats"></div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="card tags-card">
+      <h2 class="card-title">Tags</h2>
+      <div class="tag-cloud" id="tag-cloud"></div>
+    </section>
+  </section>
+
+  <section class="detail-view" id="panel" hidden></section>
+</main>
+
+<script src="vendor/codemirror/codemirror.min.js"></script>
+<script src="vendor/codemirror/mode/sql/sql.min.js"></script>
+<script src="vendor/codemirror/addon/edit/matchbrackets.min.js"></script>
+<script src="vendor/codemirror/addon/hint/show-hint.min.js"></script>
+<script src="vendor/codemirror/addon/hint/sql-hint.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

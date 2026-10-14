@@ -1,0 +1,17 @@
+{
+  "name": "sql-practice-ide",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "LeetCode-style SQL practice IDE with 200 curated PostgreSQL problems running on PGlite (in-browser Postgres). Runs with zero install; the devDependencies are only needed to regenerate catalog data.",
+  "scripts": {
+    "start": "node serve.mjs --open",
+    "dev": "node serve.mjs",
+    "build:expected": "node scripts/build-expected.mjs",
+    "validate": "node scripts/validate.mjs",
+    "check:file": "node scripts/check-file.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.2.17"
+  }
+}

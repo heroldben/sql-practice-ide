@@ -1,0 +1,5018 @@
+{
+  "dl-sql-histogram-tweets": {
+    "columns": [
+      "tweet_bucket",
+      "users_num"
+    ],
+    "rows": [
+      [
+        "1",
+        "1"
+      ],
+      [
+        "2",
+        "0"
+      ],
+      [
+        "3",
+        "2"
+      ],
+      [
+        "4",
+        "0"
+      ],
+      [
+        "5",
+        "1"
+      ]
+    ]
+  },
+  "dl-matching-skills": {
+    "columns": [
+      "candidate_id"
+    ],
+    "rows": [
+      [
+        123
+      ],
+      [
+        345
+      ]
+    ]
+  },
+  "dl-sql-page-with-no-likes": {
+    "columns": [
+      "page_id"
+    ],
+    "rows": [
+      [
+        1
+      ],
+      [
+        8
+      ]
+    ]
+  },
+  "dl-tesla-unfinished-parts": {
+    "columns": [
+      "part"
+    ],
+    "rows": [
+      [
+        "Chassis"
+      ],
+      [
+        "Glass"
+      ]
+    ]
+  },
+  "dl-sql-third-transaction": {
+    "columns": [
+      "user_id",
+      "spend",
+      "transaction_date"
+    ],
+    "rows": [
+      [
+        111,
+        "25.00",
+        "2022-01-20 12:30:00"
+      ],
+      [
+        333,
+        "20.00",
+        "2022-03-09 08:00:00"
+      ]
+    ]
+  },
+  "dl-sql-second-highest-salary": {
+    "columns": [
+      "second_highest_salary"
+    ],
+    "rows": [
+      [
+        "75000.00"
+      ]
+    ]
+  },
+  "dl-time-spent-snaps": {
+    "columns": [
+      "activity_date",
+      "send_time",
+      "open_time",
+      "send_pct",
+      "open_pct"
+    ],
+    "rows": [
+      [
+        "2022-06-01",
+        "8.75",
+        "7.00",
+        "55.56",
+        "44.44"
+      ],
+      [
+        "2022-06-02",
+        "10.00",
+        "6.50",
+        "60.61",
+        "39.39"
+      ],
+      [
+        "2022-06-03",
+        null,
+        "10.00",
+        null,
+        "100.00"
+      ]
+    ]
+  },
+  "dl-rolling-average-tweets": {
+    "columns": [
+      "user_id",
+      "tweet_date",
+      "tweet_count",
+      "rolling_avg_tweets"
+    ],
+    "rows": [
+      [
+        201,
+        "2022-08-01",
+        "2",
+        "0.67"
+      ],
+      [
+        201,
+        "2022-08-02",
+        "1",
+        "1.00"
+      ],
+      [
+        201,
+        "2022-08-05",
+        "1",
+        "0.33"
+      ],
+      [
+        202,
+        "2022-08-02",
+        "3",
+        "1.00"
+      ],
+      [
+        202,
+        "2022-08-04",
+        "1",
+        "1.33"
+      ]
+    ]
+  },
+  "dl-sql-highest-grossing": {
+    "columns": [
+      "category",
+      "product",
+      "total_spend"
+    ],
+    "rows": [
+      [
+        "appliance",
+        "Microwave",
+        "500.00"
+      ],
+      [
+        "appliance",
+        "Refrigerator",
+        "300.00"
+      ],
+      [
+        "appliance",
+        "Toaster",
+        "300.00"
+      ],
+      [
+        "toy",
+        "Kite",
+        "200.00"
+      ],
+      [
+        "toy",
+        "Lego",
+        "150.00"
+      ]
+    ]
+  },
+  "dl-top-two-products-per-category": {
+    "columns": [
+      "category",
+      "product_name",
+      "order_count"
+    ],
+    "rows": [
+      [
+        "audio",
+        "Earbuds",
+        "3"
+      ],
+      [
+        "audio",
+        "Headphones",
+        "2"
+      ],
+      [
+        "video",
+        "Monitor",
+        "2"
+      ],
+      [
+        "video",
+        "Projector",
+        "1"
+      ],
+      [
+        "wearables",
+        "Fitness Band",
+        "1"
+      ]
+    ]
+  },
+  "dl-rolling-7-day-signups": {
+    "columns": [
+      "signup_date",
+      "signups",
+      "rolling_7day_signups"
+    ],
+    "rows": [
+      [
+        "2022-01-03",
+        "1",
+        "1"
+      ],
+      [
+        "2022-01-04",
+        "2",
+        "3"
+      ],
+      [
+        "2022-01-10",
+        "1",
+        "3"
+      ],
+      [
+        "2022-01-16",
+        "1",
+        "2"
+      ],
+      [
+        "2022-01-17",
+        "3",
+        "4"
+      ],
+      [
+        "2022-02-01",
+        "1",
+        "1"
+      ]
+    ]
+  },
+  "dl-churned-subscribers": {
+    "columns": [
+      "churn_month",
+      "churned_users"
+    ],
+    "rows": [
+      [
+        "2022-02-01",
+        "1"
+      ],
+      [
+        "2022-06-01",
+        "2"
+      ]
+    ]
+  },
+  "dl-median-order-value-per-region": {
+    "columns": [
+      "region",
+      "median_order_value"
+    ],
+    "rows": [
+      [
+        "amer",
+        "30.00"
+      ],
+      [
+        "apac",
+        "70.00"
+      ],
+      [
+        "emea",
+        "250.00"
+      ]
+    ]
+  },
+  "dl-cohort-retention-by-week": {
+    "columns": [
+      "cohort_week",
+      "cohort_size",
+      "week1_retained",
+      "week1_retention_pct"
+    ],
+    "rows": [
+      [
+        "2022-05-02",
+        "3",
+        "2",
+        "66.67"
+      ],
+      [
+        "2022-05-09",
+        "2",
+        "0",
+        "0.00"
+      ]
+    ]
+  },
+  "dl-deprecated-api-calls": {
+    "columns": [
+      "api_name",
+      "deprecated_calls",
+      "total_calls",
+      "deprecated_pct",
+      "first_deprecated_call"
+    ],
+    "rows": [
+      [
+        "billing-api",
+        "3",
+        "4",
+        "75.00",
+        "2022-09-01"
+      ],
+      [
+        "search-api",
+        "2",
+        "2",
+        "100.00",
+        "2022-10-20"
+      ]
+    ]
+  },
+  "dl-session-gaps-over-30-minutes": {
+    "columns": [
+      "user_id",
+      "gap_count",
+      "max_gap_minutes"
+    ],
+    "rows": [
+      [
+        1,
+        "1",
+        "55.00"
+      ],
+      [
+        2,
+        "1",
+        "150.00"
+      ]
+    ]
+  },
+  "dl-first-purchase-attribution": {
+    "columns": [
+      "user_id",
+      "purchased_at",
+      "attributed_channel"
+    ],
+    "rows": [
+      [
+        1,
+        "2022-03-05 13:00:00",
+        "paid-search"
+      ],
+      [
+        2,
+        "2022-03-09 11:00:00",
+        "paid-search"
+      ],
+      [
+        3,
+        "2022-03-18 09:00:00",
+        "no-touch"
+      ]
+    ]
+  },
+  "dl-user-retention": {
+    "columns": [
+      "activity_month",
+      "active_users",
+      "retained_users",
+      "retention_pct"
+    ],
+    "rows": [
+      [
+        "2022-03-01",
+        "3",
+        "2",
+        "66.67"
+      ],
+      [
+        "2022-04-01",
+        "2",
+        "1",
+        "50.00"
+      ],
+      [
+        "2022-05-01",
+        "2",
+        "0",
+        "0.00"
+      ],
+      [
+        "2022-06-01",
+        "2",
+        "1",
+        "50.00"
+      ],
+      [
+        "2022-07-01",
+        "2",
+        "1",
+        "50.00"
+      ]
+    ]
+  },
+  "dl-yoy-growth-rate": {
+    "columns": [
+      "product_id",
+      "sales_year",
+      "curr_year_spend",
+      "prev_year_spend",
+      "yoy_rate"
+    ],
+    "rows": [
+      [
+        101,
+        2021,
+        "150.00",
+        null,
+        null
+      ],
+      [
+        101,
+        2022,
+        "200.00",
+        "150.00",
+        "33.33"
+      ],
+      [
+        101,
+        2023,
+        "180.00",
+        "200.00",
+        "-10.00"
+      ],
+      [
+        102,
+        2021,
+        "400.00",
+        null,
+        null
+      ],
+      [
+        102,
+        2022,
+        "450.00",
+        "400.00",
+        "12.50"
+      ],
+      [
+        102,
+        2023,
+        "500.00",
+        "450.00",
+        "11.11"
+      ],
+      [
+        103,
+        2022,
+        "90.00",
+        null,
+        null
+      ],
+      [
+        103,
+        2023,
+        "120.00",
+        "90.00",
+        "33.33"
+      ],
+      [
+        104,
+        2021,
+        "60.00",
+        null,
+        null
+      ],
+      [
+        104,
+        2023,
+        "150.00",
+        "60.00",
+        "150.00"
+      ]
+    ]
+  },
+  "dl-prime-warehouse-storage": {
+    "columns": [
+      "item_id",
+      "item_type",
+      "available_units",
+      "units_packed",
+      "space_used"
+    ],
+    "rows": [
+      [
+        1,
+        "prime_eligible",
+        3,
+        3,
+        "180000.00"
+      ],
+      [
+        2,
+        "prime_eligible",
+        4,
+        2,
+        "100000.00"
+      ],
+      [
+        3,
+        "prime_eligible",
+        2,
+        2,
+        "180000.00"
+      ],
+      [
+        4,
+        "not_prime",
+        5,
+        0,
+        "0.00"
+      ],
+      [
+        5,
+        "not_prime",
+        3,
+        1,
+        "15000.00"
+      ],
+      [
+        6,
+        "not_prime",
+        2,
+        1,
+        "25000.00"
+      ]
+    ]
+  },
+  "dl-median-search-freq": {
+    "columns": [
+      "median_searches"
+    ],
+    "rows": [
+      [
+        "3.5"
+      ]
+    ]
+  },
+  "dl-updated-status": {
+    "columns": [
+      "advertiser_id",
+      "previous_status",
+      "current_status",
+      "updated_status"
+    ],
+    "rows": [
+      [
+        1,
+        "ACTIVE",
+        "ACTIVE",
+        "EXISTING"
+      ],
+      [
+        2,
+        "ACTIVE",
+        null,
+        "CHURNED"
+      ],
+      [
+        3,
+        "CHURNED",
+        "ACTIVE",
+        "RESURRECTED"
+      ],
+      [
+        4,
+        "ACTIVE",
+        null,
+        "CHURNED"
+      ],
+      [
+        5,
+        "CHURNED",
+        "CHURNED",
+        "CHURNED"
+      ],
+      [
+        6,
+        "ACTIVE",
+        "CHURNED",
+        "CHURNED"
+      ],
+      [
+        7,
+        null,
+        "ACTIVE",
+        "NEW"
+      ]
+    ]
+  },
+  "dl-laptop-mobile-viewership": {
+    "columns": [
+      "laptop_views",
+      "mobile_views"
+    ],
+    "rows": [
+      [
+        "3",
+        "4"
+      ]
+    ]
+  },
+  "dl-sql-average-post-hiatus-1": {
+    "columns": [
+      "user_id",
+      "days_between"
+    ],
+    "rows": [
+      [
+        1,
+        15
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        4,
+        31
+      ]
+    ]
+  },
+  "dl-teams-power-users": {
+    "columns": [
+      "sender_id",
+      "messages_sent"
+    ],
+    "rows": [
+      [
+        1,
+        "3"
+      ]
+    ]
+  },
+  "dl-duplicate-job-listings": {
+    "columns": [
+      "duplicate_companies"
+    ],
+    "rows": [
+      [
+        "3"
+      ]
+    ]
+  },
+  "dl-sql-top-three-salaries": {
+    "columns": [
+      "department",
+      "employee",
+      "salary"
+    ],
+    "rows": [
+      [
+        "Engineering",
+        "Alice",
+        95000
+      ],
+      [
+        "Engineering",
+        "Bob",
+        90000
+      ],
+      [
+        "Engineering",
+        "Cara",
+        90000
+      ],
+      [
+        "Engineering",
+        "Dan",
+        85000
+      ],
+      [
+        "Sales",
+        "Frank",
+        70000
+      ],
+      [
+        "Sales",
+        "Gina",
+        65000
+      ],
+      [
+        "Sales",
+        "Hank",
+        60000
+      ],
+      [
+        "Sales",
+        "Ivy",
+        60000
+      ]
+    ]
+  },
+  "dl-signup-confirmation-rate": {
+    "columns": [
+      "user_id",
+      "activation_rate"
+    ],
+    "rows": [
+      [
+        1,
+        "66.67"
+      ],
+      [
+        2,
+        "0.00"
+      ],
+      [
+        3,
+        "100.00"
+      ],
+      [
+        4,
+        "0.00"
+      ]
+    ]
+  },
+  "dl-spotify-streaming-history": {
+    "columns": [
+      "user_id",
+      "stream_date",
+      "streams_count"
+    ],
+    "rows": [
+      [
+        1,
+        "2022-03-01",
+        "3"
+      ],
+      [
+        2,
+        "2022-03-02",
+        "2"
+      ],
+      [
+        3,
+        "2022-03-04",
+        "1"
+      ]
+    ]
+  },
+  "dl-supercloud-customer": {
+    "columns": [
+      "customer_id",
+      "customer_name"
+    ],
+    "rows": [
+      [
+        1,
+        "Acme Corp"
+      ]
+    ]
+  },
+  "dl-odd-even-measurements": {
+    "columns": [
+      "measurement_day",
+      "odd_sum",
+      "even_sum"
+    ],
+    "rows": [
+      [
+        "2022-01-01",
+        "30.50",
+        "5.25"
+      ],
+      [
+        "2022-01-02",
+        "18.50",
+        "7.00"
+      ],
+      [
+        "2022-01-03",
+        "9.75",
+        null
+      ],
+      [
+        "2022-01-04",
+        "6.50",
+        null
+      ]
+    ]
+  },
+  "dl-repeated-failed-logins": {
+    "columns": [
+      "user_id",
+      "login_date"
+    ],
+    "rows": [
+      [
+        1,
+        "2022-01-02"
+      ],
+      [
+        3,
+        "2022-03-03"
+      ]
+    ]
+  },
+  "dl-month-over-month-active-users": {
+    "columns": [
+      "activity_month",
+      "active_users",
+      "prev_month_users",
+      "mom_change_pct"
+    ],
+    "rows": [
+      [
+        "2023-01-01",
+        "3",
+        null,
+        null
+      ],
+      [
+        "2023-02-01",
+        "3",
+        "3",
+        "0.00"
+      ],
+      [
+        "2023-03-01",
+        "4",
+        "3",
+        "33.33"
+      ]
+    ]
+  },
+  "dl-peak-concurrent-streams": {
+    "columns": [
+      "event_at",
+      "peak_streams"
+    ],
+    "rows": [
+      [
+        "2022-04-01 10:45:00",
+        "3"
+      ]
+    ]
+  },
+  "dl-funnel-drop-off-rate": {
+    "columns": [
+      "step_name",
+      "users",
+      "dropoff_rate"
+    ],
+    "rows": [
+      [
+        "Visited site",
+        "6",
+        null
+      ],
+      [
+        "Added to cart",
+        "3",
+        "50.00"
+      ],
+      [
+        "Completed checkout",
+        "1",
+        "66.67"
+      ]
+    ]
+  },
+  "dl-refund-rate-by-merchant": {
+    "columns": [
+      "merchant_name",
+      "total_orders",
+      "refunded_orders",
+      "refund_rate_pct"
+    ],
+    "rows": [
+      [
+        "Tech Tide",
+        "3",
+        "2",
+        "66.67"
+      ],
+      [
+        "Bean Bros",
+        "3",
+        "1",
+        "33.33"
+      ],
+      [
+        "Green Grocer",
+        "3",
+        "0",
+        "0.00"
+      ]
+    ]
+  },
+  "dl-slowest-endpoints-by-p95-latency": {
+    "columns": [
+      "endpoint",
+      "requests",
+      "p95_latency_ms"
+    ],
+    "rows": [
+      [
+        "/search",
+        "5",
+        "780.0"
+      ],
+      [
+        "/checkout",
+        "4",
+        "373.0"
+      ]
+    ]
+  },
+  "dl-duplicate-customer-records": {
+    "columns": [
+      "email",
+      "record_count",
+      "canonical_id"
+    ],
+    "rows": [
+      [
+        "alice@example.com",
+        "2",
+        2
+      ],
+      [
+        "bob@example.com",
+        "3",
+        5
+      ],
+      [
+        "dan@example.com",
+        "2",
+        8
+      ]
+    ]
+  },
+  "dl-search-click-through-rate-by-rank-bucket": {
+    "columns": [
+      "rank_bucket",
+      "impressions",
+      "clicks",
+      "ctr_pct"
+    ],
+    "rows": [
+      [
+        "Top 3",
+        "5",
+        "3",
+        "60.00"
+      ],
+      [
+        "Ranks 4-10",
+        "4",
+        "3",
+        "75.00"
+      ],
+      [
+        "Rank 11+",
+        "4",
+        "0",
+        "0.00"
+      ]
+    ]
+  },
+  "dl-consecutive-filing-years": {
+    "columns": [
+      "taxpayer_id",
+      "streak_start",
+      "streak_end",
+      "streak_length"
+    ],
+    "rows": [
+      [
+        1,
+        2016,
+        2018,
+        "3"
+      ],
+      [
+        2,
+        2019,
+        2019,
+        "1"
+      ],
+      [
+        3,
+        2015,
+        2020,
+        "6"
+      ],
+      [
+        4,
+        2022,
+        2022,
+        "1"
+      ]
+    ]
+  },
+  "dl-marketing-touch-streak": {
+    "columns": [
+      "user_id",
+      "streak_start",
+      "streak_end",
+      "streak_length"
+    ],
+    "rows": [
+      [
+        1,
+        "2023-02-01",
+        "2023-02-03",
+        "3"
+      ],
+      [
+        2,
+        "2023-03-07",
+        "2023-03-09",
+        "3"
+      ],
+      [
+        3,
+        "2023-04-01",
+        "2023-04-02",
+        "2"
+      ]
+    ]
+  },
+  "dl-pizzas-topping-cost": {
+    "columns": [
+      "topping_1",
+      "topping_2",
+      "topping_3",
+      "total_cost"
+    ],
+    "rows": [
+      [
+        "Pepperoni",
+        "Mushrooms",
+        "Onions",
+        "23.00"
+      ],
+      [
+        "Pepperoni",
+        "Mushrooms",
+        "Sausage",
+        "24.00"
+      ]
+    ]
+  },
+  "dl-patient-call-history": {
+    "columns": [
+      "patient_id",
+      "first_call",
+      "second_call",
+      "days_between"
+    ],
+    "rows": [
+      [
+        1,
+        "2023-01-01 09:00:00",
+        "2023-01-03 09:00:00",
+        2
+      ],
+      [
+        4,
+        "2023-03-10 09:00:00",
+        "2023-03-12 09:00:00",
+        2
+      ]
+    ]
+  },
+  "dl-long-calls-growth": {
+    "columns": [
+      "call_month",
+      "total_calls",
+      "long_calls",
+      "long_call_pct",
+      "rolling_3m_avg_pct"
+    ],
+    "rows": [
+      [
+        "2023-01-01",
+        "4",
+        "2",
+        "50.00",
+        "50.00"
+      ],
+      [
+        "2023-02-01",
+        "3",
+        "2",
+        "66.67",
+        "58.33"
+      ],
+      [
+        "2023-03-01",
+        "1",
+        "1",
+        "100.00",
+        "72.22"
+      ],
+      [
+        "2023-04-01",
+        "5",
+        "3",
+        "60.00",
+        "75.56"
+      ]
+    ]
+  },
+  "dl-completed-trades": {
+    "columns": [
+      "city",
+      "completed_trades"
+    ],
+    "rows": [
+      [
+        "New York",
+        "3"
+      ],
+      [
+        "San Francisco",
+        "2"
+      ],
+      [
+        "Seattle",
+        "2"
+      ]
+    ]
+  },
+  "dl-sql-avg-review-ratings": {
+    "columns": [
+      "month",
+      "product_id",
+      "avg_stars"
+    ],
+    "rows": [
+      [
+        1,
+        1001,
+        "3.00"
+      ],
+      [
+        1,
+        1002,
+        "5.00"
+      ],
+      [
+        2,
+        1001,
+        "4.00"
+      ],
+      [
+        2,
+        1002,
+        "3.00"
+      ],
+      [
+        3,
+        1001,
+        "3.50"
+      ],
+      [
+        3,
+        1002,
+        "1.00"
+      ]
+    ]
+  },
+  "dl-sql-well-paid-employees": {
+    "columns": [
+      "employee_id",
+      "employee_name",
+      "manager_name"
+    ],
+    "rows": [
+      [
+        4,
+        "Dan Ivanov",
+        "Ben Carter"
+      ],
+      [
+        8,
+        "Hugo Meyer",
+        "Femi Okafor"
+      ]
+    ]
+  },
+  "dl-final-account-balance": {
+    "columns": [
+      "account_id",
+      "account_name",
+      "final_balance"
+    ],
+    "rows": [
+      [
+        1,
+        "Checking A",
+        "0.00"
+      ],
+      [
+        2,
+        "Savings B",
+        "-700.00"
+      ],
+      [
+        3,
+        "Business C",
+        "-25.00"
+      ],
+      [
+        4,
+        "Dormant D",
+        "0.00"
+      ]
+    ]
+  },
+  "dl-sql-swapped-food-delivery": {
+    "columns": [
+      "order_id",
+      "item"
+    ],
+    "rows": [
+      [
+        1,
+        "Burger"
+      ],
+      [
+        2,
+        "Pizza"
+      ],
+      [
+        3,
+        "Salad"
+      ],
+      [
+        4,
+        "Pasta"
+      ],
+      [
+        5,
+        "Tacos"
+      ],
+      [
+        6,
+        "Sushi"
+      ],
+      [
+        7,
+        "Curry"
+      ],
+      [
+        8,
+        "Ramen"
+      ],
+      [
+        9,
+        "Bagel"
+      ]
+    ]
+  },
+  "dl-sql-bloomberg-stock-min-max-1": {
+    "columns": [
+      "ticker",
+      "highest_mth",
+      "highest_open",
+      "lowest_mth",
+      "lowest_open"
+    ],
+    "rows": [
+      [
+        "AAPL",
+        3,
+        "190.75",
+        2,
+        "175.50"
+      ],
+      [
+        "GOOG",
+        3,
+        "145.60",
+        2,
+        "138.90"
+      ],
+      [
+        "MSFT",
+        2,
+        "402.40",
+        1,
+        "400.00"
+      ]
+    ]
+  },
+  "dl-best-selling-products": {
+    "columns": [
+      "brand",
+      "product_name",
+      "total_units"
+    ],
+    "rows": [
+      [
+        "Apex",
+        "Trail Runner Pro",
+        "75"
+      ],
+      [
+        "Nike",
+        "Air Zoom 1",
+        "135"
+      ],
+      [
+        "Vans",
+        "Classic Canvas",
+        "75"
+      ]
+    ]
+  },
+  "dl-amazon-shopping-spree": {
+    "columns": [
+      "user_id"
+    ],
+    "rows": [
+      [
+        1
+      ],
+      [
+        3
+      ]
+    ]
+  },
+  "dl-histogram-users-purchases": {
+    "columns": [
+      "transaction_date",
+      "user_id",
+      "purchase_count"
+    ],
+    "rows": [
+      [
+        "2024-01-15",
+        1,
+        "1"
+      ],
+      [
+        "2024-01-20",
+        2,
+        "3"
+      ],
+      [
+        "2024-02-04",
+        3,
+        "2"
+      ],
+      [
+        "2024-02-10",
+        4,
+        "1"
+      ]
+    ]
+  },
+  "dl-alibaba-compressed-mode": {
+    "columns": [
+      "mode_item_count"
+    ],
+    "rows": [
+      [
+        5
+      ]
+    ]
+  },
+  "dl-card-launch-success": {
+    "columns": [
+      "card_name",
+      "issued_amount"
+    ],
+    "rows": [
+      [
+        "Amex Platinum",
+        9000
+      ]
+    ]
+  },
+  "dl-international-call-percentage": {
+    "columns": [
+      "international_calls_pct"
+    ],
+    "rows": [
+      [
+        "70.0"
+      ]
+    ]
+  },
+  "dl-uncategorized-calls-percentage": {
+    "columns": [
+      "uncategorised_call_pct"
+    ],
+    "rows": [
+      [
+        "41.7"
+      ]
+    ]
+  },
+  "dl-subscription-upgrade-paths": {
+    "columns": [
+      "from_plan",
+      "to_plan",
+      "num_upgrades"
+    ],
+    "rows": [
+      [
+        "Basic",
+        "Pro",
+        "2"
+      ],
+      [
+        "Pro",
+        "Business",
+        "2"
+      ],
+      [
+        "Business",
+        "Enterprise",
+        "1"
+      ]
+    ]
+  },
+  "dl-unread-notification-backlog": {
+    "columns": [
+      "user_id",
+      "unread_count"
+    ],
+    "rows": [
+      [
+        3,
+        "4"
+      ],
+      [
+        1,
+        "3"
+      ]
+    ]
+  },
+  "dl-gift-card-balance-reconciliation": {
+    "columns": [
+      "card_id",
+      "issued_amount",
+      "remaining_balance"
+    ],
+    "rows": [
+      [
+        1,
+        "100.00",
+        "-25.00"
+      ],
+      [
+        3,
+        "195.00",
+        "-5.00"
+      ]
+    ]
+  },
+  "dl-airline-load-factor-by-leg": {
+    "columns": [
+      "flight_id",
+      "leg_no",
+      "load_factor"
+    ],
+    "rows": [
+      [
+        100,
+        1,
+        "0.97"
+      ],
+      [
+        200,
+        2,
+        "0.92"
+      ]
+    ]
+  },
+  "dl-repeated-payments": {
+    "columns": [
+      "repeated_payments_count"
+    ],
+    "rows": [
+      [
+        "2"
+      ]
+    ]
+  },
+  "dl-reactivated-users": {
+    "columns": [
+      "user_id",
+      "email",
+      "reactivation_date"
+    ],
+    "rows": [
+      [
+        1,
+        "ava@example.com",
+        "2024-02-10"
+      ],
+      [
+        4,
+        "dev@example.com",
+        "2024-03-02"
+      ]
+    ]
+  },
+  "dl-senior-managers-reportees": {
+    "columns": [
+      "employee_id",
+      "employee_name",
+      "total_reports"
+    ],
+    "rows": [
+      [
+        1,
+        "Ava Stone",
+        "9"
+      ],
+      [
+        2,
+        "Ben Ortiz",
+        "4"
+      ],
+      [
+        3,
+        "Cara Nguyen",
+        "3"
+      ],
+      [
+        4,
+        "Dev Patel",
+        "3"
+      ]
+    ]
+  },
+  "dl-total-utilization-time": {
+    "columns": [
+      "server_id",
+      "total_uptime_minutes"
+    ],
+    "rows": [
+      [
+        1,
+        "285.0"
+      ],
+      [
+        2,
+        "85.0"
+      ]
+    ]
+  },
+  "lc-1821-find-customers-with-positive-revenue-this-year": {
+    "columns": [
+      "customer_id"
+    ],
+    "rows": [
+      [
+        1
+      ],
+      [
+        4
+      ],
+      [
+        6
+      ],
+      [
+        8
+      ]
+    ]
+  },
+  "lc-183-customers-who-never-order": {
+    "columns": [
+      "customers"
+    ],
+    "rows": [
+      [
+        "Gustav Lind"
+      ],
+      [
+        "Ivan Petrov"
+      ]
+    ]
+  },
+  "lc-1873-calculate-special-bonus": {
+    "columns": [
+      "employee_id",
+      "bonus"
+    ],
+    "rows": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        3,
+        1500
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        5,
+        800
+      ],
+      [
+        6,
+        0
+      ]
+    ]
+  },
+  "lc-175-combine-two-tables": {
+    "columns": [
+      "first_name",
+      "last_name",
+      "city",
+      "state"
+    ],
+    "rows": [
+      [
+        "Amara",
+        "Okafor",
+        "Boston",
+        "MA"
+      ],
+      [
+        "Bilal",
+        "Haddad",
+        "New York",
+        "NY"
+      ],
+      [
+        "Chiara",
+        "Rossi",
+        null,
+        null
+      ],
+      [
+        "Dmitri",
+        "Volkov",
+        "Seattle",
+        "WA"
+      ]
+    ]
+  },
+  "lc-1607-sellers-with-no-sales": {
+    "columns": [
+      "seller_name"
+    ],
+    "rows": [
+      [
+        "Daniel Osei"
+      ],
+      [
+        "Grace Kimani"
+      ],
+      [
+        "Hana Voss"
+      ]
+    ]
+  },
+  "lc-1407-top-travellers": {
+    "columns": [
+      "name",
+      "travelled_distance"
+    ],
+    "rows": [
+      [
+        "Bob Nakamura",
+        "250"
+      ],
+      [
+        "Alice Moreau",
+        "200"
+      ],
+      [
+        "Cara Bianchi",
+        "200"
+      ],
+      [
+        "Dan Whitfield",
+        "10"
+      ],
+      [
+        "Eve Solberg",
+        "0"
+      ]
+    ]
+  },
+  "lc-607-sales-person": {
+    "columns": [
+      "name"
+    ],
+    "rows": [
+      [
+        "Chen Wei"
+      ],
+      [
+        "Dara Nolan"
+      ]
+    ]
+  },
+  "lc-1890-the-latest-login-in-2020": {
+    "columns": [
+      "user_id",
+      "last_stamp"
+    ],
+    "rows": [
+      [
+        1,
+        "2020-07-14 08:30:00"
+      ],
+      [
+        2,
+        "2020-12-31 23:59:59"
+      ],
+      [
+        4,
+        "2020-03-03 04:04:04"
+      ]
+    ]
+  },
+  "lc-1398-customers-who-bought-products-a-and-b-but-not-c": {
+    "columns": [
+      "customer_id",
+      "customer_name"
+    ],
+    "rows": [
+      [
+        1,
+        "Daniel Osei"
+      ],
+      [
+        5,
+        "Renee Dubois"
+      ]
+    ]
+  },
+  "lc-1112-highest-grade-for-each-student": {
+    "columns": [
+      "student_id",
+      "course_id",
+      "grade"
+    ],
+    "rows": [
+      [
+        1,
+        2,
+        99
+      ],
+      [
+        2,
+        2,
+        95
+      ],
+      [
+        3,
+        1,
+        80
+      ],
+      [
+        4,
+        3,
+        60
+      ]
+    ]
+  },
+  "lc-1440-evaluate-boolean-expression": {
+    "columns": [
+      "left_operand",
+      "operator",
+      "right_operand",
+      "value"
+    ],
+    "rows": [
+      [
+        "x",
+        "<",
+        "y",
+        "true"
+      ],
+      [
+        "x",
+        "=",
+        "y",
+        "false"
+      ],
+      [
+        "x",
+        ">",
+        "y",
+        "false"
+      ],
+      [
+        "y",
+        "=",
+        "z",
+        "false"
+      ],
+      [
+        "y",
+        ">",
+        "x",
+        "true"
+      ],
+      [
+        "z",
+        "<",
+        "w",
+        "false"
+      ]
+    ]
+  },
+  "lc-1212-team-scores-in-football-tournament": {
+    "columns": [
+      "team_id",
+      "team_name",
+      "num_points"
+    ],
+    "rows": [
+      [
+        1,
+        "Ajax",
+        "7"
+      ],
+      [
+        4,
+        "Dortmund",
+        "4"
+      ],
+      [
+        2,
+        "Barcelona",
+        "1"
+      ],
+      [
+        3,
+        "Chelsea",
+        "1"
+      ],
+      [
+        5,
+        "Everton",
+        "0"
+      ]
+    ]
+  },
+  "lc-1445-apples-oranges": {
+    "columns": [
+      "sale_date",
+      "diff"
+    ],
+    "rows": [
+      [
+        "2020-05-01",
+        "2"
+      ],
+      [
+        "2020-05-02",
+        "0"
+      ],
+      [
+        "2020-05-03",
+        "20"
+      ],
+      [
+        "2020-05-04",
+        "-5"
+      ],
+      [
+        "2020-05-05",
+        "-9"
+      ]
+    ]
+  },
+  "lc-1699-number-of-calls-between-two-persons": {
+    "columns": [
+      "person1",
+      "person2",
+      "call_count",
+      "total_duration"
+    ],
+    "rows": [
+      [
+        1,
+        2,
+        "2",
+        "70"
+      ],
+      [
+        1,
+        3,
+        "1",
+        "20"
+      ],
+      [
+        1,
+        4,
+        "2",
+        "18"
+      ],
+      [
+        2,
+        5,
+        "1",
+        "30"
+      ],
+      [
+        3,
+        4,
+        "2",
+        "155"
+      ]
+    ]
+  },
+  "lc-1501-countries-you-can-safely-invest-in": {
+    "columns": [
+      "country"
+    ],
+    "rows": [
+      [
+        "Morocco"
+      ],
+      [
+        "Peru"
+      ]
+    ]
+  },
+  "lc-1264-page-recommendations": {
+    "columns": [
+      "recommended_page"
+    ],
+    "rows": [
+      [
+        103
+      ],
+      [
+        104
+      ],
+      [
+        105
+      ]
+    ]
+  },
+  "lc-608-tree-node": {
+    "columns": [
+      "id",
+      "type"
+    ],
+    "rows": [
+      [
+        1,
+        "root"
+      ],
+      [
+        2,
+        "inner"
+      ],
+      [
+        3,
+        "inner"
+      ],
+      [
+        4,
+        "leaf"
+      ],
+      [
+        5,
+        "leaf"
+      ],
+      [
+        6,
+        "leaf"
+      ]
+    ]
+  },
+  "lc-534-game-play-analysis-iii": {
+    "columns": [
+      "player_id",
+      "event_date",
+      "games_played_so_far"
+    ],
+    "rows": [
+      [
+        1,
+        "2016-03-01",
+        "5"
+      ],
+      [
+        1,
+        "2016-05-02",
+        "11"
+      ],
+      [
+        1,
+        "2017-06-25",
+        "12"
+      ],
+      [
+        2,
+        "2016-03-02",
+        "1"
+      ],
+      [
+        2,
+        "2017-06-25",
+        "4"
+      ],
+      [
+        3,
+        "2016-03-02",
+        "0"
+      ],
+      [
+        3,
+        "2018-07-03",
+        "5"
+      ]
+    ]
+  },
+  "lc-1783-grand-slam-titles": {
+    "columns": [
+      "player_id",
+      "player_name",
+      "grand_slams_count"
+    ],
+    "rows": [
+      [
+        1,
+        "Nadia Kovac",
+        "6"
+      ],
+      [
+        2,
+        "Omar Rashid",
+        "6"
+      ],
+      [
+        3,
+        "Petra Lindqvist",
+        "5"
+      ],
+      [
+        4,
+        "Quinn Doyle",
+        "3"
+      ]
+    ]
+  },
+  "lc-1412-find-the-quiet-students-in-all-exams": {
+    "columns": [
+      "student_id",
+      "student_name"
+    ],
+    "rows": [
+      [
+        1,
+        "Alice Moreau"
+      ],
+      [
+        7,
+        "Gus Herrera"
+      ]
+    ]
+  },
+  "lc-511-game-play-analysis-i": {
+    "columns": [
+      "player_id",
+      "first_login"
+    ],
+    "rows": [
+      [
+        1,
+        "2016-03-01"
+      ],
+      [
+        2,
+        "2017-06-25"
+      ],
+      [
+        3,
+        "2016-03-02"
+      ],
+      [
+        4,
+        "2019-01-01"
+      ]
+    ]
+  },
+  "lc-1571-warehouse-manager": {
+    "columns": [
+      "warehouse_name",
+      "volume"
+    ],
+    "rows": [
+      [
+        "Locker Three",
+        "1008"
+      ],
+      [
+        "Locker Two",
+        "480"
+      ],
+      [
+        "Locker One",
+        "1120"
+      ]
+    ]
+  },
+  "lc-586-customer-placing-the-largest-number-of-orders": {
+    "columns": [
+      "customer_number"
+    ],
+    "rows": [
+      [
+        1
+      ],
+      [
+        2
+      ]
+    ]
+  },
+  "lc-1741-find-total-time-spent-by-each-employee": {
+    "columns": [
+      "day",
+      "emp_id",
+      "total_time"
+    ],
+    "rows": [
+      [
+        "2020-11-28",
+        1,
+        "20"
+      ],
+      [
+        "2020-11-28",
+        2,
+        "40"
+      ],
+      [
+        "2020-11-29",
+        1,
+        "20"
+      ],
+      [
+        "2020-11-29",
+        2,
+        "15"
+      ],
+      [
+        "2020-12-01",
+        2,
+        "10"
+      ],
+      [
+        "2020-12-01",
+        3,
+        "30"
+      ]
+    ]
+  },
+  "lc-1173-immediate-food-delivery-i": {
+    "columns": [
+      "immediate_percentage"
+    ],
+    "rows": [
+      [
+        "33.33"
+      ]
+    ]
+  },
+  "lc-1587-bank-account-summary-ii": {
+    "columns": [
+      "name",
+      "balance"
+    ],
+    "rows": [
+      [
+        "Alice",
+        "11000"
+      ],
+      [
+        "Charlie",
+        "12000"
+      ]
+    ]
+  },
+  "lc-182-duplicate-emails": {
+    "columns": [
+      "Email"
+    ],
+    "rows": [
+      [
+        "alpha@mail.com"
+      ],
+      [
+        "beta@mail.com"
+      ]
+    ]
+  },
+  "lc-1050-actors-and-directors-who-cooperated-at-least-three-times": {
+    "columns": [
+      "actor_id",
+      "director_id"
+    ],
+    "rows": [
+      [
+        1,
+        1
+      ]
+    ]
+  },
+  "lc-1747-leetflex-banned-accounts": {
+    "columns": [
+      "account_id"
+    ],
+    "rows": [
+      [
+        1
+      ],
+      [
+        3
+      ]
+    ]
+  },
+  "lc-184-department-highest-salary": {
+    "columns": [
+      "department",
+      "employee",
+      "salary"
+    ],
+    "rows": [
+      [
+        "IT",
+        "Max",
+        90000
+      ],
+      [
+        "Sales",
+        "Henry",
+        80000
+      ],
+      [
+        "Sales",
+        "Kim",
+        80000
+      ]
+    ]
+  },
+  "lc-1549-the-most-recent-orders-for-each-product": {
+    "columns": [
+      "product_name",
+      "product_id",
+      "order_id",
+      "order_date"
+    ],
+    "rows": [
+      [
+        "Keyboard",
+        1,
+        7,
+        "2020-08-02"
+      ],
+      [
+        "Keyboard",
+        1,
+        8,
+        "2020-08-02"
+      ],
+      [
+        "Monitor",
+        3,
+        3,
+        "2020-08-29"
+      ],
+      [
+        "Mouse",
+        2,
+        6,
+        "2020-08-01"
+      ]
+    ]
+  },
+  "lc-1532-the-most-recent-three-orders": {
+    "columns": [
+      "customer_name",
+      "customer_id",
+      "order_id",
+      "order_date"
+    ],
+    "rows": [
+      [
+        "Ella",
+        1,
+        1,
+        "2020-07-31"
+      ],
+      [
+        "Ella",
+        1,
+        4,
+        "2020-07-29"
+      ],
+      [
+        "Ella",
+        1,
+        5,
+        "2020-06-10"
+      ],
+      [
+        "Jonathan",
+        2,
+        6,
+        "2020-08-01"
+      ],
+      [
+        "Jonathan",
+        2,
+        2,
+        "2020-07-30"
+      ],
+      [
+        "Marcia",
+        3,
+        3,
+        "2020-08-29"
+      ],
+      [
+        "Marcia",
+        3,
+        8,
+        "2020-06-12"
+      ],
+      [
+        "Marcia",
+        3,
+        7,
+        "2020-06-11"
+      ]
+    ]
+  },
+  "lc-1831-maximum-transaction-each-day": {
+    "columns": [
+      "transaction_id",
+      "day",
+      "amount"
+    ],
+    "rows": [
+      [
+        2,
+        "2021-04-01",
+        150
+      ],
+      [
+        4,
+        "2021-04-02",
+        120
+      ],
+      [
+        6,
+        "2021-04-03",
+        300
+      ],
+      [
+        8,
+        "2021-04-04",
+        80
+      ]
+    ]
+  },
+  "lc-1077-project-employees-iii": {
+    "columns": [
+      "project_id",
+      "employee_id"
+    ],
+    "rows": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        4
+      ]
+    ]
+  },
+  "lc-1285-find-the-start-and-end-number-of-continuous-ranges": {
+    "columns": [
+      "start_id",
+      "end_id"
+    ],
+    "rows": [
+      [
+        1,
+        3
+      ],
+      [
+        7,
+        8
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        15,
+        16
+      ]
+    ]
+  },
+  "lc-1596-the-most-frequently-ordered-products-for-each-customer": {
+    "columns": [
+      "customer_id",
+      "product_id",
+      "product_name"
+    ],
+    "rows": [
+      [
+        1,
+        1,
+        "Keyboard"
+      ],
+      [
+        2,
+        2,
+        "Mouse"
+      ],
+      [
+        3,
+        1,
+        "Keyboard"
+      ],
+      [
+        3,
+        3,
+        "Monitor"
+      ]
+    ]
+  },
+  "lc-1709-biggest-window-between-visits": {
+    "columns": [
+      "user_id",
+      "biggest_window"
+    ],
+    "rows": [
+      [
+        1,
+        14
+      ],
+      [
+        2,
+        29
+      ],
+      [
+        3,
+        78
+      ],
+      [
+        4,
+        10
+      ]
+    ]
+  },
+  "lc-1270-all-people-report-to-the-given-manager": {
+    "columns": [
+      "employee_id"
+    ],
+    "rows": [
+      [
+        2
+      ],
+      [
+        6
+      ],
+      [
+        3
+      ],
+      [
+        7
+      ],
+      [
+        4
+      ],
+      [
+        5
+      ],
+      [
+        8
+      ]
+    ]
+  },
+  "lc-570-managers-with-at-least-5-direct-reports": {
+    "columns": [
+      "name"
+    ],
+    "rows": [
+      [
+        "John"
+      ]
+    ]
+  },
+  "lc-1767-find-the-subtasks-that-did-not-execute": {
+    "columns": [
+      "task_id",
+      "subtask_id"
+    ],
+    "rows": [
+      [
+        1,
+        3
+      ],
+      [
+        3,
+        2
+      ]
+    ]
+  },
+  "lc-1511-customer-order-frequency": {
+    "columns": [
+      "customer_id",
+      "name"
+    ],
+    "rows": [
+      [
+        1,
+        "Alice"
+      ]
+    ]
+  },
+  "lc-1693-daily-leads-and-partners": {
+    "columns": [
+      "date_id",
+      "make_name",
+      "unique_leads",
+      "unique_partners"
+    ],
+    "rows": [
+      [
+        "2020-12-07",
+        "Honda",
+        "2",
+        "1"
+      ],
+      [
+        "2020-12-07",
+        "Toyota",
+        "1",
+        "1"
+      ],
+      [
+        "2020-12-08",
+        "Honda",
+        "2",
+        "2"
+      ],
+      [
+        "2020-12-08",
+        "Toyota",
+        "2",
+        "1"
+      ]
+    ]
+  },
+  "lc-1495-friendly-movies-streamed-last-month": {
+    "columns": [
+      "title"
+    ],
+    "rows": [
+      [
+        "Elsa and Anna"
+      ],
+      [
+        "The Lion King"
+      ]
+    ]
+  },
+  "lc-603-consecutive-available-seats": {
+    "columns": [
+      "seat_id"
+    ],
+    "rows": [
+      [
+        3
+      ],
+      [
+        4
+      ],
+      [
+        5
+      ],
+      [
+        7
+      ],
+      [
+        8
+      ]
+    ]
+  },
+  "lc-1795-rearrange-products-table": {
+    "columns": [
+      "product_id",
+      "store",
+      "price"
+    ],
+    "rows": [
+      [
+        0,
+        "store1",
+        95
+      ],
+      [
+        1,
+        "store1",
+        70
+      ],
+      [
+        3,
+        "store1",
+        10
+      ],
+      [
+        4,
+        "store1",
+        30
+      ],
+      [
+        0,
+        "store2",
+        100
+      ],
+      [
+        3,
+        "store2",
+        20
+      ],
+      [
+        4,
+        "store2",
+        40
+      ],
+      [
+        5,
+        "store2",
+        60
+      ],
+      [
+        0,
+        "store3",
+        105
+      ],
+      [
+        1,
+        "store3",
+        80
+      ],
+      [
+        4,
+        "store3",
+        50
+      ]
+    ]
+  },
+  "lc-613-shortest-distance-in-a-line": {
+    "columns": [
+      "shortest"
+    ],
+    "rows": [
+      [
+        1
+      ]
+    ]
+  },
+  "lc-1965-employees-with-missing-information": {
+    "columns": [
+      "employee_id"
+    ],
+    "rows": [
+      [
+        1
+      ],
+      [
+        2
+      ],
+      [
+        7
+      ],
+      [
+        9
+      ]
+    ]
+  },
+  "lc-1350-students-with-invalid-departments": {
+    "columns": [
+      "id",
+      "name"
+    ],
+    "rows": [
+      [
+        1,
+        "Bob"
+      ],
+      [
+        6,
+        "Eve"
+      ],
+      [
+        7,
+        "Frank"
+      ]
+    ]
+  },
+  "lc-1934-confirmation-rate": {
+    "columns": [
+      "user_id",
+      "confirmation_rate"
+    ],
+    "rows": [
+      [
+        2,
+        "0.00"
+      ],
+      [
+        3,
+        "0.00"
+      ],
+      [
+        4,
+        "0.00"
+      ],
+      [
+        6,
+        "1.00"
+      ],
+      [
+        7,
+        "0.50"
+      ]
+    ]
+  },
+  "lc-1193-monthly-transactions-i": {
+    "columns": [
+      "month",
+      "country",
+      "trans_count",
+      "approved_count",
+      "trans_total_amount",
+      "approved_total_amount"
+    ],
+    "rows": [
+      [
+        "2018-12",
+        "US",
+        "2",
+        "1",
+        "3000",
+        "1000"
+      ],
+      [
+        "2019-01",
+        "DE",
+        "2",
+        "1",
+        "3000",
+        "2000"
+      ],
+      [
+        "2019-01",
+        "US",
+        "3",
+        "1",
+        "7000",
+        "2000"
+      ],
+      [
+        "2019-01",
+        null,
+        "1",
+        "1",
+        "1000",
+        "1000"
+      ],
+      [
+        "2019-02",
+        null,
+        "1",
+        "1",
+        "3000",
+        "3000"
+      ]
+    ]
+  },
+  "lc-1174-immediate-food-delivery-ii": {
+    "columns": [
+      "immediate_percentage"
+    ],
+    "rows": [
+      [
+        "50.00"
+      ]
+    ]
+  },
+  "lc-550-game-play-analysis-iv": {
+    "columns": [
+      "fraction"
+    ],
+    "rows": [
+      [
+        "0.50"
+      ]
+    ]
+  },
+  "lc-1070-product-sales-analysis-iii": {
+    "columns": [
+      "product_id",
+      "first_year",
+      "quantity",
+      "price"
+    ],
+    "rows": [
+      [
+        100,
+        2008,
+        10,
+        5000
+      ],
+      [
+        200,
+        2011,
+        15,
+        9000
+      ],
+      [
+        300,
+        2010,
+        20,
+        7000
+      ]
+    ]
+  },
+  "lc-1045-customers-who-bought-all-products": {
+    "columns": [
+      "customer_id"
+    ],
+    "rows": [
+      [
+        1
+      ]
+    ]
+  },
+  "lc-180-consecutive-numbers": {
+    "columns": [
+      "consecutive_nums"
+    ],
+    "rows": [
+      [
+        1
+      ],
+      [
+        2
+      ]
+    ]
+  },
+  "lc-1164-product-price-at-a-given-date": {
+    "columns": [
+      "product_id",
+      "price"
+    ],
+    "rows": [
+      [
+        1,
+        30
+      ],
+      [
+        2,
+        50
+      ],
+      [
+        5,
+        8
+      ],
+      [
+        4,
+        10
+      ],
+      [
+        3,
+        10
+      ]
+    ]
+  },
+  "lc-1204-last-person-to-fit-in-the-bus": {
+    "columns": [
+      "person_name"
+    ],
+    "rows": [
+      [
+        "John Cena"
+      ]
+    ]
+  },
+  "lc-1907-count-salary-categories": {
+    "columns": [
+      "category",
+      "accounts_count"
+    ],
+    "rows": [
+      [
+        "Low Salary",
+        "2"
+      ],
+      [
+        "Average Salary",
+        "2"
+      ],
+      [
+        "High Salary",
+        "3"
+      ]
+    ]
+  },
+  "lc-626-exchange-seats": {
+    "columns": [
+      "id",
+      "student"
+    ],
+    "rows": [
+      [
+        1,
+        "Doris"
+      ],
+      [
+        2,
+        "Abbot"
+      ],
+      [
+        3,
+        "Green"
+      ],
+      [
+        4,
+        "Emerson"
+      ],
+      [
+        5,
+        "Kate"
+      ],
+      [
+        6,
+        "Jeames"
+      ],
+      [
+        7,
+        "Lily"
+      ]
+    ]
+  },
+  "lc-1225-report-contiguous-dates": {
+    "columns": [
+      "period_state",
+      "start_date",
+      "end_date"
+    ],
+    "rows": [
+      [
+        "succeeded",
+        "2019-01-01",
+        "2019-01-01"
+      ],
+      [
+        "failed",
+        "2019-01-02",
+        "2019-01-03"
+      ],
+      [
+        "succeeded",
+        "2019-01-04",
+        "2019-01-04"
+      ],
+      [
+        "failed",
+        "2019-01-05",
+        "2019-01-05"
+      ],
+      [
+        "failed",
+        "2019-07-20",
+        "2019-07-20"
+      ],
+      [
+        "succeeded",
+        "2019-07-21",
+        "2019-07-22"
+      ]
+    ]
+  },
+  "lc-1303-find-the-team-size": {
+    "columns": [
+      "employee_id",
+      "team_size"
+    ],
+    "rows": [
+      [
+        101,
+        "4"
+      ],
+      [
+        102,
+        "3"
+      ],
+      [
+        103,
+        "1"
+      ],
+      [
+        104,
+        "1"
+      ],
+      [
+        105,
+        "1"
+      ],
+      [
+        106,
+        "1"
+      ],
+      [
+        107,
+        "2"
+      ],
+      [
+        108,
+        "1"
+      ]
+    ]
+  },
+  "lc-512-game-play-analysis-ii": {
+    "columns": [
+      "player_id",
+      "device_id"
+    ],
+    "rows": [
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        4,
+        1
+      ]
+    ]
+  },
+  "lc-1757-recyclable-and-low-fat-products": {
+    "columns": [
+      "product_id"
+    ],
+    "rows": [
+      [
+        1
+      ],
+      [
+        3
+      ],
+      [
+        8
+      ]
+    ]
+  },
+  "lc-584-find-customer-referee": {
+    "columns": [
+      "name"
+    ],
+    "rows": [
+      [
+        "Will"
+      ],
+      [
+        "Jane"
+      ],
+      [
+        "Bill"
+      ],
+      [
+        "Zack"
+      ],
+      [
+        "Kim"
+      ]
+    ]
+  },
+  "lc-1341-movie-rating": {
+    "columns": [
+      "results"
+    ],
+    "rows": [
+      [
+        "Daniel"
+      ],
+      [
+        "Avengers"
+      ]
+    ]
+  },
+  "lc-1321-restaurant-growth": {
+    "columns": [
+      "visited_on",
+      "amount",
+      "average_amount"
+    ],
+    "rows": [
+      [
+        "2019-01-07",
+        "960.00",
+        "137.14"
+      ],
+      [
+        "2019-01-08",
+        "1010.00",
+        "144.29"
+      ],
+      [
+        "2019-01-09",
+        "1000.00",
+        "142.86"
+      ],
+      [
+        "2019-01-10",
+        "870.00",
+        "124.29"
+      ],
+      [
+        "2019-01-11",
+        "870.00",
+        "124.29"
+      ],
+      [
+        "2019-01-12",
+        "860.00",
+        "122.86"
+      ]
+    ]
+  },
+  "lc-602-friend-requests-ii-who-has-the-most-friends": {
+    "columns": [
+      "id",
+      "num"
+    ],
+    "rows": [
+      [
+        1,
+        "3"
+      ]
+    ]
+  },
+  "lc-585-investments-in-2016": {
+    "columns": [
+      "tiv_2016"
+    ],
+    "rows": [
+      [
+        "105.00"
+      ]
+    ]
+  },
+  "lc-176-second-highest-salary": {
+    "columns": [
+      "SecondHighestSalary"
+    ],
+    "rows": [
+      [
+        200
+      ]
+    ]
+  },
+  "lc-185-department-top-three-salaries": {
+    "columns": [
+      "department",
+      "employee",
+      "salary"
+    ],
+    "rows": [
+      [
+        "Engineering",
+        "Ada",
+        100
+      ],
+      [
+        "Engineering",
+        "Ben",
+        90
+      ],
+      [
+        "Engineering",
+        "Cleo",
+        90
+      ],
+      [
+        "Engineering",
+        "Dev",
+        80
+      ],
+      [
+        "Sales",
+        "Fay",
+        200
+      ],
+      [
+        "Sales",
+        "Gus",
+        150
+      ],
+      [
+        "Sales",
+        "Hana",
+        100
+      ],
+      [
+        "Sales",
+        "Ivy",
+        100
+      ]
+    ]
+  },
+  "ss-9650-find-the-top-10-ranked-songs-in-2010": {
+    "columns": [
+      "artist",
+      "song_name",
+      "best_rank"
+    ],
+    "rows": [
+      [
+        "Ke$ha",
+        "TiK ToK",
+        1
+      ],
+      [
+        "The Black Eyed Peas",
+        "Imma Be",
+        1
+      ],
+      [
+        "Lady Antebellum",
+        "Need You Now",
+        2
+      ],
+      [
+        "Lady Gaga",
+        "Bad Romance",
+        2
+      ],
+      [
+        "Flo Rida",
+        "Club Cant Handle Me",
+        3
+      ],
+      [
+        "B.o.B",
+        "Nothin on You",
+        5
+      ],
+      [
+        "Bruno Mars",
+        "Just the Way You Are",
+        6
+      ],
+      [
+        "Usher",
+        "OMG",
+        7
+      ],
+      [
+        "Katy Perry",
+        "California Gurls",
+        8
+      ],
+      [
+        "Eminem",
+        "Love the Way You Lie",
+        9
+      ]
+    ]
+  },
+  "ss-9781-find-the-rate-of-processed-tickets-for-each-type": {
+    "columns": [
+      "category",
+      "processed_rate"
+    ],
+    "rows": [
+      [
+        1,
+        "0.75"
+      ],
+      [
+        2,
+        "0.33"
+      ],
+      [
+        3,
+        "1.00"
+      ],
+      [
+        4,
+        "0.00"
+      ]
+    ]
+  },
+  "ss-9782-customer-revenue-in-march": {
+    "columns": [
+      "total_revenue"
+    ],
+    "rows": [
+      [
+        "690.75"
+      ]
+    ]
+  },
+  "ss-9894-employee-and-manager-salaries": {
+    "columns": [
+      "id",
+      "first_name",
+      "last_name",
+      "salary"
+    ],
+    "rows": [
+      [
+        9,
+        "Linus",
+        "Torvalds",
+        "160000.00"
+      ],
+      [
+        4,
+        "Katherine",
+        "Johnson",
+        "150000.00"
+      ],
+      [
+        7,
+        "Donald",
+        "Knuth",
+        "130000.00"
+      ],
+      [
+        2,
+        "Alan",
+        "Turing",
+        "120000.00"
+      ],
+      [
+        11,
+        "Dennis",
+        "Ritchie",
+        "115000.00"
+      ]
+    ]
+  },
+  "ss-9897-highest-salary-in-department": {
+    "columns": [
+      "department",
+      "first_name",
+      "last_name",
+      "salary"
+    ],
+    "rows": [
+      [
+        "Engineering",
+        "Sam",
+        "Cruz",
+        "120000.00"
+      ],
+      [
+        "Marketing",
+        "Quinn",
+        "Adams",
+        "60000.00"
+      ],
+      [
+        "Marketing",
+        "Rita",
+        "Blake",
+        "60000.00"
+      ],
+      [
+        "Sales",
+        "Nina",
+        "Patel",
+        "95000.00"
+      ],
+      [
+        "Sales",
+        "Omar",
+        "Silva",
+        "95000.00"
+      ]
+    ]
+  },
+  "ss-9905-highest-target-under-manager": {
+    "columns": [
+      "manager",
+      "salesperson",
+      "target"
+    ],
+    "rows": [
+      [
+        "Ada",
+        "Iris",
+        "5000.00"
+      ],
+      [
+        "Ada",
+        "Jonas",
+        "5000.00"
+      ],
+      [
+        "Ben",
+        "Ola",
+        "8500.00"
+      ],
+      [
+        "Cleo",
+        "Pia",
+        "1000.00"
+      ]
+    ]
+  },
+  "ss-9942-largest-olympics": {
+    "columns": [
+      "games",
+      "athlete_count"
+    ],
+    "rows": [
+      [
+        "2012 Summer",
+        "7"
+      ]
+    ]
+  },
+  "ss-9991-top-ranked-songs": {
+    "columns": [
+      "artist",
+      "trackname",
+      "days_at_number_one"
+    ],
+    "rows": [
+      [
+        "Lady Gaga",
+        "Bad Romance",
+        "5"
+      ],
+      [
+        "Ke$ha",
+        "TiK ToK",
+        "5"
+      ]
+    ]
+  },
+  "ss-10026-find-all-wineries-which-produce-wines-by-possess": {
+    "columns": [
+      "winery"
+    ],
+    "rows": [
+      [
+        "Cedar Creek"
+      ],
+      [
+        "Chateau Plum"
+      ],
+      [
+        "Cherry Hollow"
+      ],
+      [
+        "Hazelnut Ridge"
+      ],
+      [
+        "Plumfield"
+      ],
+      [
+        "Rose Estate"
+      ],
+      [
+        "Rosemary Vineyards"
+      ],
+      [
+        "Violet Hollow"
+      ]
+    ]
+  },
+  "ss-10048-top-businesses-with-most-reviews": {
+    "columns": [
+      "name",
+      "review_count"
+    ],
+    "rows": [
+      [
+        "Golden Wok",
+        210
+      ],
+      [
+        "Sushi Zen",
+        180
+      ],
+      [
+        "Pasta Palace",
+        150
+      ],
+      [
+        "Dumpling Den",
+        130
+      ],
+      [
+        "Blue Bottle",
+        120
+      ]
+    ]
+  },
+  "ss-10049-reviews-of-categories": {
+    "columns": [
+      "category",
+      "total_reviews"
+    ],
+    "rows": [
+      [
+        "Chinese",
+        "210"
+      ],
+      [
+        "Italian",
+        "150"
+      ],
+      [
+        "Pizza",
+        "150"
+      ],
+      [
+        "Bakery",
+        "120"
+      ],
+      [
+        "Coffee",
+        "120"
+      ],
+      [
+        "Breakfast",
+        "95"
+      ],
+      [
+        "Diner",
+        "95"
+      ]
+    ]
+  },
+  "ss-10060-top-cool-votes": {
+    "columns": [
+      "business_name",
+      "total_cool_votes"
+    ],
+    "rows": [
+      [
+        "Blue Bottle",
+        "10"
+      ],
+      [
+        "Sunrise Diner",
+        "10"
+      ]
+    ]
+  },
+  "ss-10064-highest-energy-consumption": {
+    "columns": [
+      "consumption_date",
+      "total_consumption"
+    ],
+    "rows": [
+      [
+        "2016-01-02",
+        "1000.00"
+      ],
+      [
+        "2016-01-04",
+        "1000.00"
+      ]
+    ]
+  },
+  "ss-10077-income-by-title-and-gender": {
+    "columns": [
+      "jobtitle",
+      "gender",
+      "average_compensation"
+    ],
+    "rows": [
+      [
+        "Firefighter",
+        "F",
+        "105000.00"
+      ],
+      [
+        "Firefighter",
+        "M",
+        "99000.00"
+      ],
+      [
+        "Nurse",
+        "F",
+        "81000.00"
+      ],
+      [
+        "Nurse",
+        "M",
+        "82000.00"
+      ],
+      [
+        "Police Officer",
+        "F",
+        "93500.00"
+      ],
+      [
+        "Police Officer",
+        "M",
+        "87500.00"
+      ]
+    ]
+  },
+  "ss-10078-find-matching-hosts-and-guests-in-a-way-that-the": {
+    "columns": [
+      "host_id",
+      "guest_id",
+      "nationality",
+      "gender"
+    ],
+    "rows": [
+      [
+        1,
+        101,
+        "USA",
+        "M"
+      ],
+      [
+        2,
+        102,
+        "USA",
+        "F"
+      ],
+      [
+        3,
+        105,
+        "France",
+        "F"
+      ],
+      [
+        5,
+        103,
+        "France",
+        "M"
+      ]
+    ]
+  },
+  "ss-2007-rank-variance-per-country": {
+    "columns": [
+      "country",
+      "previous_rank",
+      "latest_rank",
+      "rank_variance"
+    ],
+    "rows": [
+      [
+        "Sweden",
+        4,
+        1,
+        3
+      ],
+      [
+        "Norway",
+        3,
+        1,
+        2
+      ],
+      [
+        "Denmark",
+        3,
+        6,
+        -3
+      ]
+    ]
+  },
+  "ss-2008-the-cheapest-airline-connection": {
+    "columns": [
+      "origin",
+      "stopover",
+      "destination",
+      "total_price"
+    ],
+    "rows": [
+      [
+        "JFK",
+        "DEN",
+        "LAX",
+        "210.00"
+      ],
+      [
+        "JFK",
+        "ORD",
+        "LAX",
+        "210.00"
+      ]
+    ]
+  },
+  "ss-2012-viewers-turned-streamers": {
+    "columns": [
+      "user_id",
+      "first_viewer_at",
+      "first_stream_at"
+    ],
+    "rows": [
+      [
+        1,
+        "2021-01-01 10:00:00",
+        "2021-01-05 20:00:00"
+      ],
+      [
+        3,
+        "2021-03-10 08:15:00",
+        "2021-04-01 19:00:00"
+      ]
+    ]
+  },
+  "ss-2028-new-and-existing-users": {
+    "columns": [
+      "month",
+      "new_users",
+      "existing_users"
+    ],
+    "rows": [
+      [
+        "2024-01-01",
+        "2",
+        "2"
+      ],
+      [
+        "2024-02-01",
+        "2",
+        "3"
+      ],
+      [
+        "2024-03-01",
+        "2",
+        "2"
+      ]
+    ]
+  },
+  "ss-2029-the-most-popular-client-id-among-users-using-vid": {
+    "columns": [
+      "client_id",
+      "user_count"
+    ],
+    "rows": [
+      [
+        1,
+        "4"
+      ]
+    ]
+  },
+  "ss-2033-find-the-most-profitable-location": {
+    "columns": [
+      "location_name",
+      "total_profit"
+    ],
+    "rows": [
+      [
+        "Harborview",
+        "16000.00"
+      ]
+    ]
+  },
+  "ss-2036-lowest-revenue-generated-restaurants": {
+    "columns": [
+      "name",
+      "total_revenue"
+    ],
+    "rows": [
+      [
+        "Garden Gate",
+        "0"
+      ],
+      [
+        "Delta Diner",
+        "400.00"
+      ],
+      [
+        "Fig & Fern",
+        "1600.00"
+      ],
+      [
+        "Blue Fig",
+        "2000.00"
+      ]
+    ]
+  },
+  "ss-10156-number-of-units-per-nationality": {
+    "columns": [
+      "nationality",
+      "units_rented"
+    ],
+    "rows": [
+      [
+        "Ireland",
+        1
+      ],
+      [
+        "Italy",
+        1
+      ],
+      [
+        "Nigeria",
+        1
+      ]
+    ]
+  },
+  "ss-10159-ranking-most-active-guests": {
+    "columns": [
+      "guest_id",
+      "guest_name",
+      "message_count",
+      "activity_rank"
+    ],
+    "rows": [
+      [
+        1,
+        "Ana",
+        4,
+        1
+      ],
+      [
+        2,
+        "Bruno",
+        3,
+        2
+      ],
+      [
+        3,
+        "Chandra",
+        3,
+        2
+      ],
+      [
+        5,
+        "Elena",
+        1,
+        4
+      ],
+      [
+        4,
+        "Dmitri",
+        0,
+        5
+      ]
+    ]
+  },
+  "ss-10285-acceptance-rate-by-date": {
+    "columns": [
+      "request_date",
+      "acceptance_rate"
+    ],
+    "rows": [
+      [
+        "2023-01-05",
+        "0.50"
+      ],
+      [
+        "2023-01-06",
+        "0.33"
+      ]
+    ]
+  },
+  "ss-10352-users-by-average-session-time": {
+    "columns": [
+      "user_id",
+      "user_name",
+      "avg_session_minutes"
+    ],
+    "rows": [
+      [
+        3,
+        "Chen",
+        "67.50"
+      ],
+      [
+        2,
+        "Bruno",
+        "40.00"
+      ],
+      [
+        1,
+        "Ana",
+        "30.00"
+      ]
+    ]
+  },
+  "ss-10354-most-profitable-companies": {
+    "columns": [
+      "company_name",
+      "profits"
+    ],
+    "rows": [
+      [
+        "Vertex Energy",
+        100
+      ],
+      [
+        "Northwind Retail",
+        90
+      ],
+      [
+        "Kestrel Aerospace",
+        80
+      ],
+      [
+        "Lumen Tech",
+        80
+      ]
+    ]
+  },
+  "ss-10353-workers-with-the-highest-salaries": {
+    "columns": [
+      "department_name",
+      "title",
+      "salary"
+    ],
+    "rows": [
+      [
+        "Engineering",
+        "Senior Data Engineer",
+        95000
+      ],
+      [
+        "Sales",
+        "Account Manager",
+        70000
+      ],
+      [
+        "Sales",
+        "Sales Lead",
+        70000
+      ],
+      [
+        "Support",
+        "Support Analyst",
+        60000
+      ]
+    ]
+  },
+  "ss-10351-activity-rank": {
+    "columns": [
+      "sent_on",
+      "sender",
+      "email_count",
+      "activity_rank"
+    ],
+    "rows": [
+      [
+        "2023-04-01",
+        "ana@mail.com",
+        2,
+        1
+      ],
+      [
+        "2023-04-01",
+        "bob@mail.com",
+        1,
+        2
+      ],
+      [
+        "2023-04-01",
+        "cara@mail.com",
+        1,
+        2
+      ],
+      [
+        "2023-04-02",
+        "bob@mail.com",
+        2,
+        1
+      ],
+      [
+        "2023-04-02",
+        "ana@mail.com",
+        1,
+        2
+      ],
+      [
+        "2023-04-03",
+        "cara@mail.com",
+        1,
+        1
+      ],
+      [
+        "2023-04-03",
+        "dan@mail.com",
+        1,
+        1
+      ]
+    ]
+  },
+  "ss-10068-user-email-labels": {
+    "columns": [
+      "user_id",
+      "user_name",
+      "labels"
+    ],
+    "rows": [
+      [
+        1,
+        "Ana",
+        "inbox,work"
+      ],
+      [
+        2,
+        "Bruno",
+        "inbox,receipts"
+      ],
+      [
+        3,
+        "Chen",
+        "travel"
+      ]
+    ]
+  },
+  "ss-10304-risky-projects": {
+    "columns": [
+      "client_name",
+      "project_title",
+      "duration_months"
+    ],
+    "rows": [
+      [
+        "Dune Digital",
+        "Iris",
+        60
+      ],
+      [
+        "Acme Analytics",
+        "Atlas",
+        30
+      ]
+    ]
+  },
+  "ss-10324-distances-traveled": {
+    "columns": [
+      "user_name",
+      "total_distance"
+    ],
+    "rows": [
+      [
+        "Bruno",
+        "30.0"
+      ],
+      [
+        "Dev",
+        "25.0"
+      ],
+      [
+        "Ana",
+        "15.7"
+      ],
+      [
+        "Cara",
+        "7.5"
+      ]
+    ]
+  },
+  "ss-10301-expensive-projects": {
+    "columns": [
+      "client_name",
+      "project_title",
+      "budget",
+      "client_avg_budget"
+    ],
+    "rows": [
+      [
+        "Acme Analytics",
+        "Atlas",
+        120000,
+        "100000.00"
+      ],
+      [
+        "Borealis Labs",
+        "Echo",
+        70000,
+        "60000.00"
+      ]
+    ]
+  },
+  "ss-9901-super-managers": {
+    "columns": [
+      "manager_name",
+      "subordinate_count"
+    ],
+    "rows": [
+      [
+        "Boris Petrov",
+        3
+      ],
+      [
+        "Dana Krause",
+        2
+      ],
+      [
+        "Amara Osei",
+        1
+      ],
+      [
+        "Chen Wei",
+        1
+      ]
+    ]
+  },
+  "ss-9895-duplicate-emails": {
+    "columns": [
+      "email",
+      "account_count"
+    ],
+    "rows": [
+      [
+        "cara@mail.com",
+        3
+      ],
+      [
+        "ana@mail.com",
+        2
+      ]
+    ]
+  },
+  "ss-9904-highest-target": {
+    "columns": [
+      "manager_name",
+      "employee_name",
+      "target"
+    ],
+    "rows": [
+      [
+        "Omar",
+        "Dev",
+        200
+      ],
+      [
+        "Rhea",
+        "Ana",
+        120
+      ],
+      [
+        "Rhea",
+        "Bruno",
+        120
+      ],
+      [
+        "Sana",
+        "Gita",
+        75
+      ]
+    ]
+  },
+  "ss-2037-delivering-and-placing-orders": {
+    "columns": [
+      "order_month",
+      "orders_placed",
+      "late_deliveries",
+      "undelivered",
+      "on_time_pct"
+    ],
+    "rows": [
+      [
+        "2023-01-01",
+        2,
+        1,
+        0,
+        "50.0"
+      ],
+      [
+        "2023-02-01",
+        3,
+        0,
+        1,
+        "66.7"
+      ]
+    ]
+  },
+  "ss-2044-most-senior-and-junior-employee": {
+    "columns": [
+      "department",
+      "most_senior",
+      "senior_hire_date",
+      "most_junior",
+      "junior_hire_date"
+    ],
+    "rows": [
+      [
+        "Design",
+        "Elin Hov",
+        "2018-09-03",
+        "Dev Patel",
+        "2020-03-16"
+      ],
+      [
+        "Engineering",
+        "Ana Ruiz",
+        "2019-02-04",
+        "Bruno Silva",
+        "2021-07-19"
+      ],
+      [
+        "Support",
+        "Finn Ola",
+        "2022-01-10",
+        "Finn Ola",
+        "2022-01-10"
+      ]
+    ]
+  },
+  "ss-2053-retention-rate": {
+    "columns": [
+      "activity_date",
+      "active_users",
+      "retained_users",
+      "retention_pct"
+    ],
+    "rows": [
+      [
+        "2023-05-01",
+        3,
+        2,
+        "66.7"
+      ],
+      [
+        "2023-05-02",
+        2,
+        1,
+        "50.0"
+      ],
+      [
+        "2023-05-03",
+        2,
+        0,
+        "0.0"
+      ],
+      [
+        "2023-05-04",
+        1,
+        0,
+        "0.0"
+      ]
+    ]
+  },
+  "ss-2054-consecutive-days": {
+    "columns": [
+      "user_id",
+      "streak_start",
+      "streak_end",
+      "streak_length"
+    ],
+    "rows": [
+      [
+        1,
+        "2023-06-01",
+        "2023-06-03",
+        3
+      ],
+      [
+        3,
+        "2023-06-10",
+        "2023-06-13",
+        4
+      ]
+    ]
+  },
+  "ss-2059-player-with-longest-streak": {
+    "columns": [
+      "player_name",
+      "longest_streak"
+    ],
+    "rows": [
+      [
+        "Bruno",
+        4
+      ]
+    ]
+  },
+  "ss-2073-popular-posts": {
+    "columns": [
+      "user_id",
+      "post_id",
+      "popularity_score"
+    ],
+    "rows": [
+      [
+        1,
+        1,
+        4
+      ],
+      [
+        2,
+        3,
+        7
+      ],
+      [
+        3,
+        6,
+        6
+      ]
+    ]
+  },
+  "ss-2076-trips-in-consecutive-months": {
+    "columns": [
+      "user_id",
+      "max_consecutive_months"
+    ],
+    "rows": [
+      [
+        1,
+        3
+      ],
+      [
+        4,
+        4
+      ]
+    ]
+  },
+  "ss-2078-from-microsoft-to-google": {
+    "columns": [
+      "employee_id",
+      "microsoft_start",
+      "microsoft_end",
+      "google_start"
+    ],
+    "rows": [
+      [
+        1,
+        "2015-01-05",
+        "2019-06-30",
+        "2020-02-03"
+      ],
+      [
+        4,
+        "2012-03-01",
+        "2016-05-20",
+        "2016-08-01"
+      ],
+      [
+        6,
+        "2019-03-04",
+        "2019-12-20",
+        "2020-01-06"
+      ],
+      [
+        7,
+        "2018-05-01",
+        "2021-03-31",
+        "2021-07-15"
+      ],
+      [
+        8,
+        "2014-01-06",
+        "2016-02-29",
+        "2016-06-01"
+      ]
+    ]
+  },
+  "ss-10318-new-products": {
+    "columns": [
+      "product_id",
+      "product_name",
+      "launch_date",
+      "first_sale_date",
+      "days_to_first_sale"
+    ],
+    "rows": [
+      [
+        1,
+        "Aurora Lamp",
+        "2023-01-10",
+        "2023-01-18",
+        8
+      ],
+      [
+        2,
+        "Nimbus Chair",
+        "2023-02-05",
+        "2023-02-20",
+        15
+      ],
+      [
+        3,
+        "Zephyr Desk",
+        "2023-03-01",
+        "2023-03-15",
+        14
+      ],
+      [
+        5,
+        "Drift Cabinet",
+        "2023-04-02",
+        "2023-04-10",
+        8
+      ]
+    ]
+  },
+  "ss-10169-highest-total-miles": {
+    "columns": [
+      "ride_month",
+      "driver_name",
+      "total_miles"
+    ],
+    "rows": [
+      [
+        "2024-01-01",
+        "Bruno",
+        "55.0"
+      ],
+      [
+        "2024-02-01",
+        "Bruno",
+        "22.5"
+      ],
+      [
+        "2024-02-01",
+        "Carla",
+        "22.5"
+      ]
+    ]
+  },
+  "ss-10315-cities-with-the-most-expensive-homes": {
+    "columns": [
+      "city",
+      "avg_price",
+      "priced_listings"
+    ],
+    "rows": [
+      [
+        "Faro",
+        "300.00",
+        "2"
+      ],
+      [
+        "Lisbon",
+        "206.67",
+        "3"
+      ]
+    ]
+  },
+  "ss-10322-finding-user-purchases": {
+    "columns": [
+      "user_id"
+    ],
+    "rows": [
+      [
+        101
+      ],
+      [
+        105
+      ],
+      [
+        106
+      ]
+    ]
+  },
+  "ss-9915-highest-cost-orders": {
+    "columns": [
+      "order_date",
+      "order_id",
+      "customer_name",
+      "city",
+      "total_amount"
+    ],
+    "rows": [
+      [
+        "2024-01-05",
+        101,
+        "Ana",
+        "Lisbon",
+        "250.00"
+      ],
+      [
+        "2024-01-05",
+        102,
+        "Bruno",
+        "Porto",
+        "250.00"
+      ],
+      [
+        "2024-01-06",
+        104,
+        "Diogo",
+        "Faro",
+        "99.99"
+      ],
+      [
+        "2024-01-07",
+        105,
+        "Ana",
+        "Lisbon",
+        "400.00"
+      ],
+      [
+        "2024-01-08",
+        107,
+        "Bruno",
+        "Porto",
+        "75.50"
+      ],
+      [
+        "2024-01-08",
+        108,
+        "Diogo",
+        "Faro",
+        "75.50"
+      ]
+    ]
+  },
+  "ss-9908-customer-orders-and-details": {
+    "columns": [
+      "customer_id",
+      "customer_name",
+      "total_orders",
+      "active_orders",
+      "active_amount"
+    ],
+    "rows": [
+      [
+        1,
+        "Ana Silva",
+        "3",
+        "2",
+        "115.00"
+      ],
+      [
+        2,
+        "Bruno Costa",
+        "3",
+        "2",
+        "85.00"
+      ],
+      [
+        3,
+        "Carla Dias",
+        "1",
+        "0",
+        "0.00"
+      ],
+      [
+        4,
+        "Diogo Rocha",
+        "2",
+        "2",
+        "100.00"
+      ],
+      [
+        5,
+        "Elsa Pires",
+        "0",
+        "0",
+        "0.00"
+      ]
+    ]
+  },
+  "ss-9910-favorite-customer": {
+    "columns": [
+      "customer_id",
+      "customer_name",
+      "order_count"
+    ],
+    "rows": [
+      [
+        1,
+        "Ana",
+        "3"
+      ],
+      [
+        2,
+        "Bruno",
+        "3"
+      ]
+    ]
+  },
+  "ss-9912-lowest-priced-orders": {
+    "columns": [
+      "order_date",
+      "order_id",
+      "customer_name",
+      "total_amount"
+    ],
+    "rows": [
+      [
+        "2024-05-01",
+        402,
+        "Bruno",
+        "45.00"
+      ],
+      [
+        "2024-05-02",
+        404,
+        "Ana",
+        "33.00"
+      ],
+      [
+        "2024-05-02",
+        405,
+        "Bruno",
+        "33.00"
+      ],
+      [
+        "2024-05-03",
+        406,
+        "Carla",
+        "15.00"
+      ],
+      [
+        "2024-05-04",
+        407,
+        "Ana",
+        "90.00"
+      ],
+      [
+        "2024-05-04",
+        408,
+        "Bruno",
+        "90.00"
+      ]
+    ]
+  },
+  "ss-9899-percentage-of-total-spend": {
+    "columns": [
+      "user_id",
+      "total_spend",
+      "pct_of_total"
+    ],
+    "rows": [
+      [
+        2,
+        "300.00",
+        "60.00"
+      ],
+      [
+        1,
+        "150.00",
+        "30.00"
+      ],
+      [
+        3,
+        "50.00",
+        "10.00"
+      ],
+      [
+        5,
+        "0.00",
+        "0.00"
+      ]
+    ]
+  },
+  "ss-9892-second-highest-salary": {
+    "columns": [
+      "second_highest_salary"
+    ],
+    "rows": [
+      [
+        "75000.00"
+      ]
+    ]
+  },
+  "ss-9896-customers-without-orders": {
+    "columns": [
+      "customer_id",
+      "customer_name",
+      "signup_date"
+    ],
+    "rows": [
+      [
+        3,
+        "Carla",
+        "2024-05-31"
+      ]
+    ]
+  },
+  "ss-9921-department-salaries": {
+    "columns": [
+      "department_name",
+      "total_salary",
+      "employee_count"
+    ],
+    "rows": [
+      [
+        "Engineering",
+        "200000.00",
+        "2"
+      ],
+      [
+        "Sales",
+        "200000.00",
+        "3"
+      ]
+    ]
+  },
+  "ss-9893-frequent-customers": {
+    "columns": [
+      "customer_id",
+      "distinct_order_dates",
+      "total_orders"
+    ],
+    "rows": [
+      [
+        1,
+        "3",
+        "4"
+      ],
+      [
+        3,
+        "3",
+        "3"
+      ]
+    ]
+  },
+  "ss-10310-class-performance": {
+    "columns": [
+      "class_name",
+      "class_avg",
+      "above_avg_scores"
+    ],
+    "rows": [
+      [
+        "A",
+        "76.67",
+        "2"
+      ],
+      [
+        "B",
+        "75.00",
+        "1"
+      ],
+      [
+        "C",
+        "63.33",
+        "1"
+      ]
+    ]
+  },
+  "ss-2082-minimum-number-of-platforms": {
+    "columns": [
+      "min_platforms"
+    ],
+    "rows": [
+      [
+        "3"
+      ]
+    ]
+  },
+  "ss-2087-negative-reviews-in-new-locations": {
+    "columns": [
+      "hotel_id",
+      "hotel_name",
+      "city",
+      "reviews_considered",
+      "negative_reviews",
+      "first_review_date"
+    ],
+    "rows": [
+      [
+        3,
+        "Charlie",
+        "Faro",
+        "3",
+        "3",
+        "2024-02-05"
+      ],
+      [
+        1,
+        "Alfa",
+        "Lisbon",
+        "3",
+        "2",
+        "2024-01-05"
+      ],
+      [
+        5,
+        "Echo",
+        "Braga",
+        "3",
+        "2",
+        "2024-03-02"
+      ]
+    ]
+  },
+  "ss-2088-seat-availability": {
+    "columns": [
+      "screening_id",
+      "movie_title",
+      "block_start",
+      "block_end",
+      "block_size"
+    ],
+    "rows": [
+      [
+        1,
+        "Solaris",
+        5,
+        10,
+        "6"
+      ],
+      [
+        2,
+        "Everest",
+        3,
+        3,
+        "1"
+      ],
+      [
+        3,
+        "Nebula",
+        1,
+        6,
+        "6"
+      ]
+    ]
+  },
+  "ss-2089-cookbook-recipes": {
+    "columns": [
+      "base_recipe",
+      "richer_recipe",
+      "extra_ingredients"
+    ],
+    "rows": [
+      [
+        "Bruschetta",
+        "Garlic Bread",
+        "1"
+      ],
+      [
+        "Simple Flatbread",
+        "Garlic Bread",
+        "1"
+      ],
+      [
+        "Tomato Soup",
+        "Rich Tomato Soup",
+        "2"
+      ]
+    ]
+  },
+  "ss-2090-first-day-retention-rate": {
+    "columns": [
+      "signup_date",
+      "signup_users",
+      "retained_users",
+      "day1_retention_pct"
+    ],
+    "rows": [
+      [
+        "2024-04-01",
+        "3",
+        "2",
+        "66.67"
+      ],
+      [
+        "2024-04-02",
+        "2",
+        "1",
+        "50.00"
+      ],
+      [
+        "2024-04-03",
+        "2",
+        "1",
+        "50.00"
+      ]
+    ]
+  },
+  "ss-2094-highest-earning-merchants": {
+    "columns": [
+      "category",
+      "merchant_name",
+      "completed_sales",
+      "rank_in_category"
+    ],
+    "rows": [
+      [
+        "Garden",
+        "Echo",
+        "400.00",
+        "1"
+      ],
+      [
+        "Home",
+        "Alfa",
+        "800.00",
+        "1"
+      ],
+      [
+        "Home",
+        "Bravo",
+        "800.00",
+        "1"
+      ],
+      [
+        "Home",
+        "Charlie",
+        "250.00",
+        "3"
+      ],
+      [
+        "Home",
+        "Delta",
+        "250.00",
+        "3"
+      ],
+      [
+        "Uncategorized",
+        "Foxtrot",
+        "0.00",
+        "1"
+      ]
+    ]
+  },
+  "ss-2103-reviewed-flags-of-top-videos": {
+    "columns": [
+      "video_id",
+      "title",
+      "flag_count",
+      "reviewed"
+    ],
+    "rows": [
+      [
+        1,
+        "Sunset Drive",
+        "3",
+        "yes"
+      ],
+      [
+        2,
+        "City Lights",
+        "3",
+        "yes"
+      ],
+      [
+        3,
+        "Mountain Run",
+        "2",
+        "no"
+      ],
+      [
+        4,
+        "Ocean Waves",
+        "2",
+        "yes"
+      ]
+    ]
+  }
+}

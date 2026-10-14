@@ -1,0 +1,9 @@
+# Keep the working tree byte-stable across platforms (the scripts compare
+# generated expected.json byte-for-byte, and vendored binaries must not be mangled).
+* text=auto eol=lf
+*.wasm binary
+*.data binary
+*.woff2 binary
+*.tar.gz binary
+*.png binary
+*.ico binary
