@@ -29,6 +29,25 @@ export const problems = [
   COUNT(*) FILTER (WHERE device_type IN ('phone', 'tablet')) AS mobile_views
 FROM viewership;`,
     ordered: false,
+    testCases: [
+      {
+        note: "no laptop or mobile views at all, so both figures are zero",
+        seedSQL: `INSERT INTO viewership (view_id, user_id, device_type, view_time) VALUES
+  (1, 201, 'smart_tv', '2023-01-01 08:00:00'),
+  (2, 202, 'desktop', '2023-01-01 09:00:00'),
+  (3, 203, 'console', '2023-01-02 10:00:00'),
+  (4, 204, 'smart_tv', '2023-01-03 11:00:00');`,
+      },
+      {
+        note: "tablets and phones dominate with a single laptop view",
+        seedSQL: `INSERT INTO viewership (view_id, user_id, device_type, view_time) VALUES
+  (11, 301, 'phone', '2023-02-01 07:00:00'),
+  (12, 302, 'tablet', '2023-02-01 08:00:00'),
+  (13, 303, 'tablet', '2023-02-02 09:00:00'),
+  (14, 304, 'laptop', '2023-02-02 10:00:00'),
+  (15, 305, 'desktop', '2023-02-03 11:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-sql-average-post-hiatus-1",
@@ -63,6 +82,26 @@ GROUP BY user_id
 HAVING COUNT(*) >= 2
 ORDER BY user_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "one author posts twice on the same day while another has a single post",
+        seedSQL: `INSERT INTO posts (post_id, user_id, post_date, content) VALUES
+  (21, 11, '2021-05-01', 'morning note'),
+  (22, 11, '2021-05-01', 'evening note'),
+  (23, 12, '2021-06-01', 'only post'),
+  (24, 13, '2021-06-02', 'first note'),
+  (25, 13, '2021-06-10', 'second note');`,
+      },
+      {
+        note: "an author spanning a leap year and another posting on consecutive days",
+        seedSQL: `INSERT INTO posts (post_id, user_id, post_date, content) VALUES
+  (31, 21, '2020-01-01', 'new year note'),
+  (32, 21, '2020-01-02', 'next day note'),
+  (33, 21, '2020-01-03', 'third day note'),
+  (34, 22, '2019-12-31', 'new year eve'),
+  (35, 22, '2020-12-31', 'a year later');`,
+      },
+    ],
   },
   {
     id: "dl-teams-power-users",
@@ -100,6 +139,24 @@ GROUP BY sender_id
 HAVING COUNT(*) > 2
 ORDER BY sender_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "exactly three february messages against senders on the window edges",
+        seedSQL: `INSERT INTO messages (message_id, sender_id, receiver_id, content, sent_date) VALUES
+  (21, 11, 12, 'opening note', '2019-02-01 00:00:00'),
+  (22, 11, 13, 'mid month note', '2019-02-15 12:00:00'),
+  (23, 11, 14, 'closing note', '2019-02-28 23:59:59'),
+  (24, 12, 11, 'january note', '2019-01-31 23:59:59'),
+  (25, 13, 11, 'march note', '2019-03-01 00:00:00');`,
+      },
+      {
+        note: "nobody sends more than two messages so the report is empty",
+        seedSQL: `INSERT INTO messages (message_id, sender_id, receiver_id, content, sent_date) VALUES
+  (31, 21, 22, 'hello', '2019-02-10 09:00:00'),
+  (32, 22, 21, 'hi back', '2019-02-11 09:00:00'),
+  (33, 23, 21, 'quick question', '2019-02-12 09:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-duplicate-job-listings",
@@ -136,6 +193,27 @@ FROM (
   HAVING COUNT(*) > 1
 ) duplicated;`,
     ordered: false,
+    testCases: [
+      {
+        note: "no company republished a posting so the count is zero",
+        seedSQL: `INSERT INTO job_listings (listing_id, company_id, title, description, post_date) VALUES
+  (21, 11, 'Analyst', 'Analyse the funnel', '2023-01-01'),
+  (22, 11, 'Engineer', 'Build the pipelines', '2023-01-02'),
+  (23, 12, 'Designer', 'Draw the screens', '2023-01-03'),
+  (24, 13, 'Manager', 'Lead the team', '2023-01-04');`,
+      },
+      {
+        note: "one company triple posts while another shares a title with new wording",
+        seedSQL: `INSERT INTO job_listings (listing_id, company_id, title, description, post_date) VALUES
+  (31, 21, 'Analyst', 'Analyse the funnel', '2023-02-01'),
+  (32, 21, 'Analyst', 'Analyse the funnel', '2023-02-02'),
+  (33, 21, 'Analyst', 'Analyse the funnel', '2023-02-03'),
+  (34, 22, 'Analyst', 'Different wording', '2023-02-04'),
+  (35, 22, 'Analyst', 'Another wording', '2023-02-05'),
+  (36, 23, 'Clerk', '', '2023-02-06'),
+  (37, 23, 'Clerk', '', '2023-02-07');`,
+      },
+    ],
   },
   {
     id: "dl-sql-top-three-salaries",
@@ -185,6 +263,36 @@ JOIN departments d ON d.id = e.department_id
 WHERE e.salary_rank <= 3
 ORDER BY department, salary DESC, employee;`,
     ordered: true,
+    testCases: [
+      {
+        note: "three colleagues tied on the top salary keep the next distinct values",
+        seedSQL: `INSERT INTO departments (id, name) VALUES
+  (10, 'Design'),
+  (11, 'Support');
+INSERT INTO employees (id, name, salary, department_id) VALUES
+  (11, 'Ada', 100, 10),
+  (12, 'Ben', 100, 10),
+  (13, 'Cleo', 100, 10),
+  (14, 'Dana', 90, 10),
+  (15, 'Eli', 80, 10),
+  (16, 'Fay', 70, 10),
+  (17, 'Gus', 50, 11);`,
+      },
+      {
+        note: "a department where the third distinct salary is shared by two people",
+        seedSQL: `INSERT INTO departments (id, name) VALUES
+  (20, 'Alpha'),
+  (21, 'Zeta');
+INSERT INTO employees (id, name, salary, department_id) VALUES
+  (21, 'Hana', 200, 20),
+  (22, 'Ivan', 150, 20),
+  (23, 'Jo', 150, 20),
+  (24, 'Kim', 100, 20),
+  (25, 'Lia', 100, 20),
+  (26, 'Max', 90, 20),
+  (27, 'Nia', 300, 21);`,
+      },
+    ],
   },
   {
     id: "dl-signup-confirmation-rate",
@@ -236,6 +344,35 @@ FROM rates r
 JOIN signups s ON s.user_id = r.user_id
 ORDER BY s.user_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "an account with no email at all plus accounts that never clicked",
+        seedSQL: `INSERT INTO signups (user_id, signup_date, signup_source) VALUES
+  (11, '2023-04-01', 'organic'),
+  (12, '2023-04-02', 'paid'),
+  (13, '2023-04-03', 'referral'),
+  (14, '2023-04-04', 'organic');
+INSERT INTO email_events (event_id, user_id, event_type, clicked, event_date) VALUES
+  (21, 11, 'welcome', true, '2023-04-01'),
+  (22, 11, 'digest', false, '2023-04-02'),
+  (23, 12, 'welcome', false, '2023-04-02'),
+  (24, 12, 'promo', NULL, '2023-04-03'),
+  (25, 13, 'welcome', false, '2023-04-03');`,
+      },
+      {
+        note: "one account clicks everything while another only has untracked blank flags",
+        seedSQL: `INSERT INTO signups (user_id, signup_date, signup_source) VALUES
+  (21, '2023-05-01', 'paid'),
+  (22, '2023-05-02', 'organic'),
+  (23, '2023-05-03', 'organic');
+INSERT INTO email_events (event_id, user_id, event_type, clicked, event_date) VALUES
+  (31, 21, 'welcome', true, '2023-05-01'),
+  (32, 21, 'digest', true, '2023-05-02'),
+  (33, 22, 'welcome', NULL, '2023-05-02'),
+  (34, 22, 'promo', NULL, '2023-05-03'),
+  (35, 23, 'welcome', true, '2023-05-03');`,
+      },
+    ],
   },
   {
     id: "dl-spotify-streaming-history",
@@ -288,6 +425,27 @@ FROM ranked
 WHERE day_rank = 1
 ORDER BY user_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "two days tie for the busiest day so the earlier one wins",
+        seedSQL: `INSERT INTO streaming_history (history_id, user_id, song_id, stream_date) VALUES
+  (21, 11, 1, '2022-05-01'),
+  (22, 11, 2, '2022-05-01'),
+  (23, 11, 1, '2022-05-07'),
+  (24, 11, 3, '2022-05-07'),
+  (25, 12, 5, '2022-05-02');`,
+      },
+      {
+        note: "the same song replayed three times on one day",
+        seedSQL: `INSERT INTO streaming_history (history_id, user_id, song_id, stream_date) VALUES
+  (31, 21, 7, '2022-06-01'),
+  (32, 21, 7, '2022-06-01'),
+  (33, 21, 7, '2022-06-01'),
+  (34, 21, 8, '2022-06-02'),
+  (35, 21, 9, '2022-06-02'),
+  (36, 22, 7, '2022-06-03');`,
+      },
+    ],
   },
   {
     id: "dl-supercloud-customer",
@@ -344,6 +502,41 @@ HAVING COUNT(DISTINCT p.product_id) = (
 )
 ORDER BY c.id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "nobody owns the whole analytics category so the report is empty",
+        seedSQL: `INSERT INTO customers (id, name) VALUES
+  (11, 'Delta Systems'),
+  (12, 'Echo Labs');
+INSERT INTO products (product_id, category) VALUES
+  (30, 'Analytics'),
+  (31, 'Analytics'),
+  (32, 'Analytics'),
+  (40, 'Storage');
+INSERT INTO purchases (customer_id, product_id, purchase_date) VALUES
+  (11, 30, '2023-04-01'),
+  (11, 31, '2023-04-02'),
+  (12, 32, '2023-04-03');`,
+      },
+      {
+        note: "a single product category where one customer also buys storage",
+        seedSQL: `INSERT INTO customers (id, name) VALUES
+  (21, 'Foxtrot'),
+  (22, 'Gamma'),
+  (23, 'Hotel');
+INSERT INTO products (product_id, category) VALUES
+  (50, 'Analytics'),
+  (60, 'Storage'),
+  (61, 'Storage');
+INSERT INTO purchases (customer_id, product_id, purchase_date) VALUES
+  (21, 50, '2023-05-01'),
+  (21, 60, '2023-05-02'),
+  (22, 50, '2023-05-03'),
+  (22, 61, '2023-05-04'),
+  (23, 60, '2023-05-05'),
+  (23, 61, '2023-05-06');`,
+      },
+    ],
   },
   {
     id: "dl-odd-even-measurements",
@@ -384,6 +577,24 @@ FROM numbered
 GROUP BY measurement_day
 ORDER BY measurement_day;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a lone reading on a day leaves the even total blank",
+        seedSQL: `INSERT INTO measurements (measurement_id, measurement_value, measurement_time) VALUES
+  (21, 12.00, '2022-02-01 06:00:00'),
+  (22, 4.25, '2022-02-02 06:00:00'),
+  (23, 8.75, '2022-02-02 18:00:00');`,
+      },
+      {
+        note: "a single day of four readings including zero and negatives",
+        seedSQL: `INSERT INTO measurements (measurement_id, measurement_value, measurement_time) VALUES
+  (31, 0.00, '2022-03-05 05:00:00'),
+  (32, -5.00, '2022-03-05 06:00:00'),
+  (33, 2.50, '2022-03-05 07:00:00'),
+  (34, 10.00, '2022-03-05 08:00:00'),
+  (35, 3.00, '2022-03-06 09:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-repeated-failed-logins",
@@ -432,6 +643,27 @@ WHERE previous_failure_date IS NOT NULL
   AND login_date - previous_failure_date = 1
 ORDER BY user_id, login_date;`,
     ordered: true,
+    testCases: [
+      {
+        note: "three straight failure days against a pair broken by a success",
+        seedSQL: `INSERT INTO logins (login_id, user_id, login_at, status) VALUES
+  (21, 11, '2022-05-01 08:00:00', 'failed'),
+  (22, 11, '2022-05-02 08:00:00', 'failed'),
+  (23, 11, '2022-05-03 08:00:00', 'failed'),
+  (24, 12, '2022-05-01 08:00:00', 'failed'),
+  (25, 12, '2022-05-02 09:00:00', 'success'),
+  (26, 12, '2022-05-03 08:00:00', 'failed');`,
+      },
+      {
+        note: "the same day failing twice and a one day gap between failures",
+        seedSQL: `INSERT INTO logins (login_id, user_id, login_at, status) VALUES
+  (31, 21, '2022-06-10 08:00:00', 'failed'),
+  (32, 21, '2022-06-10 20:00:00', 'failed'),
+  (33, 21, '2022-06-12 08:00:00', 'failed'),
+  (34, 22, '2022-06-20 08:00:00', 'failed'),
+  (35, 22, '2022-06-21 08:00:00', 'failed');`,
+      },
+    ],
   },
   {
     id: "dl-month-over-month-active-users",
@@ -479,6 +711,24 @@ SELECT
 FROM monthly
 ORDER BY activity_month;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a month with the same distinct user count as the previous one",
+        seedSQL: `INSERT INTO user_activity (activity_id, user_id, activity_date) VALUES
+  (21, 11, '2024-01-03'),
+  (22, 12, '2024-01-04'),
+  (23, 11, '2024-02-03'),
+  (24, 12, '2024-02-10'),
+  (25, 11, '2024-03-01');`,
+      },
+      {
+        note: "a single active month so the previous count stays blank",
+        seedSQL: `INSERT INTO user_activity (activity_id, user_id, activity_date) VALUES
+  (31, 21, '2024-06-05'),
+  (32, 21, '2024-06-06'),
+  (33, 22, '2024-06-07');`,
+      },
+    ],
   },
   {
     id: "dl-peak-concurrent-streams",
@@ -520,6 +770,22 @@ FROM running
 ORDER BY concurrent_sessions DESC, event_at
 LIMIT 1;`,
     ordered: true,
+    testCases: [
+      {
+        note: "back to back sessions where one ends as the next begins",
+        seedSQL: `INSERT INTO stream_sessions (session_id, user_id, start_at, end_at) VALUES
+  (21, 201, '2022-05-01 10:00:00', '2022-05-01 10:30:00'),
+  (22, 202, '2022-05-01 10:30:00', '2022-05-01 11:00:00'),
+  (23, 203, '2022-05-01 11:00:00', '2022-05-01 11:30:00');`,
+      },
+      {
+        note: "three sessions sharing the exact same window",
+        seedSQL: `INSERT INTO stream_sessions (session_id, user_id, start_at, end_at) VALUES
+  (31, 301, '2022-06-01 08:00:00', '2022-06-01 09:00:00'),
+  (32, 302, '2022-06-01 08:00:00', '2022-06-01 09:00:00'),
+  (33, 303, '2022-06-01 08:00:00', '2022-06-01 09:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-funnel-drop-off-rate",
@@ -580,6 +846,34 @@ SELECT
 FROM compared
 ORDER BY step_order;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a step nobody reaches so its visitor count is zero",
+        seedSQL: `INSERT INTO funnel_steps (step_order, event_type, step_name) VALUES
+  (1, 'page_view', 'Visited site'),
+  (2, 'add_to_cart', 'Added to cart'),
+  (3, 'checkout', 'Completed checkout');
+INSERT INTO events (event_id, user_id, event_type, event_date) VALUES
+  (21, 101, 'page_view', '2023-06-01'),
+  (22, 102, 'page_view', '2023-06-01'),
+  (23, 101, 'add_to_cart', '2023-06-01');`,
+      },
+      {
+        note: "visitors repeating a step several times before dropping out",
+        seedSQL: `INSERT INTO funnel_steps (step_order, event_type, step_name) VALUES
+  (1, 'view_home', 'Visited home'),
+  (2, 'view_item', 'Viewed item'),
+  (3, 'buy', 'Bought');
+INSERT INTO events (event_id, user_id, event_type, event_date) VALUES
+  (31, 201, 'view_home', '2023-07-01'),
+  (32, 202, 'view_home', '2023-07-01'),
+  (33, 203, 'view_home', '2023-07-01'),
+  (34, 201, 'view_item', '2023-07-01'),
+  (35, 201, 'view_item', '2023-07-02'),
+  (36, 202, 'view_item', '2023-07-02'),
+  (37, 201, 'buy', '2023-07-03');`,
+      },
+    ],
   },
   {
     id: "dl-refund-rate-by-merchant",
@@ -628,6 +922,35 @@ GROUP BY m.merchant_name
 HAVING COUNT(*) >= 2
 ORDER BY refund_rate_pct DESC, m.merchant_name;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a merchant with only a pending order and one with a single settled order",
+        seedSQL: `INSERT INTO merchants (merchant_id, merchant_name) VALUES
+  (11, 'Corner Cafe'),
+  (12, 'Delta Depot'),
+  (13, 'Echo Eats');
+INSERT INTO orders (order_id, merchant_id, order_date, status) VALUES
+  (21, 11, '2023-07-01', 'pending'),
+  (22, 12, '2023-07-02', 'completed'),
+  (23, 13, '2023-07-03', 'refunded'),
+  (24, 13, '2023-07-04', 'refunded');`,
+      },
+      {
+        note: "two merchants tied on refund rate plus a merchant with no refunds",
+        seedSQL: `INSERT INTO merchants (merchant_id, merchant_name) VALUES
+  (21, 'Zebra Wares'),
+  (22, 'Alpha Goods'),
+  (23, 'Bell Books');
+INSERT INTO orders (order_id, merchant_id, order_date, status) VALUES
+  (31, 21, '2023-08-01', 'completed'),
+  (32, 21, '2023-08-02', 'refunded'),
+  (33, 22, '2023-08-03', 'refunded'),
+  (34, 22, '2023-08-04', 'completed'),
+  (35, 23, '2023-08-05', 'completed'),
+  (36, 23, '2023-08-06', 'completed'),
+  (37, 23, '2023-08-07', 'pending');`,
+      },
+    ],
   },
   {
     id: "dl-slowest-endpoints-by-p95-latency",
@@ -667,6 +990,31 @@ GROUP BY endpoint
 HAVING COUNT(*) >= 4
 ORDER BY p95_latency_ms DESC, endpoint;`,
     ordered: true,
+    testCases: [
+      {
+        note: "every route has too few requests so the report is empty",
+        seedSQL: `INSERT INTO api_requests (request_id, endpoint, status_code, latency_ms, requested_at) VALUES
+  (21, '/cart', 200, 100, '2023-09-01 10:00:00'),
+  (22, '/cart', 200, 200, '2023-09-01 10:01:00'),
+  (23, '/cart', 500, 300, '2023-09-01 10:02:00'),
+  (24, '/pay', 200, 50, '2023-09-01 11:00:00'),
+  (25, '/pay', 200, 60, '2023-09-01 11:01:00'),
+  (26, '/pay', 200, 70, '2023-09-01 11:02:00');`,
+      },
+      {
+        note: "one outlier dragging the interpolated p95 far above the rest",
+        seedSQL: `INSERT INTO api_requests (request_id, endpoint, status_code, latency_ms, requested_at) VALUES
+  (31, '/slow', 200, 10, '2023-10-01 10:00:00'),
+  (32, '/slow', 200, 10, '2023-10-01 10:01:00'),
+  (33, '/slow', 200, 10, '2023-10-01 10:02:00'),
+  (34, '/slow', 200, 10, '2023-10-01 10:03:00'),
+  (35, '/slow', 500, 500, '2023-10-01 10:04:00'),
+  (36, '/flat', 200, 20, '2023-10-01 11:00:00'),
+  (37, '/flat', 200, 20, '2023-10-01 11:01:00'),
+  (38, '/flat', 200, 20, '2023-10-01 11:02:00'),
+  (39, '/flat', 200, 20, '2023-10-01 11:03:00');`,
+      },
+    ],
   },
   {
     id: "dl-duplicate-customer-records",
@@ -723,6 +1071,27 @@ FROM duplicates d
 JOIN canonical c ON c.email = d.email
 ORDER BY d.email;`,
     ordered: true,
+    testCases: [
+      {
+        note: "mixed case emails and two records with missing addresses",
+        seedSQL: `INSERT INTO customer_records (record_id, email, full_name, created_at) VALUES
+  (21, 'Dana@Example.com', 'Dana One', '2023-05-01 09:00:00'),
+  (22, 'dana@example.com', 'Dana One', '2023-05-02 09:00:00'),
+  (23, 'ELLI@example.com', 'Elli Solo', '2023-05-03 09:00:00'),
+  (24, NULL, 'Ghost One', '2023-05-04 09:00:00'),
+  (25, NULL, 'Ghost Two', '2023-05-05 09:00:00');`,
+      },
+      {
+        note: "duplicates created at the same instant need the larger id kept",
+        seedSQL: `INSERT INTO customer_records (record_id, email, full_name, created_at) VALUES
+  (31, 'frank@example.com', 'Frank Old', '2023-06-01 09:00:00'),
+  (32, ' FRANK@example.com ', 'Frank New', '2023-06-01 09:00:00'),
+  (33, 'gina@example.com', 'Gina One', '2023-06-02 09:00:00'),
+  (34, 'gina@example.com', 'Gina Two', '2023-06-03 09:00:00'),
+  (35, 'gina@example.com', 'Gina Three', '2023-06-03 09:00:00'),
+  (36, 'hank@example.com', 'Hank Solo', '2023-06-04 09:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-search-click-through-rate-by-rank-bucket",
@@ -778,6 +1147,24 @@ FROM bucketed
 GROUP BY rank_bucket, bucket_order
 ORDER BY bucket_order;`,
     ordered: true,
+    testCases: [
+      {
+        note: "only the top three positions appear and none of them got clicked",
+        seedSQL: `INSERT INTO search_results (result_id, query, position, clicked, shown_at) VALUES
+  (21, 'socks', 1, false, '2023-09-01'),
+  (22, 'socks', 2, false, '2023-09-01'),
+  (23, 'socks', 3, false, '2023-09-01');`,
+      },
+      {
+        note: "positions landing exactly on the three and ten boundaries",
+        seedSQL: `INSERT INTO search_results (result_id, query, position, clicked, shown_at) VALUES
+  (31, 'boots', 3, true, '2023-09-05'),
+  (32, 'boots', 4, false, '2023-09-05'),
+  (33, 'boots', 10, true, '2023-09-05'),
+  (34, 'boots', 11, true, '2023-09-05'),
+  (35, 'boots', 25, false, '2023-09-06');`,
+      },
+    ],
   },
   {
     id: "dl-consecutive-filing-years",
@@ -847,6 +1234,28 @@ FROM ranked
 WHERE run_rank = 1
 ORDER BY taxpayer_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "two equally long runs tie and isolated years never touch",
+        seedSQL: `INSERT INTO tax_filings (filing_id, taxpayer_id, filing_year, filed_on) VALUES
+  (21, 11, 2001, '2001-04-15'),
+  (22, 11, 2002, '2002-04-15'),
+  (23, 11, 2005, '2005-04-15'),
+  (24, 11, 2006, '2006-04-15'),
+  (25, 12, 2010, '2010-04-15'),
+  (26, 12, 2012, '2012-04-15'),
+  (27, 12, 2014, '2014-04-15');`,
+      },
+      {
+        note: "a taxpayer filing the same year twice still counts that year once",
+        seedSQL: `INSERT INTO tax_filings (filing_id, taxpayer_id, filing_year, filed_on) VALUES
+  (31, 21, 1999, '1999-04-15'),
+  (32, 21, 1999, '1999-06-30'),
+  (33, 21, 2000, '2000-04-15'),
+  (34, 21, 2001, '2001-04-15'),
+  (35, 22, 2020, '2020-04-15');`,
+      },
+    ],
   },
   {
     id: "dl-marketing-touch-streak",
@@ -913,6 +1322,28 @@ FROM ranked
 WHERE run_rank = 1
 ORDER BY user_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "two channels on one day and two streaks of equal length",
+        seedSQL: `INSERT INTO touch_points (touch_id, user_id, channel, touch_date) VALUES
+  (21, 11, 'email', '2023-05-01'),
+  (22, 11, 'push', '2023-05-01'),
+  (23, 11, 'sms', '2023-05-02'),
+  (24, 11, 'email', '2023-05-10'),
+  (25, 11, 'push', '2023-05-11'),
+  (26, 12, 'email', '2023-05-03');`,
+      },
+      {
+        note: "a user touched once against a four day unbroken run",
+        seedSQL: `INSERT INTO touch_points (touch_id, user_id, channel, touch_date) VALUES
+  (31, 21, 'email', '2023-06-01'),
+  (32, 22, 'push', '2023-06-01'),
+  (33, 22, 'email', '2023-06-02'),
+  (34, 22, 'sms', '2023-06-03'),
+  (35, 22, 'push', '2023-06-04'),
+  (36, 22, 'email', '2023-06-06');`,
+      },
+    ],
   },
   {
     id: "dl-pizzas-topping-cost",
@@ -947,6 +1378,25 @@ JOIN toppings t3 ON t3.topping_id > t2.topping_id
 WHERE t1.cost + t2.cost + t3.cost < 25
 ORDER BY total_cost, topping_1, topping_2, topping_3;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a trio costing exactly the ceiling is excluded and nothing else fits",
+        seedSQL: `INSERT INTO toppings (topping_id, topping_name, cost) VALUES
+  (11, 'Anchovies', 20.00),
+  (12, 'Basil', 4.00),
+  (13, 'Cheese', 1.00),
+  (14, 'Dough', 25.00);`,
+      },
+      {
+        note: "five equally priced toppings where every trio costs the same",
+        seedSQL: `INSERT INTO toppings (topping_id, topping_name, cost) VALUES
+  (21, 'Fig', 5.00),
+  (22, 'Grape', 5.00),
+  (23, 'Honey', 5.00),
+  (24, 'Jam', 5.00),
+  (25, 'Kale', 5.00);`,
+      },
+    ],
   },
   {
     id: "dl-patient-call-history",
@@ -997,6 +1447,28 @@ WHERE f.call_rank = 1
   AND s.call_at <= f.call_at + INTERVAL '7 days'
 ORDER BY f.patient_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a second call exactly seven days later against an eighth day gap",
+        seedSQL: `INSERT INTO calls (call_id, patient_id, call_category, call_duration_min, call_at) VALUES
+  (21, 11, 'support', 5, '2023-05-01 09:00:00'),
+  (22, 11, 'internal_correction', 40, '2023-05-04 09:00:00'),
+  (23, 11, 'support', 6, '2023-05-08 09:00:00'),
+  (24, 12, 'support', 4, '2023-06-01 09:00:00'),
+  (25, 12, 'support', 3, '2023-06-09 09:00:00'),
+  (26, 13, 'support', 7, '2023-06-15 09:00:00');`,
+      },
+      {
+        note: "two calls on the same day and a correction call in between",
+        seedSQL: `INSERT INTO calls (call_id, patient_id, call_category, call_duration_min, call_at) VALUES
+  (31, 21, 'support', 2, '2023-07-01 09:00:00'),
+  (32, 21, 'support', 9, '2023-07-01 21:00:00'),
+  (33, 22, 'internal_correction', 15, '2023-07-02 09:00:00'),
+  (34, 22, 'support', 3, '2023-07-03 09:00:00'),
+  (35, 22, 'support', 5, '2023-07-04 09:00:00'),
+  (36, 23, 'billing', 8, '2023-07-10 09:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-long-calls-growth",
@@ -1049,5 +1521,26 @@ SELECT
 FROM monthly
 ORDER BY call_month;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a month with no long calls and a five minute call that stays short",
+        seedSQL: `INSERT INTO calls (call_id, patient_id, call_category, call_duration_min, call_at) VALUES
+  (21, 11, 'support', 5, '2023-05-01 09:00:00'),
+  (22, 11, 'support', 2, '2023-05-02 09:00:00'),
+  (23, 12, 'billing', 3, '2023-05-03 09:00:00'),
+  (24, 12, 'support', 6, '2023-06-01 09:00:00');`,
+      },
+      {
+        note: "five months of alternating shares to trim the rolling window",
+        seedSQL: `INSERT INTO calls (call_id, patient_id, call_category, call_duration_min, call_at) VALUES
+  (31, 21, 'support', 10, '2023-07-01 09:00:00'),
+  (32, 22, 'support', 1, '2023-08-01 09:00:00'),
+  (33, 23, 'support', 1, '2023-08-02 09:00:00'),
+  (34, 24, 'support', 9, '2023-09-01 09:00:00'),
+  (35, 25, 'support', 1, '2023-10-01 09:00:00'),
+  (36, 26, 'support', 1, '2023-11-01 09:00:00'),
+  (37, 26, 'support', 20, '2023-11-02 09:00:00');`,
+      },
+    ],
   },
 ];

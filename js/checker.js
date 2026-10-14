@@ -1,11 +1,12 @@
 /**
  * PGlite execution + answer checking.
  *
- * One in-memory Postgres database per browser session; before every Run/Submit
- * the problem's tables are dropped and rebuilt from schemaSQL + seedSQL so each
- * attempt starts from the same deterministic state.
+ * One in-memory Postgres database per browser session. Before every Run/Submit the
+ * problem's tables are dropped and rebuilt from schemaSQL + the test case's seed,
+ * so each attempt starts from identical deterministic state. Every problem ships
+ * several test cases (seedSQL + problem.testCases); Submit grades all of them.
  */
-import { PG_OPTIONS, SESSION_SETUP_SQL, compareResults, lastTable } from './pg-config.js';
+import { PG_OPTIONS, SESSION_SETUP_SQL, compareResults, lastTable, testCasesOf } from './pg-config.js';
 
 /**
  * PGlite sources, in order: the copy vendored in this folder (so the app works
@@ -67,20 +68,54 @@ async function resetDatabase(db) {
   for (const row of sequences.rows) await db.exec(`DROP SEQUENCE IF EXISTS "${row.sequence_name}" CASCADE`);
 }
 
-/** Rebuild the problem's tables from scratch and return the live database. */
-export async function prepareProblem(problem) {
+/** Rebuild the problem's tables from scratch for one test case and return the live database. */
+export async function prepareProblem(problem, caseIndex = 0) {
   const db = await getDb();
+  const testCases = testCasesOf(problem);
+  const testCase = testCases[caseIndex] ?? testCases[0];
   await resetDatabase(db);
   await db.exec(problem.schemaSQL);
-  await db.exec(problem.seedSQL);
+  await db.exec(testCase.seedSQL);
   return db;
 }
 
-/** Run a user query against a freshly rebuilt problem state. */
-export async function runUserQuery(problem, sql) {
-  const db = await prepareProblem(problem);
+/** Run a user query against a freshly rebuilt test case. */
+export async function runUserQuery(problem, sql, caseIndex = 0) {
+  const db = await prepareProblem(problem, caseIndex);
   const result = lastTable(await db.exec(sql));
   return { db, result };
+}
+
+/**
+ * Grade a query against every test case, stopping at the first failure.
+ * @returns {Promise<{index: number, note: string, got: any, error: string|null, comparison: any}[]>}
+ */
+export async function checkAllCases(problem, sql, expected) {
+  const db = await getDb();
+  const testCases = testCasesOf(problem);
+  const results = [];
+  for (let index = 0; index < testCases.length; index += 1) {
+    const testCase = testCases[index];
+    const entry = expected?.cases?.[index];
+    await resetDatabase(db);
+    await db.exec(problem.schemaSQL);
+    await db.exec(testCase.seedSQL);
+    let got = null;
+    try {
+      got = lastTable(await db.exec(sql));
+    } catch (error) {
+      results.push({ index, note: testCase.note, got: null, error: error.message, comparison: null });
+      break;
+    }
+    if (!entry) {
+      results.push({ index, note: testCase.note, got, error: `no expected answer stored for test case ${index + 1}`, comparison: null });
+      break;
+    }
+    const comparison = compareResults(got, entry, { ordered: Boolean(problem.ordered) });
+    results.push({ index, note: testCase.note, got, error: null, comparison });
+    if (!comparison.pass) break;
+  }
+  return results;
 }
 
 /** Table + column metadata for the schema panel. */
@@ -114,9 +149,4 @@ export async function describeSchema(db) {
 
 export async function previewTable(db, table, limit = 10) {
   return lastTable(await db.exec(`select * from "${table}" limit ${Number(limit)}`));
-}
-
-/** Compare a user result against the generated expected output. */
-export function checkAnswer(problem, got, expected) {
-  return compareResults(got, expected, { ordered: Boolean(problem.ordered) });
 }

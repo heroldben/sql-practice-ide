@@ -37,8 +37,11 @@ npm run validate       # 200 problems, counts, SQL execution and expected.json f
 
 ## What the app does
 
-The interface follows DataLemur's question index (Kumbh Sans headings, zebra question table,
-uppercase column labels, blue links, per-difficulty colours) in both light and dark themes.
+The interface follows DataLemur's templates — question index and question page (Kumbh Sans headings,
+zebra question table, uppercase section labels, blue links, per-difficulty colours) — and works in
+**both orientations**: a two-column layout (question + sticky editor rail) in landscape, and a single
+column in portrait/narrow windows where the editor moves directly under the question. Light and dark
+themes throughout.
 
 - **Question index** — filter bar (category, difficulty, status, sort, title search, *Clear filters*),
   a table of all 200 questions with `Source`, `Title`, `Topics`, `Difficulty` and `Status` columns,
@@ -46,32 +49,48 @@ uppercase column labels, blue links, per-difficulty colours) in both light and d
   clickable **Tags** cloud that filters by topic (the topic cells in the table do the same).
   The status cell is a button: `✓` solved, `★` starred, `–` untouched (click toggles the star).
   `P` marks questions whose source catalog is paywalled.
-- **Question page** — description, rendered schema (table/column names, types, primary keys),
-  collapsible seed-data preview (`SELECT * LIMIT 10` per table), a CodeMirror editor in PostgreSQL
-  mode, and **Run** (execute, no status change) / **Submit** (execute + compare → verdict).
-- **Result tabs** — *Your Result* | *Expected Answer* | *Solution* (the reference answer is behind a
-  confirm click and marked as a spoiler).
+- **Question page** — DataLemur-style labelled sections: **The question**, **Table** (every table with
+  its columns, types and nullability), **Example input** (the rows of the selected test case) and
+  **Example output** (the expected answer for that test case), plus **Your query** in a sticky editor
+  rail (CodeMirror, PostgreSQL mode, `Run` = the selected case, `Submit` = grade all cases) and a
+  full-width **Your result** table. The reference answer sits in a **Solution** section behind a
+  confirm click, marked as a spoiler.
+- **Test cases** — every question ships **3 datasets** (the default `seedSQL` plus two extra
+  `testCases`); Submit grades the query against all of them and reports `✓ Passed — all 3 test cases`
+  or the exact case that failed (`✗ Failed on test case 2 of 3 (…): …`, with a row diff and
+  per-case `1 ✓ 2 ✗ 3 ·` badges). Hardcoded answers now fail on case 2 — the datasets are built to
+  break `NOT IN`-with-NULLs, `RANK` vs `DENSE_RANK`, boundary and tie mistakes. Use the *test case*
+  selector to inspect or run any single dataset.
 - **Theme** — starts light; the header **Theme** button switches light/dark and remembers the choice
   in `localStorage` (`sql-practice-ide/theme/v1`, applied before first paint so there is no flash).
-- **Progress** — solved/starred flags and your last query per question live in `localStorage`
-  (`sql-practice-ide/progress/v1`). **Export** downloads `progress-YYYY-MM-DD.json`;
-  **Import** merges a file back, newest `updatedAt` wins per question.
+- **Progress is shared by every browser on the machine.** The local server owns a small database
+  (`.local/progress.db`, SQLite via `node:sqlite`; JSON file fallback on older Node) exposed as
+  `/api/progress`. The browser keeps a `localStorage` cache, merges with the server on load/focus
+  (`solved` is sticky, otherwise the newest `updatedAt` wins) and pushes changes back — solve a
+  question in Firefox and it is solved in Chrome too. The header shows `synced · sqlite`, or
+  `this browser only` when the API is unreachable (e.g. the app served from a static host).
+  **Reset progress** wipes solved/starred flags and saved queries in the database *and* the browser
+  (behind a confirm), and **Export**/**Import** still move progress as a JSON file.
 
-Keyboard: `Ctrl/Cmd+Enter` runs, `Ctrl/Cmd+Shift+Enter` submits, `Ctrl+Space` autocompletes.
+Keyboard: `Ctrl/Cmd+Enter` runs the selected case, `Ctrl/Cmd+Shift+Enter` grades all cases,
+`Ctrl+Space` autocompletes.
 
 ### How answers are checked
 
-Before every Run/Submit the problem's tables are dropped and rebuilt from `schemaSQL + seedSQL`, so
-each attempt starts from identical state. The user query runs through `db.exec`, and the **last**
-result set is compared with the expected output:
+Every question ships **three test cases**: the record's `seedSQL` (the default dataset, case 1) plus
+two `testCases` entries. Before each run the problem's tables are dropped and rebuilt from
+`schemaSQL` and the case's seed, so grading is deterministic and cases cannot leak into each other.
+`Run` executes your query against the selected case; `Submit` executes it against **all** cases and
+compares each result with the generated expected output:
 
 - column names and order must match exactly;
 - when `ordered: true` rows are compared positionally, otherwise as a multiset (so row order only
   matters when the problem asks for it);
 - values compare exactly, except numbers/`numeric` text, which compare with a 1e-6 relative
   tolerance so `SUM(x)::float8` matches `SUM(x)::numeric`;
-- verdict `✓ Passed` marks the problem solved and persists it; `✗ Failed` reports the number of
-  missing/unexpected rows plus a side-by-side diff.
+- grading stops at the first failing case and reports it (`✗ Failed on test case 2 of 3 (…): …`) with
+  a row diff; `✓ Passed — all 3 test cases match the expected output.` marks the question solved and
+  persists it.
 
 Temporal and 64-bit columns are read as text (see `js/pg-config.js`), which keeps results identical
 between the Node tooling and the browser regardless of the machine timezone, and prevents `bigint`
@@ -81,28 +100,30 @@ precision loss.
 
 ```
 start.cmd / start.sh  one-click launchers (serve the folder + open the browser)
-serve.mjs             zero-dependency static server (node:http; loopback by default)
+serve.mjs             zero-dependency static server (node:http; loopback by default) + progress API
+progress-store.mjs    shared progress store: SQLite (node:sqlite) with a JSON-file fallback
 index.html            app shell (module entry)
-css/styles.css        light/dark theme, DataLemur-style question table
+css/styles.css        light/dark theme, DataLemur-style index + question template, both orientations
 vendor/pglite/        vendored PGlite 0.2.17 build (Postgres engine: wasm + data)
 vendor/codemirror/    vendored CodeMirror 5.65.16 (editor, SQL mode, hint addons)
 vendor/fonts/         vendored Kumbh Sans webfont + @font-face css
-js/app.js             question index: filters, tags, progress, routing, export/import
-js/problem-view.js    question page: description/schema, editor, Run/Submit, result tabs
+js/app.js             question index: filters, tags, progress card, routing, sync, reset, export/import
+js/problem-view.js    question page: sections, sticky editor, per-case Run / all-case Submit
 js/editor.js          CodeMirror 5 (text/x-pgsql) wiring + textarea fallback
-js/checker.js         PGlite instance, state reset per run, schema/seed introspection
-js/pg-config.js       shared result rules: parsers, canonicalisation, comparison
-js/storage.js         localStorage progress + JSON export/import
+js/checker.js         PGlite instance, per-case state reset, schema/seed introspection, grading
+js/pg-config.js       shared result rules: parsers, canonicalisation, comparison, testCasesOf
+js/storage.js         progress: localStorage cache + /api/progress sync + export/import/reset
 js/theme.js           light/dark theme state, toggle wiring and persistence
 js/dom.js             small DOM/result-table helpers
 js/data/index.js      aggregates the ten problems-*.js slices into one registry
-js/data/problems-*.js the 200 problems (10 slices of 20-22)
-js/data/expected.json generated: { [id]: { columns, rows } } (committed, so the app needs no build)
-scripts/build-expected.mjs  regenerate expected.json
-scripts/validate.mjs        full-catalog validation
-scripts/check-file.mjs      single-slice validation
+js/data/problems-*.js the 200 problems (10 slices of 20-22), each with 3 test cases
+js/data/expected.json generated: { [id]: { cases: [{ columns, rows }, …] } } (committed, no build needed)
+scripts/build-expected.mjs  regenerate expected.json for all test cases
+scripts/validate.mjs        full-catalog validation (counts, cases, execution, freshness)
+scripts/check-file.mjs      single-slice validation (executes every test case)
 scripts/lib/pg.mjs          Node-side PGlite helpers + record-shape validation
-.authoring/README.md        authoring contract (record format, slice headers, verification)
+.local/                     generated at runtime: progress.db (git-ignored, shared by all browsers)
+.authoring/README.md        authoring contract (record format, test cases, slice headers, verification)
 .authoring/<slice>.md       catalog provenance: which public catalog title/difficulty each id maps to
 ```
 
@@ -120,6 +141,8 @@ network access available.
 | StrataScratch | 65 | medium/hard analytical questions |
 
 Difficulty mix: 40 easy / 120 medium / 40 hard; at least 50 problems carry `premium: true`.
+Each question has **3 test cases** (600 datasets in total), each with its own generated expected
+output, and the extra cases deliberately target the classic wrong answers for the task.
 Titles, source platform and difficulty come from the public catalogs (and public mirrors for
 paywalled lists); **every description, schema, seed set and solution in this repo is original** —
 no problem text, sample data or examples are copied from LeetCode, DataLemur or StrataScratch.
@@ -129,10 +152,12 @@ volatile functions (`now()`, `CURRENT_DATE`, `random()`), so expected output is 
 ## Adding or editing problems
 
 1. Pick the slice file for the source (`js/data/problems-lc-*.js`, `-dl-*.js`, `-ss-*.js`) and add a
-   record. The format is documented in `.authoring/README.md`; the first line of each slice file is
-   a header (`// slice: lc-1 | problems: 20 | source: leetcode | easy: 8 | medium: 11 | hard: 1`)
-   that `scripts/check-file.mjs` and `scripts/validate.mjs` verify against the records.
-2. `npm run check:file -- js/data/problems-lc-1.js` — shape, header, unique ids, and execution of
-   `schemaSQL + seedSQL + solutionSQL` in a fresh PGlite instance.
-3. `npm run build:expected` (expected outputs are always generated, never hand-written), then
-   `npm run validate` to confirm the whole catalog is self-consistent.
+   record with its two extra test cases. The format is documented in `.authoring/README.md`; the first
+   line of each slice file is a header
+   (`// slice: lc-1 | problems: 20 | source: leetcode | easy: 8 | medium: 11 | hard: 1`) that
+   `scripts/check-file.mjs` and `scripts/validate.mjs` verify against the records.
+2. `npm run check:file -- js/data/problems-lc-1.js` — shape, header, unique ids, at least 3 test
+   cases per problem, and execution of `schemaSQL + every case's seed + solutionSQL` in a fresh
+   PGlite instance.
+3. `npm run build:expected` (expected outputs for all 600 test cases are always generated, never
+   hand-written), then `npm run validate` to confirm the whole catalog is self-consistent.

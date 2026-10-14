@@ -11,5 +11,9 @@ desktop.ini
 # Local scratch output (progress exports produced by the app)
 progress-*.json
 
+# Shared progress store created by the server (SQLite db or JSON fallback)
+.local/
+.local-*/
+
 # NOTE: vendor/ is intentionally committed. It holds the vendored PGlite engine,
 # CodeMirror and the Kumbh Sans webfont so the app works offline with no install.

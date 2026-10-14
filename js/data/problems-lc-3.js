@@ -57,6 +57,38 @@ GROUP BY c.customer_id, c.name
 HAVING COUNT(*) = 3
    AND MIN(m.month_total) >= 100;`,
     ordered: false,
+    testCases: [
+      {
+        note: "a weak month just below the 100 threshold",
+        seedSQL: `INSERT INTO customers VALUES
+  (1, 'Dana'),
+  (2, 'Eli'),
+  (3, 'Fay');
+INSERT INTO orders VALUES
+  (1, 1, DATE '2020-06-10', 150),
+  (2, 1, DATE '2020-07-10', 150),
+  (3, 3, DATE '2020-06-10', 100),
+  (4, 3, DATE '2020-07-10', 100),
+  (5, 3, DATE '2020-08-10', 100),
+  (6, 2, DATE '2020-06-10', 150),
+  (7, 2, DATE '2020-07-10', 150),
+  (8, 2, DATE '2020-08-10', 99);`,
+      },
+      {
+        note: "a big out-of-window purchase cannot rescue a weak month",
+        seedSQL: `INSERT INTO customers VALUES
+  (1, 'Gus'),
+  (2, 'Hana');
+INSERT INTO orders VALUES
+  (1, 1, DATE '2020-06-10', 300),
+  (2, 1, DATE '2020-07-10', 40),
+  (3, 1, DATE '2020-08-10', 300),
+  (4, 1, DATE '2020-09-05', 5000),
+  (5, 2, DATE '2020-06-01', 120),
+  (6, 2, DATE '2020-07-31', 120),
+  (7, 2, DATE '2020-08-31', 120);`,
+      },
+    ],
   },
   {
     id: "lc-1693-daily-leads-and-partners",
@@ -96,6 +128,26 @@ HAVING COUNT(*) = 3
 FROM daily_sales
 GROUP BY date_id, make_name;`,
     ordered: false,
+    testCases: [
+      {
+        note: "repeated identical rows must not inflate the distinct counts",
+        seedSQL: `INSERT INTO daily_sales VALUES
+  (DATE '2021-01-01', 'Ford', 1, 1),
+  (DATE '2021-01-02', 'Kia', 2, 3),
+  (DATE '2021-01-02', 'Kia', 2, 3),
+  (DATE '2021-01-02', 'Kia', 2, 4),
+  (DATE '2021-01-02', 'Kia', 2, 4);`,
+      },
+      {
+        note: "the same lead and partner ids appear under both makes",
+        seedSQL: `INSERT INTO daily_sales VALUES
+  (DATE '2021-03-01', 'Honda', 5, 9),
+  (DATE '2021-03-01', 'Honda', 5, 9),
+  (DATE '2021-03-01', 'Honda', 6, 9),
+  (DATE '2021-03-01', 'Toyota', 5, 9),
+  (DATE '2021-03-01', 'Toyota', 7, 9);`,
+      },
+    ],
   },
   {
     id: "lc-1495-friendly-movies-streamed-last-month",
@@ -144,6 +196,31 @@ WHERE c.kids_content = true
   AND t.program_date >= DATE '2020-06-01'
   AND t.program_date < DATE '2020-07-01';`,
     ordered: false,
+    testCases: [
+      {
+        note: "broadcasts exactly on the June start and end dates",
+        seedSQL: `INSERT INTO content VALUES
+  (1, 'Boundary Parade', true, 'Movies');
+INSERT INTO tv_program VALUES
+  (DATE '2020-05-31', 1, 'ABC'),
+  (DATE '2020-06-01', 1, 'ABC'),
+  (DATE '2020-06-30', 1, 'HBO'),
+  (DATE '2020-07-01', 1, 'HBO');`,
+      },
+      {
+        note: "the same friendly movie airs repeatedly while series are excluded",
+        seedSQL: `INSERT INTO content VALUES
+  (1, 'Repeat Racer', true, 'Movies'),
+  (2, 'June Cartoon', true, 'Series'),
+  (3, 'June Report', false, 'Movies');
+INSERT INTO tv_program VALUES
+  (DATE '2020-06-05', 1, 'ABC'),
+  (DATE '2020-06-06', 1, 'ABC'),
+  (DATE '2020-06-07', 1, 'HBO'),
+  (DATE '2020-06-08', 2, 'ABC'),
+  (DATE '2020-06-09', 3, 'HBO');`,
+      },
+    ],
   },
   {
     id: "lc-603-consecutive-available-seats",
@@ -178,6 +255,28 @@ JOIN cinema c2 ON abs(c1.seat_id - c2.seat_id) = 1
 WHERE c1.free = true AND c2.free = true
 ORDER BY c1.seat_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "every free seat is isolated so the answer is empty",
+        seedSQL: `INSERT INTO cinema VALUES
+  (1, false),
+  (2, true),
+  (3, false),
+  (4, false),
+  (5, true),
+  (6, false);`,
+      },
+      {
+        note: "two free runs split by a single occupied seat",
+        seedSQL: `INSERT INTO cinema VALUES
+  (1, true),
+  (2, true),
+  (3, false),
+  (4, true),
+  (5, true),
+  (6, true);`,
+      },
+    ],
   },
   {
     id: "lc-1795-rearrange-products-table",
@@ -212,6 +311,22 @@ SELECT product_id, 'store2' AS store, store2 AS price FROM products WHERE store2
 UNION ALL
 SELECT product_id, 'store3' AS store, store3 AS price FROM products WHERE store3 IS NOT NULL;`,
     ordered: false,
+    testCases: [
+      {
+        note: "a product priced in no channel contributes nothing",
+        seedSQL: `INSERT INTO products VALUES
+  (10, NULL, NULL, 7),
+  (11, 5, NULL, NULL),
+  (12, NULL, NULL, NULL);`,
+      },
+      {
+        note: "the same price repeated across all three channels",
+        seedSQL: `INSERT INTO products VALUES
+  (20, 9, 9, 9),
+  (21, 1, NULL, 2),
+  (22, NULL, 4, NULL);`,
+      },
+    ],
   },
   {
     id: "lc-613-shortest-distance-in-a-line",
@@ -234,6 +349,16 @@ SELECT product_id, 'store3' AS store, store3 AS price FROM products WHERE store3
 FROM point p1
 JOIN point p2 ON p1.x < p2.x;`,
     ordered: false,
+    testCases: [
+      {
+        note: "three points in a row give the smallest possible gap",
+        seedSQL: `INSERT INTO point VALUES (5), (6), (7);`,
+      },
+      {
+        note: "two separate pairs tie for the shortest distance",
+        seedSQL: `INSERT INTO point VALUES (0), (10), (20), (31), (100), (200);`,
+      },
+    ],
   },
   {
     id: "lc-1965-employees-with-missing-information",
@@ -272,6 +397,28 @@ FULL OUTER JOIN salaries s ON s.employee_id = e.employee_id
 WHERE e.employee_id IS NULL OR s.employee_id IS NULL
 ORDER BY employee_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "every employee id has both a name and a salary",
+        seedSQL: `INSERT INTO employees VALUES
+  (1, 'Ada'),
+  (2, 'Ben');
+INSERT INTO salaries VALUES
+  (1, 100),
+  (2, 200);`,
+      },
+      {
+        note: "mismatched ids sit on both sides of the join",
+        seedSQL: `INSERT INTO employees VALUES
+  (3, 'Cleo'),
+  (4, 'Dev'),
+  (5, 'Eze');
+INSERT INTO salaries VALUES
+  (5, 500),
+  (6, 600),
+  (7, 700);`,
+      },
+    ],
   },
   {
     id: "lc-1350-students-with-invalid-departments",
@@ -313,6 +460,27 @@ FROM students s
 LEFT JOIN departments d ON d.id = s.department_id
 WHERE d.id IS NULL;`,
     ordered: false,
+    testCases: [
+      {
+        note: "all students sit in departments that exist",
+        seedSQL: `INSERT INTO departments VALUES
+  (1, 'Physics'),
+  (2, 'Chemistry');
+INSERT INTO students VALUES
+  (1, 'Gia', 1),
+  (2, 'Hal', 2);`,
+      },
+      {
+        note: "missing department ids and ids only the students reference",
+        seedSQL: `INSERT INTO departments VALUES
+  (10, 'Geology');
+INSERT INTO students VALUES
+  (1, 'Ida', 10),
+  (2, 'Jon', 20),
+  (3, 'Kim', NULL),
+  (4, 'Lee', 30);`,
+      },
+    ],
   },
   {
     id: "lc-1934-confirmation-rate",
@@ -358,6 +526,32 @@ FROM signups s
 LEFT JOIN confirmations c ON c.user_id = s.user_id
 GROUP BY s.user_id;`,
     ordered: false,
+    testCases: [
+      {
+        note: "users with no confirmations and users with only timeouts",
+        seedSQL: `INSERT INTO signups VALUES
+  (1, TIMESTAMP '2021-01-01 10:00:00'),
+  (2, TIMESTAMP '2021-01-02 10:00:00'),
+  (3, TIMESTAMP '2021-01-03 10:00:00');
+INSERT INTO confirmations VALUES
+  (1, TIMESTAMP '2021-02-01 10:00:00', 'timeout'),
+  (1, TIMESTAMP '2021-02-02 10:00:00', 'timeout'),
+  (3, TIMESTAMP '2021-02-03 10:00:00', 'confirmed'),
+  (3, TIMESTAMP '2021-02-04 10:00:00', 'timeout');`,
+      },
+      {
+        note: "a rate that only shows when the division stays numeric",
+        seedSQL: `INSERT INTO signups VALUES
+  (1, TIMESTAMP '2021-03-01 10:00:00'),
+  (2, TIMESTAMP '2021-03-02 10:00:00');
+INSERT INTO confirmations VALUES
+  (1, TIMESTAMP '2021-04-01 10:00:00', 'confirmed'),
+  (1, TIMESTAMP '2021-04-02 10:00:00', 'timeout'),
+  (1, TIMESTAMP '2021-04-03 10:00:00', 'timeout'),
+  (2, TIMESTAMP '2021-04-04 10:00:00', 'confirmed'),
+  (2, TIMESTAMP '2021-04-05 10:00:00', 'timeout');`,
+      },
+    ],
   },
   {
     id: "lc-1193-monthly-transactions-i",
@@ -401,6 +595,23 @@ GROUP BY s.user_id;`,
 FROM transactions
 GROUP BY to_char(trans_date, 'YYYY-MM'), country;`,
     ordered: false,
+    testCases: [
+      {
+        note: "a month with only declined transactions still has a zero approved total",
+        seedSQL: `INSERT INTO transactions VALUES
+  (1, 'FR', 'declined', 100, DATE '2020-01-05'),
+  (2, 'FR', 'declined', 50, DATE '2020-01-20'),
+  (3, NULL, 'approved', 70, DATE '2020-02-10');`,
+      },
+      {
+        note: "a December to January boundary with two countries",
+        seedSQL: `INSERT INTO transactions VALUES
+  (1, 'US', 'approved', 10, DATE '2020-12-31'),
+  (2, 'US', 'declined', 20, DATE '2020-12-31'),
+  (3, 'DE', 'approved', 5, DATE '2021-01-01'),
+  (4, 'US', 'approved', 7, DATE '2021-01-01');`,
+      },
+    ],
   },
   {
     id: "lc-1174-immediate-food-delivery-ii",
@@ -447,6 +658,23 @@ JOIN first_dates f
   ON f.customer_id = d.customer_id
  AND f.first_date = d.order_date;`,
     ordered: false,
+    testCases: [
+      {
+        note: "no customer is immediate so the percentage is zero",
+        seedSQL: `INSERT INTO delivery VALUES
+  (1, 1, DATE '2019-08-01', DATE '2019-08-02'),
+  (2, 2, DATE '2019-08-02', DATE '2019-08-03'),
+  (3, 1, DATE '2019-08-09', DATE '2019-08-10');`,
+      },
+      {
+        note: "a later immediate order must not lift the first-order percentage",
+        seedSQL: `INSERT INTO delivery VALUES
+  (1, 1, DATE '2019-08-01', DATE '2019-08-01'),
+  (2, 2, DATE '2019-08-02', DATE '2019-08-09'),
+  (3, 3, DATE '2019-08-03', DATE '2019-08-04'),
+  (4, 1, DATE '2019-08-10', DATE '2019-08-10');`,
+      },
+    ],
   },
   {
     id: "lc-550-game-play-analysis-iv",
@@ -495,6 +723,26 @@ SELECT ROUND(
   2
 ) AS fraction;`,
     ordered: false,
+    testCases: [
+      {
+        note: "players come back later but never on the very next day",
+        seedSQL: `INSERT INTO activity VALUES
+  (1, 1, DATE '2020-01-01', 1),
+  (1, 1, DATE '2020-01-03', 1),
+  (2, 1, DATE '2020-02-01', 1),
+  (3, 1, DATE '2020-03-01', 1),
+  (3, 1, DATE '2020-03-05', 1);`,
+      },
+      {
+        note: "some players return the next day and one plays only once",
+        seedSQL: `INSERT INTO activity VALUES
+  (1, 1, DATE '2020-01-01', 1),
+  (1, 1, DATE '2020-01-02', 1),
+  (2, 2, DATE '2020-02-10', 2),
+  (2, 2, DATE '2020-02-11', 3),
+  (3, 1, DATE '2020-03-01', 1);`,
+      },
+    ],
   },
   {
     id: "lc-1070-product-sales-analysis-iii",
@@ -547,6 +795,30 @@ JOIN first_years f
   ON f.product_id = s.product_id
  AND f.first_year = s.sale_year;`,
     ordered: false,
+    testCases: [
+      {
+        note: "a product never sold and one sold twice in its first year",
+        seedSQL: `INSERT INTO product VALUES
+  (1, 'Aster'),
+  (2, 'Beryl'),
+  (3, 'Cedar');
+INSERT INTO sales VALUES
+  (1, 1, 2020, 5, 10),
+  (2, 1, 2020, 7, 10),
+  (3, 3, 2019, 1, 2),
+  (4, 3, 2021, 9, 2);`,
+      },
+      {
+        note: "each product has its own earliest selling year",
+        seedSQL: `INSERT INTO product VALUES
+  (1, 'Dune'),
+  (2, 'Elm');
+INSERT INTO sales VALUES
+  (1, 1, 2000, 4, 9),
+  (2, 1, 2001, 5, 9),
+  (3, 2, 2000, 6, 1);`,
+      },
+    ],
   },
   {
     id: "lc-1045-customers-who-bought-all-products",
@@ -583,6 +855,24 @@ FROM customer
 GROUP BY customer_id
 HAVING COUNT(DISTINCT product_key) = (SELECT COUNT(*) FROM product);`,
     ordered: false,
+    testCases: [
+      {
+        note: "each customer buys only one different product",
+        seedSQL: `INSERT INTO product VALUES (1), (2), (3);
+INSERT INTO customer VALUES
+  (1, 1),
+  (2, 2),
+  (3, 3);`,
+      },
+      {
+        note: "a one product catalogue where every buyer qualifies",
+        seedSQL: `INSERT INTO product VALUES (7);
+INSERT INTO customer VALUES
+  (1, 7),
+  (2, 7),
+  (3, 7);`,
+      },
+    ],
   },
   {
     id: "lc-180-consecutive-numbers",
@@ -616,6 +906,29 @@ FROM logs l1
 JOIN logs l2 ON l2.id = l1.id + 1 AND l2.num = l1.num
 JOIN logs l3 ON l3.id = l1.id + 2 AND l3.num = l1.num;`,
     ordered: false,
+    testCases: [
+      {
+        note: "three repeats of a value that are never adjacent",
+        seedSQL: `INSERT INTO logs VALUES
+  (1, 5),
+  (2, 5),
+  (3, 9),
+  (4, 5),
+  (5, 9),
+  (6, 9);`,
+      },
+      {
+        note: "two separate runs of three with higher ids",
+        seedSQL: `INSERT INTO logs VALUES
+  (10, 1),
+  (11, 1),
+  (12, 1),
+  (13, 2),
+  (14, 2),
+  (15, 2),
+  (16, 7);`,
+      },
+    ],
   },
   {
     id: "lc-1164-product-price-at-a-given-date",
@@ -665,6 +978,24 @@ LEFT JOIN recent r
   ON r.product_id = l.product_id
  AND r.change_date = l.max_date;`,
     ordered: false,
+    testCases: [
+      {
+        note: "a price change exactly on the reference date still counts",
+        seedSQL: `INSERT INTO products VALUES
+  (1, 5, DATE '2019-08-16'),
+  (1, 9, DATE '2019-08-17'),
+  (2, 7, DATE '2019-08-15'),
+  (2, 8, DATE '2019-08-16'),
+  (3, 4, DATE '2019-08-16');`,
+      },
+      {
+        note: "every product changes price only after the reference date",
+        seedSQL: `INSERT INTO products VALUES
+  (1, 99, DATE '2019-09-01'),
+  (2, 50, DATE '2019-12-31'),
+  (3, 1, DATE '2019-08-17');`,
+      },
+    ],
   },
   {
     id: "lc-1204-last-person-to-fit-in-the-bus",
@@ -706,6 +1037,24 @@ WHERE (
     WHERE w.turn <= q.turn + 1
   ) > 1000;`,
     ordered: false,
+    testCases: [
+      {
+        note: "the cumulative weight lands exactly on the limit",
+        seedSQL: `INSERT INTO queue VALUES
+  (1, 'Ada', 400, 1),
+  (2, 'Ben', 300, 2),
+  (3, 'Cyd', 300, 3),
+  (4, 'Dee', 50, 4),
+  (5, 'Eve', 1, 5);`,
+      },
+      {
+        note: "the first passenger alone is too heavy for the bus",
+        seedSQL: `INSERT INTO queue VALUES
+  (1, 'Gil', 1200, 1),
+  (2, 'Hal', 50, 2),
+  (3, 'Ivy', 10, 3);`,
+      },
+    ],
   },
   {
     id: "lc-1907-count-salary-categories",
@@ -742,6 +1091,22 @@ UNION ALL
 SELECT 'High Salary' AS category, COUNT(*) FILTER (WHERE income > 50000) AS accounts_count
 FROM accounts;`,
     ordered: false,
+    testCases: [
+      {
+        note: "incomes exactly on both band edges and an empty high band",
+        seedSQL: `INSERT INTO accounts VALUES
+  (1, 19999),
+  (2, 20000),
+  (3, 50000);`,
+      },
+      {
+        note: "one account in each salary band",
+        seedSQL: `INSERT INTO accounts VALUES
+  (1, 100),
+  (2, 25000),
+  (3, 50001);`,
+      },
+    ],
   },
   {
     id: "lc-626-exchange-seats",
@@ -778,6 +1143,23 @@ FROM accounts;`,
 FROM seat
 ORDER BY id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "an even number of seats leaves no unpaired seat",
+        seedSQL: `INSERT INTO seat VALUES
+  (1, 'Nia'),
+  (2, 'Omar'),
+  (3, 'Pia'),
+  (4, 'Quinn');`,
+      },
+      {
+        note: "three seats leave the last student in place",
+        seedSQL: `INSERT INTO seat VALUES
+  (1, 'Rhea'),
+  (2, 'Sam'),
+  (3, 'Tess');`,
+      },
+    ],
   },
   {
     id: "lc-1225-report-contiguous-dates",
@@ -834,5 +1216,27 @@ FROM islands
 GROUP BY period_state, grp
 ORDER BY MIN(d);`,
     ordered: true,
+    testCases: [
+      {
+        note: "single day periods with gaps between them",
+        seedSQL: `INSERT INTO failed VALUES
+  (DATE '2019-03-01'),
+  (DATE '2019-03-15');
+INSERT INTO succeeded VALUES
+  (DATE '2019-04-01');`,
+      },
+      {
+        note: "dates outside 2019 are dropped and runs still split by state",
+        seedSQL: `INSERT INTO failed VALUES
+  (DATE '2018-12-30'),
+  (DATE '2019-01-01'),
+  (DATE '2019-01-02'),
+  (DATE '2020-01-02');
+INSERT INTO succeeded VALUES
+  (DATE '2019-01-03'),
+  (DATE '2019-05-05'),
+  (DATE '2019-05-06');`,
+      },
+    ],
   },
 ];

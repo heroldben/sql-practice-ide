@@ -13,6 +13,16 @@ export const problems = [
     seedSQL: "INSERT INTO activity VALUES\n  (1, 2, DATE '2016-03-01', 5),\n  (1, 2, DATE '2016-03-02', 6),\n  (2, 3, DATE '2017-06-25', 1),\n  (3, 1, DATE '2016-03-02', 0),\n  (3, 4, DATE '2018-07-03', 5),\n  (4, 3, DATE '2019-01-01', 3),\n  (4, 3, DATE '2019-01-02', 4);",
     solutionSQL: "SELECT player_id, MIN(event_date) AS first_login\nFROM activity\nGROUP BY player_id;",
     ordered: false,
+    testCases: [
+      {
+        note: "the earliest day is not the first row for a player",
+        seedSQL: "INSERT INTO activity VALUES\n  (10, 2, DATE '2020-01-05', 0),\n  (10, 1, DATE '2020-01-03', 4),\n  (11, 3, DATE '2020-01-01', 2),\n  (10, 4, DATE '2020-01-04', 1),\n  (12, 1, DATE '2020-02-02', 7);",
+      },
+      {
+        note: "every player has exactly one login day",
+        seedSQL: "INSERT INTO activity VALUES\n  (20, 5, DATE '2021-04-09', 3),\n  (21, 6, DATE '2021-05-10', 0),\n  (22, 7, DATE '2021-06-11', 12);",
+      },
+    ],
   },
   {
     id: "lc-1571-warehouse-manager",
@@ -26,6 +36,16 @@ export const problems = [
     seedSQL: "INSERT INTO products VALUES\n  (1, 'Bottle', 5, 4, 2),\n  (2, 'Crate', 8, 6, 3),\n  (3, 'Pallet', 10, 10, 1);\nINSERT INTO warehouse VALUES\n  ('Locker One', 1, 10),\n  ('Locker One', 2, 5),\n  ('Locker Two', 3, 4),\n  ('Locker Two', 1, 2),\n  ('Locker Three', 2, 7);",
     solutionSQL: "SELECT w.name AS warehouse_name,\n       SUM(p.width * p.length * p.height * w.units) AS volume\nFROM warehouse w\nJOIN products p ON p.product_id = w.product_id\nGROUP BY w.name;",
     ordered: false,
+    testCases: [
+      {
+        note: "zero stored units and a product no area stores",
+        seedSQL: "INSERT INTO products VALUES\n  (11, 'Vase', 2, 2, 2),\n  (12, 'Barrel', 3, 3, 3),\n  (13, 'Shelf', 1, 1, 1),\n  (14, 'Bin', 4, 2, 5);\nINSERT INTO warehouse VALUES\n  ('Area X', 11, 0),\n  ('Area X', 12, 5),\n  ('Area Y', 14, 2);",
+      },
+      {
+        note: "two areas holding the same product with different units",
+        seedSQL: "INSERT INTO products VALUES\n  (21, 'Cube', 2, 2, 2),\n  (22, 'Panel', 5, 2, 1);\nINSERT INTO warehouse VALUES\n  ('Area P', 21, 10),\n  ('Area P', 22, 3),\n  ('Area Q', 21, 100);",
+      },
+    ],
   },
   {
     id: "lc-586-customer-placing-the-largest-number-of-orders",
@@ -39,6 +59,16 @@ export const problems = [
     seedSQL: "INSERT INTO orders VALUES\n  (1, 1),\n  (2, 1),\n  (3, 1),\n  (4, 2),\n  (5, 2),\n  (6, 2),\n  (7, 3);",
     solutionSQL: "WITH per_customer AS (\n  SELECT customer_number, COUNT(*) AS order_count\n  FROM orders\n  GROUP BY customer_number\n)\nSELECT customer_number\nFROM per_customer\nWHERE order_count = (SELECT MAX(order_count) FROM per_customer);",
     ordered: false,
+    testCases: [
+      {
+        note: "two customers tie for the most orders",
+        seedSQL: "INSERT INTO orders VALUES\n  (101, 7),\n  (102, 7),\n  (103, 7),\n  (104, 8),\n  (105, 8),\n  (106, 8),\n  (107, 9);",
+      },
+      {
+        note: "one winner who placed only two orders",
+        seedSQL: "INSERT INTO orders VALUES\n  (201, 4),\n  (202, 4),\n  (203, 5);",
+      },
+    ],
   },
   {
     id: "lc-1741-find-total-time-spent-by-each-employee",
@@ -52,6 +82,16 @@ export const problems = [
     seedSQL: "INSERT INTO activity VALUES\n  (1, DATE '2020-11-28', 90, 100),\n  (1, DATE '2020-11-28', 100, 110),\n  (1, DATE '2020-11-29', 5, 25),\n  (2, DATE '2020-11-28', 30, 70),\n  (2, DATE '2020-11-29', 45, 60),\n  (2, DATE '2020-12-01', 10, 20),\n  (3, DATE '2020-12-01', 60, 90);",
     solutionSQL: "SELECT event_day AS day,\n       emp_id,\n       SUM(out_time - in_time) AS total_time\nFROM activity\nGROUP BY event_day, emp_id;",
     ordered: false,
+    testCases: [
+      {
+        note: "a zero-length session and two sessions on one day",
+        seedSQL: "INSERT INTO activity VALUES\n  (5, DATE '2021-01-04', 60, 60),\n  (5, DATE '2021-01-04', 90, 150),\n  (5, DATE '2021-01-05', 10, 20),\n  (6, DATE '2021-01-05', 1430, 1440),\n  (6, DATE '2021-01-05', 0, 30);",
+      },
+      {
+        note: "one session per employee per day",
+        seedSQL: "INSERT INTO activity VALUES\n  (7, DATE '2021-02-01', 100, 130),\n  (8, DATE '2021-02-01', 200, 260),\n  (9, DATE '2021-02-02', 0, 90);",
+      },
+    ],
   },
   {
     id: "lc-1173-immediate-food-delivery-i",
@@ -65,6 +105,16 @@ export const problems = [
     seedSQL: "INSERT INTO delivery VALUES\n  (1, 1, DATE '2019-08-01', DATE '2019-08-02'),\n  (2, 2, DATE '2019-08-02', DATE '2019-08-02'),\n  (3, 1, DATE '2019-08-11', DATE '2019-08-11'),\n  (4, 3, DATE '2019-08-24', DATE '2019-08-26'),\n  (5, 3, DATE '2019-08-21', DATE '2019-08-22'),\n  (6, 2, DATE '2019-08-11', DATE '2019-08-12');",
     solutionSQL: "SELECT ROUND(100.0 * COUNT(*) FILTER (WHERE order_date = customer_pref_delivery_date) / COUNT(*), 2) AS immediate_percentage\nFROM delivery;",
     ordered: false,
+    testCases: [
+      {
+        note: "one immediate delivery out of three",
+        seedSQL: "INSERT INTO delivery VALUES\n  (11, 4, DATE '2020-01-01', DATE '2020-01-01'),\n  (12, 5, DATE '2020-01-02', DATE '2020-01-05'),\n  (13, 6, DATE '2020-01-03', DATE '2020-01-09');",
+      },
+      {
+        note: "five immediate deliveries out of seven orders",
+        seedSQL: "INSERT INTO delivery VALUES\n  (21, 1, DATE '2021-02-01', DATE '2021-02-01'),\n  (22, 2, DATE '2021-02-02', DATE '2021-02-02'),\n  (23, 3, DATE '2021-02-03', DATE '2021-02-03'),\n  (24, 4, DATE '2021-02-04', DATE '2021-02-05'),\n  (25, 5, DATE '2021-02-05', DATE '2021-02-05'),\n  (26, 6, DATE '2021-02-06', DATE '2021-02-08'),\n  (27, 7, DATE '2021-02-07', DATE '2021-02-07');",
+      },
+    ],
   },
   {
     id: "lc-1587-bank-account-summary-ii",
@@ -78,6 +128,16 @@ export const problems = [
     seedSQL: "INSERT INTO users VALUES\n  (900001, 'Alice'),\n  (900002, 'Bob'),\n  (900003, 'Charlie'),\n  (900004, 'Dana');\nINSERT INTO transactions VALUES\n  (1, 900001, 7000, DATE '2020-08-01'),\n  (2, 900001, 7000, DATE '2020-09-01'),\n  (3, 900001, -3000, DATE '2020-09-02'),\n  (4, 900002, 1000, DATE '2020-09-12'),\n  (5, 900003, 6000, DATE '2020-08-07'),\n  (6, 900003, 6000, DATE '2020-09-07'),\n  (7, 900004, 10000, DATE '2020-10-01');",
     solutionSQL: "SELECT u.name AS name,\n       SUM(t.amount) AS balance\nFROM users u\nJOIN transactions t ON t.account = u.account\nGROUP BY u.name\nHAVING SUM(t.amount) > 10000;",
     ordered: false,
+    testCases: [
+      {
+        note: "a balance exactly at the threshold and an inactive holder",
+        seedSQL: "INSERT INTO users VALUES\n  (900005, 'Eve'),\n  (900006, 'Frank'),\n  (900007, 'Gina');\nINSERT INTO transactions VALUES\n  (11, 900005, 5000, DATE '2021-01-01'),\n  (12, 900005, 5000, DATE '2021-01-02'),\n  (13, 900006, 20000, DATE '2021-01-05');",
+      },
+      {
+        note: "a negative balance beside a large positive one",
+        seedSQL: "INSERT INTO users VALUES\n  (900008, 'Hank'),\n  (900009, 'Iris');\nINSERT INTO transactions VALUES\n  (21, 900008, -15000, DATE '2021-02-01'),\n  (22, 900009, 30000, DATE '2021-02-01'),\n  (23, 900009, -5000, DATE '2021-02-02');",
+      },
+    ],
   },
   {
     id: "lc-182-duplicate-emails",
@@ -91,6 +151,16 @@ export const problems = [
     seedSQL: "INSERT INTO person VALUES\n  (1, 'alpha@mail.com'),\n  (2, 'beta@mail.com'),\n  (3, 'alpha@mail.com'),\n  (4, 'gamma@mail.com'),\n  (5, 'beta@mail.com'),\n  (6, 'delta@mail.com'),\n  (7, 'alpha@mail.com');",
     solutionSQL: "SELECT email AS \"Email\"\nFROM person\nGROUP BY email\nHAVING COUNT(*) > 1;",
     ordered: false,
+    testCases: [
+      {
+        note: "all addresses are unique so the answer is empty",
+        seedSQL: "INSERT INTO person VALUES\n  (11, 'one@mail.com'),\n  (12, 'two@mail.com'),\n  (13, 'three@mail.com'),\n  (14, 'four@mail.com');",
+      },
+      {
+        note: "one address used three times and a recased twin",
+        seedSQL: "INSERT INTO person VALUES\n  (21, 'same@mail.com'),\n  (22, 'same@mail.com'),\n  (23, 'same@mail.com'),\n  (24, 'Same@mail.com'),\n  (25, 'other@mail.com');",
+      },
+    ],
   },
   {
     id: "lc-1050-actors-and-directors-who-cooperated-at-least-three-times",
@@ -104,6 +174,16 @@ export const problems = [
     seedSQL: "INSERT INTO actor_director VALUES\n  (1, 1, 1),\n  (1, 1, 2),\n  (1, 1, 3),\n  (1, 2, 4),\n  (1, 2, 5),\n  (2, 1, 6),\n  (2, 2, 7),\n  (2, 2, 8);",
     solutionSQL: "SELECT actor_id, director_id\nFROM actor_director\nGROUP BY actor_id, director_id\nHAVING COUNT(*) >= 3;",
     ordered: false,
+    testCases: [
+      {
+        note: "a pair meeting exactly three times",
+        seedSQL: "INSERT INTO actor_director VALUES\n  (3, 3, 101),\n  (3, 3, 102),\n  (3, 3, 103),\n  (4, 4, 104),\n  (4, 4, 105),\n  (3, 4, 106);",
+      },
+      {
+        note: "one pair repeats five times while others do not",
+        seedSQL: "INSERT INTO actor_director VALUES\n  (5, 5, 201),\n  (5, 5, 202),\n  (5, 5, 203),\n  (5, 5, 204),\n  (5, 5, 205),\n  (5, 6, 206),\n  (6, 6, 207);",
+      },
+    ],
   },
   {
     id: "lc-1747-leetflex-banned-accounts",
@@ -117,6 +197,16 @@ export const problems = [
     seedSQL: "INSERT INTO log_info VALUES\n  (1, 1, '129.1.1.1', TIMESTAMP '2022-05-01 09:00:00', TIMESTAMP '2022-05-01 11:00:00'),\n  (2, 1, '129.1.1.2', TIMESTAMP '2022-05-01 10:00:00', TIMESTAMP '2022-05-01 12:00:00'),\n  (3, 2, '45.0.0.1', TIMESTAMP '2022-05-01 08:00:00', TIMESTAMP '2022-05-01 09:00:00'),\n  (4, 2, '45.0.0.1', TIMESTAMP '2022-05-01 10:00:00', TIMESTAMP '2022-05-01 11:00:00'),\n  (5, 3, '77.1.2.3', TIMESTAMP '2022-05-02 12:00:00', TIMESTAMP '2022-05-02 14:00:00'),\n  (6, 3, '77.1.2.4', TIMESTAMP '2022-05-02 13:30:00', TIMESTAMP '2022-05-02 16:00:00'),\n  (7, 4, '8.8.8.8', TIMESTAMP '2022-05-03 07:00:00', TIMESTAMP '2022-05-03 08:00:00');",
     solutionSQL: "SELECT DISTINCT l1.account_id\nFROM log_info l1\nJOIN log_info l2\n  ON l1.account_id = l2.account_id\n AND l1.log_id <> l2.log_id\n AND l1.ip_address <> l2.ip_address\n AND l2.login BETWEEN l1.login AND l1.logout;",
     ordered: false,
+    testCases: [
+      {
+        note: "a session starting exactly when another ends",
+        seedSQL: "INSERT INTO log_info VALUES\n  (20, 10, '1.1.1.1', TIMESTAMP '2022-06-01 09:00:00', TIMESTAMP '2022-06-01 11:00:00'),\n  (21, 10, '2.2.2.2', TIMESTAMP '2022-06-01 11:00:00', TIMESTAMP '2022-06-01 13:00:00'),\n  (22, 11, '3.3.3.3', TIMESTAMP '2022-06-01 08:00:00', TIMESTAMP '2022-06-01 12:00:00'),\n  (23, 11, '3.3.3.3', TIMESTAMP '2022-06-01 09:00:00', TIMESTAMP '2022-06-01 10:00:00'),\n  (24, 12, '4.4.4.4', TIMESTAMP '2022-06-01 07:00:00', TIMESTAMP '2022-06-01 08:00:00');",
+      },
+      {
+        note: "overlaps only under one address so nothing is flagged",
+        seedSQL: "INSERT INTO log_info VALUES\n  (30, 20, '5.5.5.5', TIMESTAMP '2023-01-01 08:00:00', TIMESTAMP '2023-01-01 10:00:00'),\n  (31, 20, '5.5.5.5', TIMESTAMP '2023-01-01 09:00:00', TIMESTAMP '2023-01-01 11:00:00'),\n  (32, 21, '6.6.6.6', TIMESTAMP '2023-01-02 08:00:00', TIMESTAMP '2023-01-02 09:00:00'),\n  (33, 21, '7.7.7.7', TIMESTAMP '2023-01-02 12:00:00', TIMESTAMP '2023-01-02 13:00:00'),\n  (34, 22, '8.8.8.8', TIMESTAMP '2023-01-03 10:00:00', TIMESTAMP '2023-01-03 12:00:00');",
+      },
+    ],
   },
   {
     id: "lc-184-department-highest-salary",
@@ -130,6 +220,16 @@ export const problems = [
     seedSQL: "INSERT INTO department VALUES\n  (1, 'IT'),\n  (2, 'Sales'),\n  (3, 'Support');\nINSERT INTO employee VALUES\n  (1, 'Joe', 70000, 1),\n  (2, 'Henry', 80000, 2),\n  (3, 'Sam', 60000, 2),\n  (4, 'Max', 90000, 1),\n  (5, 'Janet', 69000, 1),\n  (6, 'Randy', 85000, 1),\n  (7, 'Will', 70000, NULL),\n  (8, 'Kim', 80000, 2);",
     solutionSQL: "WITH ranked AS (\n  SELECT id, name, salary, department_id,\n         DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS salary_rank\n  FROM employee\n  WHERE department_id IS NOT NULL\n)\nSELECT d.name AS department,\n       r.name AS employee,\n       r.salary AS salary\nFROM ranked r\nJOIN department d ON d.id = r.department_id\nWHERE r.salary_rank = 1;",
     ordered: false,
+    testCases: [
+      {
+        note: "an unassigned top earner and an empty department",
+        seedSQL: "INSERT INTO department VALUES\n  (10, 'Engineering'),\n  (11, 'Finance'),\n  (12, 'Legal');\nINSERT INTO employee VALUES\n  (20, 'Ana', 120000, 10),\n  (21, 'Ben', 95000, 10),\n  (22, 'Cara', 200000, NULL),\n  (23, 'Dev', 60000, 11),\n  (24, 'Eli', 90000, 11);",
+      },
+      {
+        note: "two departments tie for their top salary",
+        seedSQL: "INSERT INTO department VALUES\n  (30, 'Ops'),\n  (31, 'Research');\nINSERT INTO employee VALUES\n  (40, 'Fay', 50000, 30),\n  (41, 'Gus', 50000, 30),\n  (42, 'Hana', 40000, 30),\n  (43, 'Ivan', 75000, 31),\n  (44, 'Jo', 75000, 31);",
+      },
+    ],
   },
   {
     id: "lc-1549-the-most-recent-orders-for-each-product",
@@ -143,6 +243,16 @@ export const problems = [
     seedSQL: "INSERT INTO customers VALUES\n  (1, 'Winston'),\n  (2, 'Jonathan'),\n  (3, 'Annabelle');\nINSERT INTO products VALUES\n  (1, 'Keyboard', 120),\n  (2, 'Mouse', 80),\n  (3, 'Monitor', 350);\nINSERT INTO orders VALUES\n  (1, DATE '2020-07-31', 1, 1),\n  (2, DATE '2020-07-30', 2, 2),\n  (3, DATE '2020-08-29', 3, 3),\n  (4, DATE '2020-07-29', 1, 3),\n  (5, DATE '2020-06-10', 1, 1),\n  (6, DATE '2020-08-01', 2, 2),\n  (7, DATE '2020-08-02', 3, 1),\n  (8, DATE '2020-08-02', 2, 1);",
     solutionSQL: "WITH ranked AS (\n  SELECT order_id, order_date, product_id,\n         RANK() OVER (PARTITION BY product_id ORDER BY order_date DESC) AS recency_rank\n  FROM orders\n)\nSELECT p.product_name AS product_name,\n       r.product_id AS product_id,\n       r.order_id AS order_id,\n       r.order_date AS order_date\nFROM ranked r\nJOIN products p ON p.product_id = r.product_id\nWHERE r.recency_rank = 1\nORDER BY product_name, product_id, order_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "two orders tie for the newest date of one product",
+        seedSQL: "INSERT INTO customers VALUES\n  (10, 'Kim'),\n  (11, 'Leo');\nINSERT INTO products VALUES\n  (10, 'Cable', 20),\n  (11, 'Dock', 150),\n  (12, 'Hub', 40);\nINSERT INTO orders VALUES\n  (100, DATE '2021-03-05', 10, 10),\n  (101, DATE '2021-03-05', 11, 10),\n  (102, DATE '2021-02-01', 11, 11);",
+      },
+      {
+        note: "every ordered product has exactly one order",
+        seedSQL: "INSERT INTO customers VALUES\n  (20, 'Mia'),\n  (21, 'Nia');\nINSERT INTO products VALUES\n  (20, 'Lamp', 30),\n  (21, 'Rug', 90);\nINSERT INTO orders VALUES\n  (200, DATE '2021-05-01', 20, 20),\n  (201, DATE '2021-05-01', 21, 21);",
+      },
+    ],
   },
   {
     id: "lc-1532-the-most-recent-three-orders",
@@ -156,6 +266,16 @@ export const problems = [
     seedSQL: "INSERT INTO customers VALUES\n  (1, 'Ella'),\n  (2, 'Jonathan'),\n  (3, 'Marcia');\nINSERT INTO orders VALUES\n  (1, DATE '2020-07-31', 1),\n  (2, DATE '2020-07-30', 2),\n  (3, DATE '2020-08-29', 3),\n  (4, DATE '2020-07-29', 1),\n  (5, DATE '2020-06-10', 1),\n  (6, DATE '2020-08-01', 2),\n  (7, DATE '2020-06-11', 3),\n  (8, DATE '2020-06-12', 3);",
     solutionSQL: "WITH numbered AS (\n  SELECT customer_id, order_id, order_date,\n         ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date DESC, order_id DESC) AS recency_rank\n  FROM orders\n)\nSELECT c.name AS customer_name,\n       n.customer_id AS customer_id,\n       n.order_id AS order_id,\n       n.order_date AS order_date\nFROM numbered n\nJOIN customers c ON c.customer_id = n.customer_id\nWHERE n.recency_rank <= 3\nORDER BY customer_name, customer_id, order_date DESC;",
     ordered: true,
+    testCases: [
+      {
+        note: "four same-day orders beside a customer with three",
+        seedSQL: "INSERT INTO customers VALUES\n  (10, 'Nina'),\n  (11, 'Omar');\nINSERT INTO orders VALUES\n  (100, DATE '2021-06-01', 10),\n  (101, DATE '2021-06-01', 10),\n  (102, DATE '2021-06-01', 10),\n  (103, DATE '2021-06-01', 10),\n  (200, DATE '2021-06-02', 11),\n  (201, DATE '2021-06-03', 11),\n  (202, DATE '2021-06-04', 11);",
+      },
+      {
+        note: "a customer with one order and one with two",
+        seedSQL: "INSERT INTO customers VALUES\n  (20, 'Pia'),\n  (21, 'Quinn');\nINSERT INTO orders VALUES\n  (300, DATE '2021-07-01', 20),\n  (301, DATE '2021-07-02', 21),\n  (302, DATE '2021-07-03', 21);",
+      },
+    ],
   },
   {
     id: "lc-1831-maximum-transaction-each-day",
@@ -169,6 +289,16 @@ export const problems = [
     seedSQL: "INSERT INTO transactions VALUES\n  (1, DATE '2021-04-01', 100),\n  (2, DATE '2021-04-01', 150),\n  (3, DATE '2021-04-02', 90),\n  (4, DATE '2021-04-02', 120),\n  (5, DATE '2021-04-02', 120),\n  (6, DATE '2021-04-03', 300),\n  (7, DATE '2021-04-03', 250),\n  (8, DATE '2021-04-04', 80);",
     solutionSQL: "WITH ranked AS (\n  SELECT transaction_id, day, amount,\n         ROW_NUMBER() OVER (PARTITION BY day ORDER BY amount DESC, transaction_id) AS amount_rank\n  FROM transactions\n)\nSELECT transaction_id, day, amount\nFROM ranked\nWHERE amount_rank = 1;",
     ordered: false,
+    testCases: [
+      {
+        note: "three transactions tie on one day",
+        seedSQL: "INSERT INTO transactions VALUES\n  (100, DATE '2022-01-05', 500),\n  (101, DATE '2022-01-05', 500),\n  (102, DATE '2022-01-05', 500),\n  (103, DATE '2022-01-06', 900),\n  (104, DATE '2022-01-06', 100);",
+      },
+      {
+        note: "a single transaction on each stored day",
+        seedSQL: "INSERT INTO transactions VALUES\n  (200, DATE '2022-02-01', 10),\n  (201, DATE '2022-02-02', 20),\n  (202, DATE '2022-02-03', 30);",
+      },
+    ],
   },
   {
     id: "lc-1077-project-employees-iii",
@@ -182,6 +312,16 @@ export const problems = [
     seedSQL: "INSERT INTO employee VALUES\n  (1, 'Khaled', 3),\n  (2, 'Ali', 2),\n  (3, 'John', 1),\n  (4, 'Doe', 2),\n  (5, 'Zoe', 5);\nINSERT INTO project VALUES\n  (1, 1),\n  (1, 2),\n  (1, 3),\n  (2, 1),\n  (2, 4),\n  (3, 2),\n  (3, 4);",
     solutionSQL: "WITH ranked AS (\n  SELECT p.project_id, p.employee_id,\n         RANK() OVER (PARTITION BY p.project_id ORDER BY e.experience_years DESC) AS experience_rank\n  FROM project p\n  JOIN employee e ON e.employee_id = p.employee_id\n)\nSELECT project_id, employee_id\nFROM ranked\nWHERE experience_rank = 1;",
     ordered: false,
+    testCases: [
+      {
+        note: "two employees tie for most experience on a project",
+        seedSQL: "INSERT INTO employee VALUES\n  (10, 'Ada', 4),\n  (11, 'Bo', 4),\n  (12, 'Cy', 2),\n  (13, 'Di', 9);\nINSERT INTO project VALUES\n  (100, 10),\n  (100, 11),\n  (100, 12),\n  (101, 13),\n  (102, 10),\n  (102, 13);",
+      },
+      {
+        note: "each project is assigned exactly one employee",
+        seedSQL: "INSERT INTO employee VALUES\n  (20, 'Ed', 1),\n  (21, 'Fi', 7),\n  (22, 'Gu', 3);\nINSERT INTO project VALUES\n  (200, 21),\n  (201, 22),\n  (202, 20);",
+      },
+    ],
   },
   {
     id: "lc-1285-find-the-start-and-end-number-of-continuous-ranges",
@@ -195,6 +335,16 @@ export const problems = [
     seedSQL: "INSERT INTO logs VALUES\n  (1),\n  (2),\n  (3),\n  (7),\n  (8),\n  (10),\n  (15),\n  (16);",
     solutionSQL: "WITH grouped AS (\n  SELECT log_id,\n         log_id - ROW_NUMBER() OVER (ORDER BY log_id) AS group_key\n  FROM logs\n)\nSELECT MIN(log_id) AS start_id,\n       MAX(log_id) AS end_id\nFROM grouped\nGROUP BY group_key\nORDER BY start_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "runs starting above one and a lone id",
+        seedSQL: "INSERT INTO logs VALUES\n  (4),\n  (5),\n  (6),\n  (11),\n  (12),\n  (20);",
+      },
+      {
+        note: "one unbroken run starting far above one",
+        seedSQL: "INSERT INTO logs VALUES\n  (100),\n  (101),\n  (102),\n  (103),\n  (104),\n  (105);",
+      },
+    ],
   },
   {
     id: "lc-1596-the-most-frequently-ordered-products-for-each-customer",
@@ -208,6 +358,16 @@ export const problems = [
     seedSQL: "INSERT INTO customers VALUES\n  (1, 'Alice'),\n  (2, 'Bob'),\n  (3, 'Tom'),\n  (4, 'Nina');\nINSERT INTO products VALUES\n  (1, 'Keyboard', 120),\n  (2, 'Mouse', 80),\n  (3, 'Monitor', 350);\nINSERT INTO orders VALUES\n  (1, DATE '2020-07-31', 1, 1),\n  (2, DATE '2020-07-30', 2, 2),\n  (3, DATE '2020-08-29', 2, 3),\n  (4, DATE '2020-07-29', 1, 1),\n  (5, DATE '2020-06-10', 2, 2),\n  (6, DATE '2020-08-01', 2, 1),\n  (7, DATE '2020-08-02', 3, 3),\n  (8, DATE '2020-08-02', 3, 1);",
     solutionSQL: "WITH per_pair AS (\n  SELECT customer_id, product_id, COUNT(*) AS times_ordered\n  FROM orders\n  GROUP BY customer_id, product_id\n), ranked AS (\n  SELECT customer_id, product_id,\n         RANK() OVER (PARTITION BY customer_id ORDER BY times_ordered DESC) AS order_rank\n  FROM per_pair\n)\nSELECT r.customer_id AS customer_id,\n       r.product_id AS product_id,\n       p.product_name AS product_name\nFROM ranked r\nJOIN products p ON p.product_id = r.product_id\nWHERE r.order_rank = 1;",
     ordered: false,
+    testCases: [
+      {
+        note: "two favourite products tie for one customer",
+        seedSQL: "INSERT INTO customers VALUES\n  (10, 'Rex'),\n  (11, 'Sara'),\n  (12, 'Tara');\nINSERT INTO products VALUES\n  (10, 'Lamp', 30),\n  (11, 'Desk', 200),\n  (12, 'Chair', 60);\nINSERT INTO orders VALUES\n  (100, DATE '2021-01-01', 10, 10),\n  (101, DATE '2021-01-02', 10, 10),\n  (102, DATE '2021-01-03', 10, 11),\n  (103, DATE '2021-01-04', 10, 11),\n  (104, DATE '2021-01-05', 10, 12);",
+      },
+      {
+        note: "one customer repeats a single product three times",
+        seedSQL: "INSERT INTO customers VALUES\n  (20, 'Uma');\nINSERT INTO products VALUES\n  (20, 'Mug', 10);\nINSERT INTO orders VALUES\n  (200, DATE '2021-02-01', 20, 20),\n  (201, DATE '2021-02-02', 20, 20),\n  (202, DATE '2021-02-03', 20, 20);",
+      },
+    ],
   },
   {
     id: "lc-1709-biggest-window-between-visits",
@@ -221,6 +381,16 @@ export const problems = [
     seedSQL: "INSERT INTO user_visits VALUES\n  (1, DATE '2020-11-28'),\n  (1, DATE '2020-12-09'),\n  (1, DATE '2020-12-23'),\n  (2, DATE '2020-11-05'),\n  (2, DATE '2020-12-04'),\n  (3, DATE '2020-10-15'),\n  (4, DATE '2020-12-20'),\n  (4, DATE '2020-12-22');",
     solutionSQL: "WITH windows AS (\n  SELECT user_id,\n         visit_date,\n         LEAD(visit_date) OVER (PARTITION BY user_id ORDER BY visit_date) AS next_visit\n  FROM user_visits\n)\nSELECT user_id,\n       MAX(COALESCE(next_visit, DATE '2021-01-01') - visit_date) AS biggest_window\nFROM windows\nGROUP BY user_id;",
     ordered: false,
+    testCases: [
+      {
+        note: "single visits and one consecutive pair",
+        seedSQL: "INSERT INTO user_visits VALUES\n  (10, DATE '2020-12-31'),\n  (11, DATE '2020-12-01'),\n  (11, DATE '2020-12-02'),\n  (12, DATE '2020-01-01');",
+      },
+      {
+        note: "the tail window is the longest",
+        seedSQL: "INSERT INTO user_visits VALUES\n  (20, DATE '2020-03-01'),\n  (20, DATE '2020-06-01'),\n  (20, DATE '2020-06-02'),\n  (21, DATE '2020-12-25');",
+      },
+    ],
   },
   {
     id: "lc-1270-all-people-report-to-the-given-manager",
@@ -234,6 +404,16 @@ export const problems = [
     seedSQL: "INSERT INTO employees VALUES\n  (1, 'Boss', NULL),\n  (2, 'Manager A', 1),\n  (3, 'Manager B', 2),\n  (4, 'Worker A', 3),\n  (5, 'Worker B', 3),\n  (6, 'Worker C', 1),\n  (7, 'Worker D', 6),\n  (8, 'Worker E', 7);",
     solutionSQL: "WITH RECURSIVE reports AS (\n  SELECT employee_id\n  FROM employees\n  WHERE manager_id = 1\n  UNION ALL\n  SELECT e.employee_id\n  FROM employees e\n  JOIN reports r ON e.manager_id = r.employee_id\n)\nSELECT employee_id\nFROM reports;",
     ordered: false,
+    testCases: [
+      {
+        note: "a chain four levels deep",
+        seedSQL: "INSERT INTO employees VALUES\n  (1, 'Chief', NULL),\n  (10, 'Lead', 1),\n  (11, 'Senior', 10),\n  (12, 'Mid', 11),\n  (13, 'Junior', 12),\n  (14, 'Other', 1);",
+      },
+      {
+        note: "the chief has only two direct reports",
+        seedSQL: "INSERT INTO employees VALUES\n  (1, 'Chief', NULL),\n  (20, 'Solo A', 1),\n  (21, 'Solo B', 1);",
+      },
+    ],
   },
   {
     id: "lc-570-managers-with-at-least-5-direct-reports",
@@ -247,6 +427,16 @@ export const problems = [
     seedSQL: "INSERT INTO employee VALUES\n  (101, 'John', 'A', NULL),\n  (102, 'Dan', 'A', 101),\n  (103, 'James', 'A', 101),\n  (104, 'Amy', 'A', 101),\n  (105, 'Anne', 'A', 101),\n  (106, 'Ron', 'B', 101),\n  (107, 'Kim', 'B', 102),\n  (108, 'Leo', 'B', 103);",
     solutionSQL: "SELECT m.name AS name\nFROM employee m\nWHERE (\n  SELECT COUNT(*)\n  FROM employee e\n  WHERE e.manager_id = m.id\n) >= 5;",
     ordered: false,
+    testCases: [
+      {
+        note: "exactly five reports next to four",
+        seedSQL: "INSERT INTO employee VALUES\n  (201, 'Mia', 'A', NULL),\n  (202, 'A2', 'A', 201),\n  (203, 'A3', 'A', 201),\n  (204, 'A4', 'A', 201),\n  (205, 'A5', 'A', 201),\n  (206, 'A6', 'A', 201),\n  (207, 'Ned', 'B', NULL),\n  (208, 'B2', 'B', 207),\n  (209, 'B3', 'B', 207),\n  (210, 'B4', 'B', 207),\n  (211, 'B5', 'B', 207),\n  (212, 'Sub', 'A', 202);",
+      },
+      {
+        note: "no manager reaches five and indirect reports do not count",
+        seedSQL: "INSERT INTO employee VALUES\n  (301, 'Pam', 'A', NULL),\n  (302, 'C2', 'A', 301),\n  (303, 'C3', 'A', 301),\n  (304, 'C4', 'A', 301),\n  (305, 'C5', 'A', 301),\n  (306, 'Uma', 'B', NULL),\n  (307, 'D2', 'B', 306),\n  (308, 'D3', 'B', 307);",
+      },
+    ],
   },
   {
     id: "lc-1767-find-the-subtasks-that-did-not-execute",
@@ -260,5 +450,15 @@ export const problems = [
     seedSQL: "INSERT INTO tasks VALUES\n  (1, 3),\n  (2, 2),\n  (3, 4);\nINSERT INTO executed VALUES\n  (1, 1),\n  (1, 2),\n  (2, 1),\n  (2, 2),\n  (3, 1),\n  (3, 3),\n  (3, 4);",
     solutionSQL: "WITH RECURSIVE all_subtasks AS (\n  SELECT task_id, 1 AS subtask_id, subtasks_count\n  FROM tasks\n  UNION ALL\n  SELECT task_id, subtask_id + 1, subtasks_count\n  FROM all_subtasks\n  WHERE subtask_id < subtasks_count\n)\nSELECT s.task_id, s.subtask_id\nFROM all_subtasks s\nLEFT JOIN executed e\n  ON e.task_id = s.task_id\n AND e.subtask_id = s.subtask_id\nWHERE e.subtask_id IS NULL\nORDER BY s.task_id, s.subtask_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "a completed task beside a skipped middle subtask",
+        seedSQL: "INSERT INTO tasks VALUES\n  (10, 2),\n  (11, 1),\n  (12, 4);\nINSERT INTO executed VALUES\n  (10, 1),\n  (10, 2),\n  (12, 1),\n  (12, 3),\n  (12, 4);",
+      },
+      {
+        note: "every subtask of a five-part task is missing",
+        seedSQL: "INSERT INTO tasks VALUES\n  (20, 1),\n  (21, 5);\nINSERT INTO executed VALUES\n  (20, 1);",
+      },
+    ],
   },
 ];

@@ -1,18 +1,21 @@
 #!/usr/bin/env node
 /**
- * Full-catalog validation: counts, record shape, SQL execution and
- * expected.json freshness. Exits non-zero with a report on any failure.
+ * Full-catalog validation: counts, record shape (including test cases), SQL
+ * execution of every test case, and expected.json freshness. Exits non-zero with
+ * a report on any failure.
  */
 import { readFile } from 'node:fs/promises';
 import {
   DIFFICULTIES,
+  MIN_EXTRA_CASES,
   SOURCES,
   buildExpected,
   dataFiles,
+  executeProblemFresh,
   expectedJsonText,
   loadFile,
+  testCasesOf,
   validateRecord,
-  executeProblemFresh,
 } from './lib/pg.mjs';
 
 const EXPECTED_TOTAL = 200;
@@ -41,6 +44,7 @@ for (const file of await dataFiles()) {
   if (headerMismatch) {
     errors.push(`${header.slice}: header difficulty ${header.easy}/${header.medium}/${header.hard} != records ${counts.easy}/${counts.medium}/${counts.hard}`);
   }
+  if (problems.length + slice.length > EXPECTED_TOTAL) break;
   problems.push(...slice);
 }
 
@@ -50,10 +54,12 @@ if (seenIds.size !== problems.length) errors.push(`duplicate ids: ${problems.len
 const bySource = Object.fromEntries(SOURCES.map((source) => [source, 0]));
 const byDifficulty = Object.fromEntries(DIFFICULTIES.map((difficulty) => [difficulty, 0]));
 let premium = 0;
+let declaredCases = 0;
 for (const problem of problems) {
   if (problem.source in bySource) bySource[problem.source] += 1;
   if (problem.difficulty in byDifficulty) byDifficulty[problem.difficulty] += 1;
   if (problem.premium) premium += 1;
+  declaredCases += testCasesOf(problem).length;
 }
 for (const source of SOURCES) {
   if (bySource[source] !== EXPECTED_BY_SOURCE[source]) {
@@ -66,21 +72,36 @@ for (const difficulty of DIFFICULTIES) {
   }
 }
 if (premium < MIN_PREMIUM) errors.push(`premium problems: expected at least ${MIN_PREMIUM}, found ${premium}`);
+const minCases = EXPECTED_TOTAL * (MIN_EXTRA_CASES + 1);
+if (declaredCases < minCases) errors.push(`test cases: expected at least ${minCases}, found ${declaredCases}`);
 
-// Execute every problem end to end.
+// Execute every problem and every test case.
 const started = Date.now();
+let executedCases = 0;
 for (const problem of problems) {
   try {
-    const result = await executeProblemFresh(problem);
-    const seeded = Object.values(result.counts).reduce((sum, n) => sum + n, 0);
-    const empty = Object.entries(result.counts).filter(([, n]) => n === 0).map(([name]) => name);
-    if (Object.keys(result.counts).length === 0) errors.push(`${problem.id}: schemaSQL created no table`);
-    if (empty.length) errors.push(`${problem.id}: empty seeded tables: ${empty.join(', ')}`);
-    if (seeded < 6) errors.push(`${problem.id}: seedSQL inserts only ${seeded} rows`);
-    if (seeded > 60) errors.push(`${problem.id}: seedSQL inserts ${seeded} rows`);
-    else if (seeded > 20) warnings.push(`${problem.id}: seedSQL inserts ${seeded} rows`);
-    if (result.rows.length === 0) errors.push(`${problem.id}: reference solution returns 0 rows`);
-    if (result.columns.length === 0) errors.push(`${problem.id}: reference solution returns no columns`);
+    const { cases } = await executeProblemFresh(problem);
+    executedCases += cases.length;
+    if (cases.length < MIN_EXTRA_CASES + 1) {
+      errors.push(`${problem.id}: only ${cases.length} test case(s), needs at least ${MIN_EXTRA_CASES + 1}`);
+    }
+    cases.forEach((testCase, index) => {
+      const label = `${problem.id} test case ${index + 1} (${testCase.note})`;
+      const empty = Object.entries(testCase.counts).filter(([, n]) => n === 0).map(([name]) => name);
+      if (Object.keys(testCase.counts).length === 0) errors.push(`${label}: schemaSQL created no table`);
+      if (testCase.columns.length === 0) errors.push(`${label}: reference solution returns no columns`);
+      if (index === 0) {
+        if (empty.length) errors.push(`${label}: empty seeded tables: ${empty.join(', ')}`);
+        if (testCase.seeded < 6) errors.push(`${label}: seedSQL inserts only ${testCase.seeded} rows`);
+        if (testCase.seeded > 60) errors.push(`${label}: seedSQL inserts ${testCase.seeded} rows`);
+        else if (testCase.seeded > 20) warnings.push(`${label}: seedSQL inserts ${testCase.seeded} rows`);
+        if (testCase.rows.length === 0) errors.push(`${label}: reference solution returns 0 rows`);
+      } else {
+        if (testCase.seeded < 3) errors.push(`${label}: seedSQL inserts only ${testCase.seeded} rows`);
+        if (testCase.seeded > 60) errors.push(`${label}: seedSQL inserts ${testCase.seeded} rows`);
+        if (!Object.values(testCase.counts).some((n) => n > 0)) errors.push(`${label}: every seeded table is empty`);
+      }
+    });
   } catch (error) {
     errors.push(`${problem.id}: SQL failed: ${error.message}`);
   }
@@ -108,6 +129,13 @@ if (expectedText !== null) {
     const extraKeys = Object.keys(parsed).filter((id) => !ids.has(id));
     if (missing.length) errors.push(`js/data/expected.json is missing ${missing.length} problems (e.g. ${missing.slice(0, 3).join(', ')})`);
     if (extraKeys.length) errors.push(`js/data/expected.json has ${extraKeys.length} unknown ids (e.g. ${extraKeys.slice(0, 3).join(', ')})`);
+    for (const problem of problems) {
+      const entry = parsed[problem.id];
+      if (!entry) continue;
+      const wanted = testCasesOf(problem).length;
+      const got = Array.isArray(entry.cases) ? entry.cases.length : 0;
+      if (got !== wanted) errors.push(`js/data/expected.json: ${problem.id} has ${got} case(s), expected ${wanted}`);
+    }
   }
   if (errors.length === 0) {
     const generated = expectedJsonText(await buildExpected(problems));
@@ -125,6 +153,7 @@ console.log(`${errors.length === 0 ? `${problems.length}/${EXPECTED_TOTAL} valid
 console.log(`difficulty: ${byDifficulty.easy} easy / ${byDifficulty.medium} medium / ${byDifficulty.hard} hard`);
 console.log(`sources: ${bySource.leetcode} leetcode / ${bySource.datalemur} datalemur / ${bySource.stratascratch} stratascratch`);
 console.log(`premium: ${premium} problems (minimum ${MIN_PREMIUM})`);
+console.log(`test cases: ${declaredCases} declared, ${executedCases} executed (minimum ${minCases})`);
 console.log(`executed all problems in ${(executeMs / 1000).toFixed(1)}s`);
 console.log(expectedMatches ? 'expected.json matches' : 'expected.json NOT verified');
 console.log(errors.length ? `\n${errors.length} error(s)` : '\nall checks passed');

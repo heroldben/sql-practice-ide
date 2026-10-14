@@ -34,10 +34,12 @@
     </nav>
 
     <div class="site-header-actions">
+      <span id="sync-status" class="sync-status" title="Progress is shared by every browser on this machine"></span>
       <span id="transfer-status" class="transfer-status"></span>
       <button id="export-progress" class="btn btn-ghost" type="button">Export</button>
       <label class="btn btn-ghost" for="import-progress">Import</label>
       <input id="import-progress" type="file" accept="application/json,.json" hidden />
+      <button id="reset-progress" class="btn btn-danger" type="button" title="Delete all solved/starred progress and saved queries">Reset progress</button>
       <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">
         <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
           <circle cx="12" cy="12" r="4.2" fill="currentColor"></circle>

@@ -1,10 +1,45 @@
 /**
- * Progress persistence: localStorage per problem plus JSON export/import.
+ * Progress persistence.
+ *
+ * Two layers:
+ *  - `localStorage` (per browser): instant, offline-safe cache;
+ *  - the local server's shared store at `/api/progress` (SQLite file under
+ *    `.local/`): the real source of truth, so the same progress appears in every
+ *    browser on this machine. When the API is unreachable (e.g. the app is served
+ *    from a static host) everything still works browser-locally.
  *
  * Entry shape: { solved: boolean, starred: boolean, lastQuery: string, updatedAt: ISO string }
  * A missing entry means "not solved, not starred".
  */
 const STORAGE_KEY = 'sql-practice-ide/progress/v1';
+const API_URL = '/api/progress';
+const PUSH_DEBOUNCE_MS = 400;
+
+/** Sync status for the UI: { mode: 'checking'|'server'|'local', backend, error, pending } */
+const syncState = { mode: 'checking', backend: null, error: null, pending: 0 };
+const syncListeners = new Set();
+let pushTimer = null;
+let pendingEntries = {};
+
+export function getSyncState() {
+  return { ...syncState };
+}
+
+export function onSyncChange(listener) {
+  syncListeners.add(listener);
+  return () => syncListeners.delete(listener);
+}
+
+function setSyncState(patch) {
+  Object.assign(syncState, patch);
+  for (const listener of syncListeners) {
+    try {
+      listener(getSyncState());
+    } catch (error) {
+      console.warn('sync listener failed', error);
+    }
+  }
+}
 
 export function emptyEntry() {
   return { solved: false, starred: false, lastQuery: '', updatedAt: null };
@@ -45,7 +80,117 @@ export function updateProblem(progress, problemId, patch) {
   const next = { ...getEntry(progress, problemId), ...patch, updatedAt: new Date().toISOString() };
   progress[problemId] = next;
   saveProgress(progress);
+  schedulePush({ [problemId]: next });
   return next;
+}
+
+/**
+ * Merge two progress maps per question (same rule as the server):
+ * `solved` is sticky, `starred`/`lastQuery` come from the newer `updatedAt`.
+ */
+export function mergeEntryMaps(base, incoming) {
+  const merged = { ...base };
+  for (const [problemId, entry] of Object.entries(incoming)) {
+    const current = merged[problemId];
+    if (!current) {
+      merged[problemId] = entry;
+      continue;
+    }
+    const currentTime = current.updatedAt ? Date.parse(current.updatedAt) : 0;
+    const incomingTime = entry.updatedAt ? Date.parse(entry.updatedAt) : 0;
+    const newer = incomingTime >= currentTime ? entry : current;
+    const older = newer === entry ? current : entry;
+    merged[problemId] = {
+      solved: Boolean(current.solved || entry.solved),
+      starred: Boolean(newer.starred),
+      lastQuery: newer.lastQuery || older.lastQuery,
+      updatedAt: new Date(Math.max(currentTime, incomingTime) || Date.now()).toISOString(),
+    };
+  }
+  return merged;
+}
+
+/** Replace the contents of `target` (keeps the object identity other modules hold). */
+export function applyProgress(target, next) {
+  for (const key of Object.keys(target)) delete target[key];
+  Object.assign(target, next);
+  saveProgress(target);
+}
+
+function schedulePush(entries) {
+  pendingEntries = mergeEntryMaps(pendingEntries, entries);
+  setSyncState({ pending: Object.keys(pendingEntries).length });
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(flushPush, PUSH_DEBOUNCE_MS);
+}
+
+async function flushPush() {
+  const entries = pendingEntries;
+  pendingEntries = {};
+  if (Object.keys(entries).length === 0) return;
+  try {
+    const response = await fetch(API_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entries }),
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    setSyncState({ mode: 'server', backend: data.backend ?? syncState.backend, error: null, pending: Object.keys(pendingEntries).length });
+  } catch (error) {
+    setSyncState({ mode: 'local', error: error.message, pending: Object.keys(pendingEntries).length });
+  }
+}
+
+/**
+ * Pull the shared store, merge it into `progress` (in place) and push back anything
+ * the server is missing. Returns true when local state changed.
+ */
+export async function syncProgress(progress) {
+  try {
+    const response = await fetch(API_URL, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    const remote = data.progress && typeof data.progress === 'object' ? data.progress : {};
+    const merged = mergeEntryMaps(progress, remote);
+    const changed = JSON.stringify(merged) !== JSON.stringify(progress);
+    if (changed) applyProgress(progress, merged);
+    setSyncState({ mode: 'server', backend: data.backend ?? null, error: null });
+
+    // Push entries the server does not have (or has an older copy of).
+    const missing = {};
+    for (const [problemId, entry] of Object.entries(merged)) {
+      const serverEntry = remote[problemId];
+      const serverTime = serverEntry?.updatedAt ? Date.parse(serverEntry.updatedAt) : 0;
+      const localTime = entry.updatedAt ? Date.parse(entry.updatedAt) : 0;
+      if (!serverEntry || localTime > serverTime || (entry.solved && !serverEntry.solved)) missing[problemId] = entry;
+    }
+    if (Object.keys(missing).length > 0) schedulePush(missing);
+    return changed;
+  } catch (error) {
+    setSyncState({ mode: 'local', error: error.message });
+    return false;
+  }
+}
+
+/** Wipe progress everywhere: the shared store and this browser's cache. */
+export async function resetProgressEverywhere(progress) {
+  let remoteReset = false;
+  try {
+    const response = await fetch(API_URL, { method: 'DELETE' });
+    remoteReset = response.ok;
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  } catch (error) {
+    setSyncState({ mode: 'local', error: error.message });
+  }
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.warn('could not clear local progress', error);
+  }
+  applyProgress(progress, {});
+  if (remoteReset) setSyncState({ mode: 'server', error: null, pending: 0 });
+  return remoteReset;
 }
 
 export function solvedStats(problems, progress) {
@@ -106,16 +251,12 @@ function normalizeImported(parsed) {
 /** Merge an exported file into the current progress: newer `updatedAt` wins. */
 export async function importProgressFile(file, progress) {
   const imported = normalizeImported(JSON.parse(await file.text()));
-  let merged = 0;
+  const merged = mergeEntryMaps(progress, imported);
+  let applied = 0;
   for (const [problemId, entry] of Object.entries(imported)) {
-    const current = getEntry(progress, problemId);
-    const currentTime = current.updatedAt ? Date.parse(current.updatedAt) : 0;
-    const importedTime = entry.updatedAt ? Date.parse(entry.updatedAt) : 0;
-    if (!current.updatedAt || importedTime > currentTime) {
-      progress[problemId] = entry;
-      merged += 1;
-    }
+    if (JSON.stringify(getEntry(progress, problemId)) !== JSON.stringify(merged[problemId])) applied += 1;
   }
-  saveProgress(progress);
-  return { imported: Object.keys(imported).length, merged };
+  applyProgress(progress, merged);
+  schedulePush(imported);
+  return { imported: Object.keys(imported).length, merged: applied };
 }

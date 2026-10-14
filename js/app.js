@@ -2,7 +2,7 @@
 import { DIFFICULTY_ORDER, SOURCE_LABELS, problems } from './data/index.js';
 import { clear, el } from './dom.js';
 import { openProblem } from './problem-view.js';
-import { exportProgress, getEntry, importProgressFile, loadProgress, saveProgress, solvedStats, statusOf } from './storage.js';
+import { exportProgress, getEntry, getSyncState, importProgressFile, loadProgress, onSyncChange, resetProgressEverywhere, solvedStats, statusOf, syncProgress, updateProblem } from './storage.js';
 import { initTheme } from './theme.js';
 
 const state = {
@@ -33,6 +33,8 @@ const dom = {
   exportButton: document.getElementById('export-progress'),
   importInput: document.getElementById('import-progress'),
   transferStatus: document.getElementById('transfer-status'),
+  resetButton: document.getElementById('reset-progress'),
+  syncStatus: document.getElementById('sync-status'),
   themeToggle: document.getElementById('theme-toggle'),
 };
 
@@ -167,8 +169,7 @@ function renderList() {
       text: icon.text,
       onclick: (event) => {
         event.stopPropagation();
-        state.progress[problem.id] = { ...entry, starred: !entry.starred, updatedAt: new Date().toISOString() };
-        saveProgress(state.progress);
+        updateProblem(state.progress, problem.id, { starred: !entry.starred });
         renderList();
         renderStats();
       },
@@ -273,9 +274,47 @@ dom.importInput.addEventListener('change', async () => {
 
 window.addEventListener('hashchange', route);
 
+function renderSyncStatus() {
+  const sync = getSyncState();
+  let text = sync.mode === 'server' ? `synced · ${sync.backend ?? 'local db'}` : sync.mode === 'checking' ? 'checking local db…' : 'this browser only';
+  if (sync.pending > 0) text += ` · saving ${sync.pending}`;
+  dom.syncStatus.textContent = text;
+  dom.syncStatus.className = `sync-status sync-${sync.mode}`;
+  dom.syncStatus.title = sync.mode === 'server'
+    ? `Progress is stored in the shared local database (${sync.backend}) — every browser on this machine sees the same state.`
+    : `Shared store unavailable${sync.error ? ` (${sync.error})` : ''} — progress is kept in this browser only. Use Export/Import to move it.`;
+}
+
+async function refreshFromServer() {
+  const changed = await syncProgress(state.progress);
+  if (changed) {
+    renderStats();
+    renderList();
+  }
+}
+
+dom.resetButton.addEventListener('click', async () => {
+  const confirmed = window.confirm(
+    'Reset ALL progress in every browser?\n\nThis deletes solved/starred flags and saved queries for all 200 questions and cannot be undone. Export first if you want a backup.',
+  );
+  if (!confirmed) return;
+  const remoteReset = await resetProgressEverywhere(state.progress);
+  renderStats();
+  renderList();
+  dom.transferStatus.textContent = remoteReset ? 'progress reset everywhere' : 'local progress reset (shared store unreachable)';
+});
+
+onSyncChange(renderSyncStatus);
+window.addEventListener('focus', refreshFromServer);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') refreshFromServer();
+});
+
 initTheme(dom.themeToggle);
 renderStats();
 renderTags();
 renderTopicChip();
 renderList();
 route();
+renderSyncStatus();
+refreshFromServer();

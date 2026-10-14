@@ -38,6 +38,33 @@ export const problems = [
       ORDER BY customer_id;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "no 2021 revenue is positive, so the answer is empty",
+        seedSQL: `
+      INSERT INTO customers (customer_id, year, revenue) VALUES
+        (1, 2021, 0),
+        (2, 2021, -5),
+        (3, 2021, NULL),
+        (4, 2020, 100),
+        (5, 2022, 50);
+    `,
+      },
+      {
+        note: "a revenue of exactly one counts while other years do not",
+        seedSQL: `
+      INSERT INTO customers (customer_id, year, revenue) VALUES
+        (1, 2019, 500),
+        (1, 2021, 1),
+        (2, 2018, -3),
+        (2, 2021, 2),
+        (3, 2021, 0),
+        (4, 2017, 40),
+        (5, 2021, -1),
+        (6, 2022, 10);
+    `,
+      },
+    ],
   },
   {
     id: "lc-183-customers-who-never-order",
@@ -80,6 +107,38 @@ export const problems = [
       ORDER BY c.name;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "every registered customer ordered at least once, so the answer is empty",
+        seedSQL: `
+      INSERT INTO customers (id, name) VALUES
+        (21, 'Kim Alvarez'),
+        (22, 'Lars Berg'),
+        (23, 'Mira Costa');
+      INSERT INTO orders (id, customer_id) VALUES
+        (301, 21),
+        (302, 21),
+        (303, 22),
+        (304, 23),
+        (305, 23);
+    `,
+      },
+      {
+        note: "an order row with an unknown/NULL customer plus a customer with several orders",
+        seedSQL: `
+      INSERT INTO customers (id, name) VALUES
+        (31, 'Nadia Fournier'),
+        (32, 'Omar Haddad'),
+        (33, 'Petra Ivanova'),
+        (34, 'Quinn Jones');
+      INSERT INTO orders (id, customer_id) VALUES
+        (401, 31),
+        (402, 31),
+        (403, NULL),
+        (404, 34);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1873-calculate-special-bonus",
@@ -127,6 +186,33 @@ export const problems = [
       ORDER BY e.employee_id;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "missing bonus rows and a name starting with a lowercase m",
+        seedSQL: `
+      INSERT INTO employees (employee_id, name, salary) VALUES
+        (2, 'Ana Diaz', 3000),
+        (4, 'Bo Nkemelu', 1000),
+        (5, 'Nina Krug', 2200),
+        (7, 'mira lowe', 4000),
+        (9, 'Mira Vale', 2500);
+      INSERT INTO bonus (employee_id, bonus) VALUES
+        (2, 999),
+        (5, 250),
+        (7, 120),
+        (9, 777);
+    `,
+      },
+      {
+        note: "an empty bonus table leaves every employee at zero",
+        seedSQL: `
+      INSERT INTO employees (employee_id, name, salary) VALUES
+        (1, 'Ada Cole', 3000),
+        (3, 'Tina Ray', 2000),
+        (8, 'Bilal Haddad', 1500);
+    `,
+      },
+    ],
   },
   {
     id: "lc-175-combine-two-tables",
@@ -171,6 +257,32 @@ export const problems = [
       ORDER BY p.person_id;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "every person has no address, so city and state are null",
+        seedSQL: `
+      INSERT INTO address (address_id, city, state) VALUES
+        (10, 'Lisbon', 'PT'),
+        (11, 'Porto', 'PT');
+      INSERT INTO person (person_id, first_name, last_name, address_id) VALUES
+        (1, 'Amara', 'Okafor', NULL),
+        (2, 'Bilal', 'Haddad', NULL),
+        (3, 'Chiara', 'Rossi', NULL);
+    `,
+      },
+      {
+        note: "three people share one address while another address is unused",
+        seedSQL: `
+      INSERT INTO address (address_id, city, state) VALUES
+        (5, 'Kyiv', 'UA'),
+        (9, 'Rome', 'IT');
+      INSERT INTO person (person_id, first_name, last_name, address_id) VALUES
+        (2, 'Ana', 'Moreau', 5),
+        (3, 'Bo', 'Nakamura', 5),
+        (7, 'Cy', 'Bianchi', 5);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1607-sellers-with-no-sales",
@@ -220,6 +332,35 @@ export const problems = [
       ORDER BY s.seller_name;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "orders exactly on the 2020 boundaries disqualify their sellers",
+        seedSQL: `
+      INSERT INTO seller (seller_id, seller_name) VALUES
+        (1, 'Ana Rivas'),
+        (2, 'Bilal Otieno'),
+        (3, 'Cara Lund'),
+        (4, 'Dara Petrova');
+      INSERT INTO orders (order_id, sale_date, order_cost, seller_id) VALUES
+        (1, DATE '2020-01-01', 100.00, 1),
+        (2, DATE '2020-12-31', 200.00, 2),
+        (3, DATE '2019-12-31', 300.00, 3),
+        (4, DATE '2021-01-01', 400.00, 4);
+    `,
+      },
+      {
+        note: "a null seller id order plus a seller with no orders",
+        seedSQL: `
+      INSERT INTO seller (seller_id, seller_name) VALUES
+        (1, 'Ana Rivas'),
+        (2, 'Bilal Otieno');
+      INSERT INTO orders (order_id, sale_date, order_cost, seller_id) VALUES
+        (1, DATE '2020-03-03', 500.00, NULL),
+        (2, DATE '2020-06-06', 250.00, 2),
+        (3, DATE '2016-06-06', 100.00, 1);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1407-top-travellers",
@@ -265,6 +406,35 @@ export const problems = [
       ORDER BY travelled_distance DESC, name ASC;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "all three users tie with the same travelled distance",
+        seedSQL: `
+      INSERT INTO users (id, name) VALUES
+        (1, 'Cara Lund'),
+        (2, 'Ana Moreau'),
+        (3, 'Bilal Haddad');
+      INSERT INTO rides (id, user_id, distance) VALUES
+        (11, 1, 50),
+        (12, 2, 50),
+        (13, 3, 50);
+    `,
+      },
+      {
+        note: "zero distance rides and users with no rides at all",
+        seedSQL: `
+      INSERT INTO users (id, name) VALUES
+        (1, 'Ana Moreau'),
+        (2, 'Bilal Haddad'),
+        (3, 'Cara Lund'),
+        (4, 'Dara Petrova');
+      INSERT INTO rides (id, user_id, distance) VALUES
+        (11, 1, 0),
+        (12, 2, 7),
+        (13, 2, 3);
+    `,
+      },
+    ],
   },
   {
     id: "lc-607-sales-person",
@@ -316,15 +486,49 @@ export const problems = [
     solutionSQL: `
       SELECT s.name
       FROM sales_person s
-      WHERE s.sales_id NOT IN (
-        SELECT o.sales_id
+      WHERE NOT EXISTS (
+        SELECT 1
         FROM orders o
         JOIN company c ON c.com_id = o.com_id
         WHERE c.name = 'RED'
+          AND o.sales_id = s.sales_id
       )
       ORDER BY s.name;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "a RED order with no sales person must not exclude anyone",
+        seedSQL: `
+      INSERT INTO sales_person (sales_id, name, salary, commission_rate, hire_date) VALUES
+        (1, 'Ana Bello', 100000, 6, DATE '2016-04-01'),
+        (2, 'Bilal Costa', 90000, 5, DATE '2017-01-15'),
+        (3, 'Cara Wei', 80000, 4, DATE '2018-09-01'),
+        (4, 'Dara Nolan', 70000, 3, DATE '2019-05-20');
+      INSERT INTO company (com_id, name, city) VALUES
+        (1, 'RED', 'Boston'),
+        (2, 'GREEN', 'Chicago');
+      INSERT INTO orders (order_id, order_date, com_id, sales_id, amount) VALUES
+        (1, DATE '2019-01-10', 1, NULL, 500),
+        (2, DATE '2019-02-20', 2, 3, 1500),
+        (3, DATE '2019-03-05', 1, 4, 700);
+    `,
+      },
+      {
+        note: "a company named red in lower case is not RED",
+        seedSQL: `
+      INSERT INTO sales_person (sales_id, name, salary, commission_rate, hire_date) VALUES
+        (1, 'Ana Bello', 100000, 6, DATE '2016-04-01'),
+        (2, 'Bilal Costa', 90000, 5, DATE '2017-01-15');
+      INSERT INTO company (com_id, name, city) VALUES
+        (1, 'red', 'Boston'),
+        (2, 'GREEN', 'Chicago');
+      INSERT INTO orders (order_id, order_date, com_id, sales_id, amount) VALUES
+        (1, DATE '2019-01-10', 1, 1, 1000),
+        (2, DATE '2019-02-20', 1, 2, 2000);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1890-the-latest-login-in-2020",
@@ -363,6 +567,29 @@ export const problems = [
       ORDER BY user_id;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "no login falls inside 2020 so the answer is empty",
+        seedSQL: `
+      INSERT INTO logins (user_id, time_stamp) VALUES
+        (1, TIMESTAMP '2019-12-31 23:59:59'),
+        (1, TIMESTAMP '2021-01-01 00:00:00'),
+        (2, TIMESTAMP '2018-06-01 12:00:00'),
+        (3, TIMESTAMP '2022-02-02 02:02:02');
+    `,
+      },
+      {
+        note: "logins on the first and the last second of 2020",
+        seedSQL: `
+      INSERT INTO logins (user_id, time_stamp) VALUES
+        (7, TIMESTAMP '2020-01-01 00:00:00'),
+        (7, TIMESTAMP '2020-01-01 00:00:01'),
+        (8, TIMESTAMP '2020-12-31 23:59:59'),
+        (9, TIMESTAMP '2021-01-01 00:00:00'),
+        (9, TIMESTAMP '2019-12-31 23:59:59');
+    `,
+      },
+    ],
   },
   {
     id: "lc-1398-customers-who-bought-products-a-and-b-but-not-c",
@@ -415,6 +642,39 @@ export const problems = [
       ORDER BY c.customer_id;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "every customer also bought C so the answer is empty",
+        seedSQL: `
+      INSERT INTO customers (customer_id, customer_name) VALUES
+        (1, 'Ana Moreau'),
+        (2, 'Bilal Haddad');
+      INSERT INTO orders (order_id, customer_id, product_name) VALUES
+        (1, 1, 'A'),
+        (2, 1, 'B'),
+        (3, 1, 'C'),
+        (4, 2, 'A'),
+        (5, 2, 'C');
+    `,
+      },
+      {
+        note: "repeated A and B orders and a customer with no orders",
+        seedSQL: `
+      INSERT INTO customers (customer_id, customer_name) VALUES
+        (1, 'Ana Moreau'),
+        (2, 'Bilal Haddad'),
+        (3, 'Cara Lund');
+      INSERT INTO orders (order_id, customer_id, product_name) VALUES
+        (1, 1, 'A'),
+        (2, 1, 'A'),
+        (3, 1, 'B'),
+        (4, 1, 'B'),
+        (5, 2, 'A'),
+        (6, 2, 'B'),
+        (7, 2, 'C');
+    `,
+      },
+    ],
   },
   {
     id: "lc-1112-highest-grade-for-each-student",
@@ -449,6 +709,32 @@ export const problems = [
       ORDER BY student_id, grade DESC, course_id;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "every best grade is tied across several courses",
+        seedSQL: `
+      INSERT INTO enrollments (student_id, course_id, grade) VALUES
+        (1, 1, 90),
+        (1, 2, 90),
+        (1, 3, 90),
+        (2, 4, 70),
+        (2, 5, 70),
+        (3, 9, 100);
+    `,
+      },
+      {
+        note: "zero and negative grades still pick the highest course",
+        seedSQL: `
+      INSERT INTO enrollments (student_id, course_id, grade) VALUES
+        (1, 1, 50),
+        (1, 7, 80),
+        (2, 2, -10),
+        (2, 3, -5),
+        (3, 4, 0),
+        (3, 6, -1);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1440-evaluate-boolean-expression",
@@ -500,6 +786,35 @@ export const problems = [
       JOIN variables r ON r.name = e.right_operand;
     `,
     ordered: false,
+    testCases: [
+      {
+        note: "equal values, negative values, and each operator",
+        seedSQL: `
+      INSERT INTO variables (name, value) VALUES
+        ('a', 5),
+        ('b', 5),
+        ('c', -3);
+      INSERT INTO expressions (left_operand, operator, right_operand) VALUES
+        ('a', '>', 'b'),
+        ('a', '=', 'b'),
+        ('a', '<', 'b'),
+        ('c', '=', 'c'),
+        ('c', '<', 'a');
+    `,
+      },
+      {
+        note: "three comparisons that are all false",
+        seedSQL: `
+      INSERT INTO variables (name, value) VALUES
+        ('p', 1),
+        ('q', 2);
+      INSERT INTO expressions (left_operand, operator, right_operand) VALUES
+        ('p', '>', 'q'),
+        ('p', '=', 'q'),
+        ('q', '<', 'p');
+    `,
+      },
+    ],
   },
   {
     id: "lc-1212-team-scores-in-football-tournament",
@@ -564,6 +879,34 @@ export const problems = [
       ORDER BY num_points DESC, t.team_id ASC;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "draws, an idle team, and a shared one-point total",
+        seedSQL: `
+      INSERT INTO teams (team_id, team_name) VALUES
+        (1, 'Alpha'),
+        (2, 'Beta'),
+        (3, 'Gamma'),
+        (4, 'Delta');
+      INSERT INTO matches (home_team_id, away_team_id, home_team_goals, away_team_goals) VALUES
+        (1, 2, 0, 0),
+        (2, 3, 3, 1),
+        (1, 3, 2, 2);
+    `,
+      },
+      {
+        note: "two teams lose repeatedly while another wins twice",
+        seedSQL: `
+      INSERT INTO teams (team_id, team_name) VALUES
+        (1, 'Alpha'),
+        (2, 'Beta'),
+        (3, 'Gamma');
+      INSERT INTO matches (home_team_id, away_team_id, home_team_goals, away_team_goals) VALUES
+        (1, 2, 1, 0),
+        (3, 2, 4, 0);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1445-apples-oranges",
@@ -602,6 +945,28 @@ export const problems = [
       ORDER BY sale_date;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "dates selling only one fruit and a zero quantity",
+        seedSQL: `
+      INSERT INTO sales (sale_date, fruit, sold_num) VALUES
+        (DATE '2021-01-01', 'oranges', 4),
+        (DATE '2021-01-02', 'apples', 7),
+        (DATE '2021-01-03', 'apples', 0);
+    `,
+      },
+      {
+        note: "a balanced day and a day with only oranges",
+        seedSQL: `
+      INSERT INTO sales (sale_date, fruit, sold_num) VALUES
+        (DATE '2022-06-01', 'apples', 10),
+        (DATE '2022-06-01', 'oranges', 10),
+        (DATE '2022-06-02', 'apples', 3),
+        (DATE '2022-06-02', 'oranges', 1),
+        (DATE '2022-06-03', 'oranges', 5);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1699-number-of-calls-between-two-persons",
@@ -641,6 +1006,27 @@ export const problems = [
       ORDER BY person1, person2;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "a one-way pair and repeated calls in both directions",
+        seedSQL: `
+      INSERT INTO calls (from_id, to_id, duration) VALUES
+        (1, 2, 10),
+        (2, 1, 20),
+        (1, 2, 30),
+        (3, 4, 5);
+    `,
+      },
+      {
+        note: "three pairs that never share a person",
+        seedSQL: `
+      INSERT INTO calls (from_id, to_id, duration) VALUES
+        (1, 2, 5),
+        (3, 1, 7),
+        (2, 3, 9);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1501-countries-you-can-safely-invest-in",
@@ -709,6 +1095,43 @@ export const problems = [
       ORDER BY country;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "equal durations put every country on the global average",
+        seedSQL: `
+      INSERT INTO country (name, country_code) VALUES
+        ('Peru', '051'),
+        ('Chile', '056');
+      INSERT INTO person (id, name, phone_number) VALUES
+        (1, 'Ana Moreau', '0510000000'),
+        (2, 'Bo Nakamura', '0560000000'),
+        (3, 'Cy Lago', '9990000000');
+      INSERT INTO calls (caller_id, callee_id, duration) VALUES
+        (1, 2, 50),
+        (2, 1, 50),
+        (3, 1, 50),
+        (1, 3, 50);
+    `,
+      },
+      {
+        note: "one country above the average and one exactly on it",
+        seedSQL: `
+      INSERT INTO country (name, country_code) VALUES
+        ('Aland', '011'),
+        ('Bland', '022'),
+        ('Cland', '033'),
+        ('Dland', '044');
+      INSERT INTO person (id, name, phone_number) VALUES
+        (1, 'P One', '0110000000'),
+        (2, 'P Two', '0220000000'),
+        (3, 'P Three', '0330000000');
+      INSERT INTO calls (caller_id, callee_id, duration) VALUES
+        (1, 2, 100),
+        (2, 3, 10),
+        (3, 2, 10);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1264-page-recommendations",
@@ -761,6 +1184,38 @@ export const problems = [
       ORDER BY recommended_page;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "friendship pairs where user one is listed second",
+        seedSQL: `
+      INSERT INTO friendship (user1_id, user2_id) VALUES
+        (2, 1),
+        (3, 1),
+        (5, 6);
+      INSERT INTO likes (user_id, page_id) VALUES
+        (1, 101),
+        (2, 101),
+        (2, 103),
+        (3, 101),
+        (3, 104),
+        (5, 106),
+        (6, 106);
+    `,
+      },
+      {
+        note: "two friends like the very same new page",
+        seedSQL: `
+      INSERT INTO friendship (user1_id, user2_id) VALUES
+        (1, 7),
+        (1, 8);
+      INSERT INTO likes (user_id, page_id) VALUES
+        (7, 201),
+        (8, 201),
+        (7, 202),
+        (1, 203);
+    `,
+      },
+    ],
   },
   {
     id: "lc-608-tree-node",
@@ -798,6 +1253,27 @@ export const problems = [
       ORDER BY id;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "a root whose children are all leaves",
+        seedSQL: `
+      INSERT INTO tree (id, p_id) VALUES
+        (1, NULL),
+        (2, 1),
+        (3, 1);
+    `,
+      },
+      {
+        note: "a deep chain where the middle nodes are inner",
+        seedSQL: `
+      INSERT INTO tree (id, p_id) VALUES
+        (1, NULL),
+        (2, 1),
+        (3, 2),
+        (4, 3);
+    `,
+      },
+    ],
   },
   {
     id: "lc-534-game-play-analysis-iii",
@@ -839,6 +1315,27 @@ export const problems = [
       ORDER BY player_id, event_date;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "a zero-game first row and a single-row player",
+        seedSQL: `
+      INSERT INTO activity (player_id, device_id, event_date, games_played) VALUES
+        (1, 1, DATE '2017-01-01', 0),
+        (1, 1, DATE '2017-01-02', 4),
+        (2, 1, DATE '2017-03-03', 9);
+    `,
+      },
+      {
+        note: "rows inserted out of chronological order per player",
+        seedSQL: `
+      INSERT INTO activity (player_id, device_id, event_date, games_played) VALUES
+        (1, 1, DATE '2018-05-05', 2),
+        (1, 1, DATE '2018-01-01', 5),
+        (1, 1, DATE '2018-03-03', 0),
+        (2, 1, DATE '2017-12-31', 10);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1783-grand-slam-titles",
@@ -895,6 +1392,34 @@ export const problems = [
       ORDER BY p.player_id;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "one player wins all four majors in a single year",
+        seedSQL: `
+      INSERT INTO players (player_id, player_name) VALUES
+        (1, 'Nadia Kovac'),
+        (2, 'Omar Rashid'),
+        (3, 'Petra Lindqvist'),
+        (4, 'Quinn Doyle');
+      INSERT INTO championships (year, wimbledon, fr_open, us_open, au_open) VALUES
+        (2023, 1, 1, 1, 1),
+        (2024, 2, 3, 2, 3);
+    `,
+      },
+      {
+        note: "years with null winners in some majors",
+        seedSQL: `
+      INSERT INTO players (player_id, player_name) VALUES
+        (1, 'Nadia Kovac'),
+        (2, 'Omar Rashid'),
+        (3, 'Petra Lindqvist');
+      INSERT INTO championships (year, wimbledon, fr_open, us_open, au_open) VALUES
+        (2020, 1, NULL, 2, NULL),
+        (2021, NULL, 1, 1, 2),
+        (2022, 2, 2, NULL, 2);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1412-find-the-quiet-students-in-all-exams",
@@ -962,5 +1487,38 @@ export const problems = [
       ORDER BY s.student_id;
     `,
     ordered: true,
+    testCases: [
+      {
+        note: "every score in every exam ties so nobody is quiet",
+        seedSQL: `
+      INSERT INTO student (student_id, student_name) VALUES
+        (1, 'Ana Moreau'),
+        (2, 'Bilal Haddad');
+      INSERT INTO exam (exam_id, student_id, score) VALUES
+        (201, 1, 50),
+        (201, 2, 50),
+        (202, 1, 50),
+        (202, 2, 50);
+    `,
+      },
+      {
+        note: "a single-exam student and a student between extremes twice",
+        seedSQL: `
+      INSERT INTO student (student_id, student_name) VALUES
+        (1, 'Ana Moreau'),
+        (2, 'Bilal Haddad'),
+        (3, 'Cara Lund'),
+        (4, 'Dara Petrova');
+      INSERT INTO exam (exam_id, student_id, score) VALUES
+        (401, 1, 20),
+        (401, 2, 10),
+        (401, 4, 40),
+        (402, 1, 55),
+        (402, 2, 50),
+        (402, 3, 57),
+        (402, 4, 60);
+    `,
+      },
+    ],
   },
 ];

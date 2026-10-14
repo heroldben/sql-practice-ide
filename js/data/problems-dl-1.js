@@ -41,6 +41,30 @@ LEFT JOIN user_tweets ut ON ut.tweet_count = b.tweet_bucket
 GROUP BY b.tweet_bucket
 ORDER BY b.tweet_bucket;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a bucket that no user falls into",
+        seedSQL: `INSERT INTO tweets (tweet_id, user_id, msg, tweet_date) VALUES
+  (1, 201, 'solo', '2022-09-01 08:00:00'),
+  (2, 202, 'solo', '2022-09-01 09:00:00'),
+  (3, 203, 'pair', '2022-09-01 10:00:00'),
+  (4, 203, 'pair', '2022-09-02 10:00:00'),
+  (5, 204, 'burst', '2022-09-03 11:00:00'),
+  (6, 204, 'burst', '2022-09-03 12:00:00'),
+  (7, 204, 'burst', '2022-09-03 13:00:00'),
+  (8, 204, 'burst', '2022-09-03 14:00:00');`,
+      },
+      {
+        note: "every user posts the same number of tweets",
+        seedSQL: `INSERT INTO tweets (tweet_id, user_id, msg, tweet_date) VALUES
+  (1, 301, 'a', '2022-10-01 08:00:00'),
+  (2, 301, 'b', '2022-10-02 08:00:00'),
+  (3, 302, 'a', '2022-10-01 09:00:00'),
+  (4, 302, 'b', '2022-10-03 09:00:00'),
+  (5, 303, 'a', '2022-10-02 10:00:00'),
+  (6, 303, 'b', '2022-10-04 10:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-matching-skills",
@@ -76,6 +100,39 @@ GROUP BY candidate_id
 HAVING count(DISTINCT skill) = 3
 ORDER BY candidate_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "extra skills beyond the three required",
+        seedSQL: `INSERT INTO candidates (candidate_id, skill) VALUES
+  (500, 'Python'),
+  (500, 'Tableau'),
+  (500, 'PostgreSQL'),
+  (500, 'Excel'),
+  (500, 'R'),
+  (600, 'Python'),
+  (600, 'Tableau'),
+  (700, 'Python'),
+  (700, 'Tableau'),
+  (700, 'PostgreSQL'),
+  (800, 'SQL'),
+  (800, 'python'),
+  (800, 'tableau'),
+  (900, 'PostgreSQL'),
+  (900, 'Excel');`,
+      },
+      {
+        note: "no candidate holds all three skills",
+        seedSQL: `INSERT INTO candidates (candidate_id, skill) VALUES
+  (11, 'Python'),
+  (11, 'Excel'),
+  (12, 'Tableau'),
+  (12, 'PostgreSQL'),
+  (13, 'R'),
+  (13, 'SQL'),
+  (14, 'Python'),
+  (14, 'Tableau');`,
+      },
+    ],
   },
   {
     id: "dl-sql-page-with-no-likes",
@@ -112,6 +169,31 @@ LEFT JOIN page_likes l ON l.page_id = p.page_id
 WHERE l.like_id IS NULL
 ORDER BY p.page_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a like row with no page id",
+        seedSQL: `INSERT INTO pages (page_id, page_name) VALUES
+  (1, 'Home'),
+  (2, 'About'),
+  (3, 'Careers'),
+  (4, 'Blog');
+INSERT INTO page_likes (like_id, page_id, liked_at) VALUES
+  (20, 1, '2022-08-01 10:00:00'),
+  (21, NULL, '2022-08-02 10:00:00'),
+  (22, 4, '2022-08-03 10:00:00'),
+  (23, 4, NULL);`,
+      },
+      {
+        note: "every page has already been liked",
+        seedSQL: `INSERT INTO pages (page_id, page_name) VALUES
+  (5, 'Pricing'),
+  (6, 'Docs');
+INSERT INTO page_likes (like_id, page_id, liked_at) VALUES
+  (30, 5, '2022-09-01 10:00:00'),
+  (31, 6, NULL),
+  (32, 6, '2022-09-02 10:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-tesla-unfinished-parts",
@@ -150,6 +232,26 @@ WHERE NOT EXISTS (
 )
 ORDER BY p.part;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a part with only some steps finished",
+        seedSQL: `INSERT INTO parts (part, assembly_step, finish_date) VALUES
+  ('Axle', 1, '2022-05-01'),
+  ('Axle', 2, NULL),
+  ('Body', 1, NULL),
+  ('Body', 2, NULL),
+  ('Cabin', 1, '2022-05-03'),
+  ('Door', 1, NULL);`,
+      },
+      {
+        note: "every part has been fully finished",
+        seedSQL: `INSERT INTO parts (part, assembly_step, finish_date) VALUES
+  ('Wheel', 1, '2022-06-01'),
+  ('Wheel', 2, '2022-06-02'),
+  ('Seat', 1, '2022-06-03'),
+  ('Mirror', 1, '2022-06-04');`,
+      },
+    ],
   },
   {
     id: "dl-sql-third-transaction",
@@ -193,6 +295,33 @@ FROM ordered_transactions
 WHERE transaction_rank = 3
 ORDER BY user_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "the third transaction lands inside a timestamp tie",
+        seedSQL: `INSERT INTO transactions (transaction_id, user_id, spend, transaction_date) VALUES
+  (1, 10, 30.00, '2022-05-01 09:00:00'),
+  (2, 10, 40.00, '2022-05-02 10:00:00'),
+  (3, 10, 50.00, '2022-05-02 10:00:00'),
+  (4, 11, 60.00, '2022-05-03 08:00:00'),
+  (5, 11, 70.00, '2022-05-04 08:00:00'),
+  (6, 12, 80.00, '2022-05-05 07:00:00'),
+  (7, 12, 90.00, '2022-05-06 07:00:00'),
+  (8, 12, 100.00, '2022-05-07 07:00:00'),
+  (9, 13, 11.00, '2022-05-08 06:00:00'),
+  (10, 13, 12.00, '2022-05-09 06:00:00'),
+  (11, 13, 13.00, '2022-05-10 06:00:00'),
+  (12, 13, 14.00, '2022-05-10 06:00:00');`,
+      },
+      {
+        note: "nobody has a third transaction yet",
+        seedSQL: `INSERT INTO transactions (transaction_id, user_id, spend, transaction_date) VALUES
+  (1, 21, 15.00, '2022-06-01 09:00:00'),
+  (2, 21, 25.00, '2022-06-02 09:00:00'),
+  (3, 22, 35.00, '2022-06-03 09:00:00'),
+  (4, 23, 45.00, '2022-06-04 09:00:00'),
+  (5, 23, 55.00, '2022-06-05 09:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-sql-second-highest-salary",
@@ -222,6 +351,26 @@ ORDER BY user_id;`,
 FROM employees
 WHERE salary < (SELECT max(salary) FROM employees);`,
     ordered: false,
+    testCases: [
+      {
+        note: "blank salaries alongside a real second value",
+        seedSQL: `INSERT INTO employees (employee_id, employee_name, department, salary) VALUES
+  (1, 'Ines', 'sales', 100000.00),
+  (2, 'Jonas', 'sales', 100000.00),
+  (3, 'Kaia', 'sales', 80000.00),
+  (4, 'Liam', 'sales', 80000.00),
+  (5, 'Mina', 'sales', NULL),
+  (6, 'Noor', 'sales', NULL);`,
+      },
+      {
+        note: "only one salary value besides the blanks",
+        seedSQL: `INSERT INTO employees (employee_id, employee_name, department, salary) VALUES
+  (1, 'Owen', 'sales', 70000.00),
+  (2, 'Pia', 'sales', 70000.00),
+  (3, 'Quinn', 'sales', 70000.00),
+  (4, 'Rafa', 'sales', NULL);`,
+      },
+    ],
   },
   {
     id: "dl-time-spent-snaps",
@@ -266,6 +415,25 @@ SELECT
 FROM daily
 ORDER BY activity_date;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a day that only has sends",
+        seedSQL: `INSERT INTO activities (activity_id, user_id, activity_type, time_spent, activity_date) VALUES
+  (1, 201, 'send', 4.00, '2022-07-01'),
+  (2, 202, 'send', 6.00, '2022-07-01'),
+  (3, 201, 'open', 5.00, '2022-07-02'),
+  (4, 202, 'send', 5.00, '2022-07-02');`,
+      },
+      {
+        note: "uneven splits force percentage rounding",
+        seedSQL: `INSERT INTO activities (activity_id, user_id, activity_type, time_spent, activity_date) VALUES
+  (1, 201, 'send', 1.00, '2022-08-01'),
+  (2, 201, 'open', 2.00, '2022-08-01'),
+  (3, 202, 'send', 3.00, '2022-08-02'),
+  (4, 202, 'open', 3.00, '2022-08-02'),
+  (5, 203, 'send', 7.00, '2022-08-03');`,
+      },
+    ],
   },
   {
     id: "dl-rolling-average-tweets",
@@ -313,6 +481,27 @@ SELECT
 FROM daily
 ORDER BY user_id, tweet_date;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a long quiet stretch empties the window",
+        seedSQL: `INSERT INTO tweets (tweet_id, user_id, tweet_date) VALUES
+  (1, 50, '2022-09-01'),
+  (2, 50, '2022-09-01'),
+  (3, 50, '2022-09-15'),
+  (4, 51, '2022-09-10'),
+  (5, 51, '2022-09-11'),
+  (6, 51, '2022-09-12');`,
+      },
+      {
+        note: "bursts spread across the window edge",
+        seedSQL: `INSERT INTO tweets (tweet_id, user_id, tweet_date) VALUES
+  (1, 60, '2022-10-01'),
+  (2, 60, '2022-10-01'),
+  (3, 60, '2022-10-01'),
+  (4, 60, '2022-10-03'),
+  (5, 61, '2022-10-02');`,
+      },
+    ],
   },
   {
     id: "dl-sql-highest-grossing",
@@ -360,6 +549,25 @@ FROM ranked r
 WHERE r.spend_rank <= 2
 ORDER BY r.category, r.total_spend DESC, r.product;`,
     ordered: true,
+    testCases: [
+      {
+        note: "all products tied for the top spot",
+        seedSQL: `INSERT INTO product_spend (spend_id, category, product, user_id, spend, transaction_date) VALUES
+  (1, 'kitchen', 'Kettle', 101, 400.00, '2022-04-01'),
+  (2, 'kitchen', 'Mixer', 102, 400.00, '2022-04-02'),
+  (3, 'kitchen', 'Blender', 103, 400.00, '2022-04-03'),
+  (4, 'garden', 'Rake', 104, 50.00, '2022-04-04'),
+  (5, 'garden', 'Hose', 105, 900.00, '2021-10-10');`,
+      },
+      {
+        note: "spend landing exactly on the year boundary",
+        seedSQL: `INSERT INTO product_spend (spend_id, category, product, user_id, spend, transaction_date) VALUES
+  (1, 'office', 'Desk', 101, 100.00, '2022-01-01'),
+  (2, 'office', 'Chair', 102, 90.00, '2022-12-31'),
+  (3, 'office', 'Lamp', 103, 900.00, '2021-12-31'),
+  (4, 'office', 'Shelf', 104, 900.00, '2023-01-01');`,
+      },
+    ],
   },
   {
     id: "dl-top-two-products-per-category",
@@ -424,6 +632,39 @@ FROM ranked
 WHERE product_rank <= 2
 ORDER BY category, order_count DESC, product_name;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a category with only one selling product",
+        seedSQL: `INSERT INTO products (product_id, product_name, category) VALUES
+  (1, 'Amp', 'alpha'),
+  (2, 'Board', 'alpha'),
+  (3, 'Cable', 'alpha'),
+  (4, 'Dock', 'beta'),
+  (5, 'Echo', 'beta'),
+  (6, 'Film', 'gamma');
+INSERT INTO orders (order_id, product_id, order_date) VALUES
+  (101, 1, '2022-05-01'),
+  (102, 1, '2022-05-02'),
+  (103, 4, '2022-05-03'),
+  (104, 5, '2022-05-04'),
+  (105, 5, '2022-05-05');`,
+      },
+      {
+        note: "all sellers tied on order count",
+        seedSQL: `INSERT INTO products (product_id, product_name, category) VALUES
+  (1, 'Nova', 'sigma'),
+  (2, 'Otto', 'sigma'),
+  (3, 'Pico', 'sigma'),
+  (4, 'Rune', 'tau'),
+  (5, 'Sable', 'tau');
+INSERT INTO orders (order_id, product_id, order_date) VALUES
+  (101, 1, '2022-06-01'),
+  (102, 2, '2022-06-02'),
+  (103, 3, '2022-06-03'),
+  (104, 4, '2022-06-04'),
+  (105, 5, '2022-06-05');`,
+      },
+    ],
   },
   {
     id: "dl-rolling-7-day-signups",
@@ -465,6 +706,25 @@ SELECT
 FROM daily
 ORDER BY signup_date;`,
     ordered: true,
+    testCases: [
+      {
+        note: "signups exactly a week apart",
+        seedSQL: `INSERT INTO signups (user_id, signup_date) VALUES
+  (1, '2022-02-01'),
+  (2, '2022-02-07'),
+  (3, '2022-02-08'),
+  (4, '2022-02-14'),
+  (5, '2022-02-15');`,
+      },
+      {
+        note: "all signups land on a single day",
+        seedSQL: `INSERT INTO signups (user_id, signup_date) VALUES
+  (1, '2022-03-20'),
+  (2, '2022-03-20'),
+  (3, '2022-03-20'),
+  (4, '2022-03-20');`,
+      },
+    ],
   },
   {
     id: "dl-churned-subscribers",
@@ -512,6 +772,26 @@ WHERE subscription_end IS NOT NULL
 GROUP BY date_trunc('month', subscription_end)::date
 ORDER BY churn_month;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a resubscriber that churns a second time",
+        seedSQL: `INSERT INTO subscriptions (subscription_id, user_id, subscription_start, subscription_end) VALUES
+  (1, 10, '2022-01-01', '2022-02-28'),
+  (2, 10, '2022-03-01', '2022-04-30'),
+  (3, 10, '2022-05-01', NULL),
+  (4, 11, '2022-01-01', '2022-03-31'),
+  (5, 11, '2022-04-01', NULL),
+  (6, 11, '2022-05-01', '2022-05-20'),
+  (7, 12, '2022-02-01', '2022-02-10');`,
+      },
+      {
+        note: "every subscription is still open",
+        seedSQL: `INSERT INTO subscriptions (subscription_id, user_id, subscription_start, subscription_end) VALUES
+  (1, 21, '2022-07-01', NULL),
+  (2, 22, '2022-06-01', NULL),
+  (3, 23, '2022-05-01', NULL);`,
+      },
+    ],
   },
   {
     id: "dl-median-order-value-per-region",
@@ -549,6 +829,26 @@ FROM orders
 GROUP BY region
 ORDER BY region;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a region whose values are all blank",
+        seedSQL: `INSERT INTO orders (order_id, region, order_value, order_date) VALUES
+  (1, 'north', 10.00, '2022-05-01'),
+  (2, 'north', 20.00, '2022-05-02'),
+  (3, 'south', 5.00, '2022-05-03'),
+  (4, 'south', NULL, '2022-05-04'),
+  (5, 'west', NULL, '2022-05-05'),
+  (6, 'west', NULL, '2022-05-06');`,
+      },
+      {
+        note: "odd-sized region with a single order elsewhere",
+        seedSQL: `INSERT INTO orders (order_id, region, order_value, order_date) VALUES
+  (1, 'central', 7.00, '2022-06-01'),
+  (2, 'central', 8.00, '2022-06-02'),
+  (3, 'central', 9.00, '2022-06-03'),
+  (4, 'east', 42.00, '2022-06-04');`,
+      },
+    ],
   },
   {
     id: "dl-cohort-retention-by-week",
@@ -612,6 +912,31 @@ FROM user_activity
 GROUP BY cohort_week
 ORDER BY cohort_week;`,
     ordered: true,
+    testCases: [
+      {
+        note: "an event exactly a week after signup",
+        seedSQL: `INSERT INTO signups (user_id, signup_date) VALUES
+  (1, '2022-05-02'),
+  (2, '2022-05-03'),
+  (3, '2022-05-08'),
+  (4, '2022-05-16');
+INSERT INTO events (event_id, user_id, event_date) VALUES
+  (1, 1, '2022-05-09'),
+  (2, 2, '2022-05-03'),
+  (3, 3, '2022-05-08');`,
+      },
+      {
+        note: "retention ignores events logged before signup",
+        seedSQL: `INSERT INTO signups (user_id, signup_date) VALUES
+  (1, '2022-06-06'),
+  (2, '2022-06-07'),
+  (3, '2022-06-13');
+INSERT INTO events (event_id, user_id, event_date) VALUES
+  (1, 1, '2022-06-01'),
+  (2, 2, '2022-06-07'),
+  (3, 3, '2022-06-12');`,
+      },
+    ],
   },
   {
     id: "dl-deprecated-api-calls",
@@ -671,6 +996,33 @@ FROM per_api
 WHERE deprecated_calls > 0
 ORDER BY api_name;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a call landing exactly on the retirement date",
+        seedSQL: `INSERT INTO apis (api_name, current_version, retired_on) VALUES
+  ('cache-api', 'v2', '2022-06-01'),
+  ('log-api', 'v4', '2022-07-15'),
+  ('mail-api', 'v1', '2022-08-01'),
+  ('queue-api', 'v3', NULL);
+INSERT INTO api_calls (call_id, api_name, called_on, status_code) VALUES
+  (1, 'cache-api', '2022-05-31', 200),
+  (2, 'cache-api', '2022-06-01', 200),
+  (3, 'log-api', '2022-07-14', 200),
+  (4, 'log-api', '2022-07-15', 404),
+  (5, 'queue-api', '2022-08-01', 200),
+  (6, 'queue-api', '2022-08-14', 200);`,
+      },
+      {
+        note: "retired API with no post-retirement calls",
+        seedSQL: `INSERT INTO apis (api_name, current_version, retired_on) VALUES
+  ('old-api', 'v1', '2022-09-01'),
+  ('live-api', 'v2', NULL);
+INSERT INTO api_calls (call_id, api_name, called_on, status_code) VALUES
+  (1, 'old-api', '2022-08-01', 200),
+  (2, 'old-api', '2022-08-20', 200),
+  (3, 'live-api', '2022-09-15', 200);`,
+      },
+    ],
   },
   {
     id: "dl-session-gaps-over-30-minutes",
@@ -718,6 +1070,26 @@ GROUP BY user_id
 HAVING count(*) FILTER (WHERE gap > INTERVAL '30 minutes') > 0
 ORDER BY user_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a gap of exactly thirty minutes does not qualify",
+        seedSQL: `INSERT INTO events (event_id, user_id, event_time) VALUES
+  (1, 20, '2022-08-01 09:00:00'),
+  (2, 20, '2022-08-01 09:30:00'),
+  (3, 20, '2022-08-01 10:00:00'),
+  (4, 21, '2022-08-01 08:00:00'),
+  (5, 21, '2022-08-01 08:31:00'),
+  (6, 22, '2022-08-01 12:00:00'),
+  (7, 22, '2022-08-01 12:00:00');`,
+      },
+      {
+        note: "users with a single logged event",
+        seedSQL: `INSERT INTO events (event_id, user_id, event_time) VALUES
+  (1, 30, '2022-09-01 07:00:00'),
+  (2, 31, '2022-09-01 08:00:00'),
+  (3, 32, '2022-09-01 09:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-first-purchase-attribution",
@@ -774,6 +1146,29 @@ LEFT JOIN LATERAL (
 ) t ON TRUE
 ORDER BY fp.user_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a touch timestamp tied at the purchase moment",
+        seedSQL: `INSERT INTO marketing_touches (touch_id, user_id, channel, touched_at) VALUES
+  (7, 10, 'email', '2022-04-01 10:00:00'),
+  (8, 10, 'paid-search', '2022-04-01 10:00:00'),
+  (9, 11, 'organic', '2022-04-02 09:30:00');
+INSERT INTO purchases (purchase_id, user_id, purchase_amount, purchased_at) VALUES
+  (101, 10, 45.00, '2022-04-01 10:00:00'),
+  (102, 10, 20.00, '2022-04-05 09:00:00'),
+  (103, 11, 75.00, '2022-04-02 09:00:00'),
+  (104, 12, 30.00, '2022-04-03 12:00:00');`,
+      },
+      {
+        note: "several eligible touches, the latest wins",
+        seedSQL: `INSERT INTO marketing_touches (touch_id, user_id, channel, touched_at) VALUES
+  (1, 20, 'email', '2022-05-01 09:00:00'),
+  (2, 20, 'display', '2022-05-02 09:00:00'),
+  (3, 20, 'paid-search', '2022-05-03 09:00:00');
+INSERT INTO purchases (purchase_id, user_id, purchase_amount, purchased_at) VALUES
+  (101, 20, 60.00, '2022-05-04 09:00:00');`,
+      },
+    ],
   },
   {
     id: "dl-user-retention",
@@ -835,6 +1230,24 @@ FROM stats
 WHERE activity_month > (SELECT min(activity_month) FROM monthly)
 ORDER BY activity_month;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a month with no activity in between",
+        seedSQL: `INSERT INTO user_actions (action_id, user_id, event_date) VALUES
+  (1, 1, '2022-01-05'),
+  (2, 1, '2022-03-05'),
+  (3, 2, '2022-02-10'),
+  (4, 3, '2022-02-11'),
+  (5, 3, '2022-03-20');`,
+      },
+      {
+        note: "a single month cannot retain anyone",
+        seedSQL: `INSERT INTO user_actions (action_id, user_id, event_date) VALUES
+  (1, 11, '2022-04-02'),
+  (2, 12, '2022-04-03'),
+  (3, 13, '2022-04-04');`,
+      },
+    ],
   },
   {
     id: "dl-yoy-growth-rate",
@@ -891,6 +1304,25 @@ SELECT
 FROM with_previous
 ORDER BY product_id, sales_year;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a gap year makes the previous sale the baseline",
+        seedSQL: `INSERT INTO user_transactions (transaction_id, product_id, spend, transaction_date) VALUES
+  (1, 201, 100.00, '2021-05-01'),
+  (2, 201, 150.00, '2023-05-01'),
+  (3, 202, 80.00, '2022-05-01'),
+  (4, 203, 50.00, '2021-06-01'),
+  (5, 203, 50.00, '2022-06-01'),
+  (6, 203, 100.00, '2023-06-01');`,
+      },
+      {
+        note: "flat sales produce zero growth",
+        seedSQL: `INSERT INTO user_transactions (transaction_id, product_id, spend, transaction_date) VALUES
+  (1, 301, 100.00, '2021-07-01'),
+  (2, 301, 100.00, '2022-07-01'),
+  (3, 301, 100.00, '2023-07-01');`,
+      },
+    ],
   },
   {
     id: "dl-prime-warehouse-storage",
@@ -964,6 +1396,23 @@ SELECT
 FROM packed
 ORDER BY item_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "capacity exhausted before later lines",
+        seedSQL: `INSERT INTO inventory (item_id, item_type, item_count, item_size) VALUES
+  (11, 'prime_eligible', 10, 100000.00),
+  (12, 'prime_eligible', 2, 60000.00),
+  (13, 'prime_eligible', 3, 50000.00),
+  (14, 'not_prime', 4, 20000.00);`,
+      },
+      {
+        note: "everything fits so every unit is packed",
+        seedSQL: `INSERT INTO inventory (item_id, item_type, item_count, item_size) VALUES
+  (21, 'not_prime', 5, 1000.00),
+  (22, 'not_prime', 5, 1000.00),
+  (23, 'prime_eligible', 2, 2000.00);`,
+      },
+    ],
   },
   {
     id: "dl-median-search-freq",
@@ -1001,6 +1450,22 @@ SELECT round(avg(searches)::numeric, 1) AS median_searches
 FROM ranked
 WHERE user_rank IN ((total_users + 1) / 2, (total_users + 2) / 2);`,
     ordered: false,
+    testCases: [
+      {
+        note: "a heavily weighted bucket pulls the middle",
+        seedSQL: `INSERT INTO search_frequency (searches, num_users) VALUES
+  (1, 1),
+  (3, 2),
+  (6, 4);`,
+      },
+      {
+        note: "the two middle users share one bucket",
+        seedSQL: `INSERT INTO search_frequency (searches, num_users) VALUES
+  (4, 5),
+  (9, 3),
+  (12, 0);`,
+      },
+    ],
   },
   {
     id: "dl-updated-status",
@@ -1047,5 +1512,25 @@ FROM advertiser a
 FULL OUTER JOIN payment p ON p.advertiser_id = a.advertiser_id
 ORDER BY advertiser_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "this month's file is empty so everyone churns",
+        seedSQL: `INSERT INTO advertiser (advertiser_id, status) VALUES
+  (1, 'ACTIVE'),
+  (2, 'CHURNED'),
+  (3, 'ACTIVE');`,
+      },
+      {
+        note: "churned advertisers that came back",
+        seedSQL: `INSERT INTO advertiser (advertiser_id, status) VALUES
+  (10, 'ACTIVE'),
+  (11, 'CHURNED'),
+  (12, 'ACTIVE');
+INSERT INTO payment (advertiser_id, status) VALUES
+  (10, 'ACTIVE'),
+  (11, 'ACTIVE'),
+  (12, 'CHURNED');`,
+      },
+    ],
   },
 ];

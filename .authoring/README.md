@@ -36,6 +36,10 @@ export const problems = [
     seedSQL: "INSERT INTO customers VALUES (1, 'Alice'), (2, 'Bob'), (3, 'Cara');\nINSERT INTO orders VALUES (101, 1), (102, 1), (103, 3);",
     solutionSQL: "SELECT c.name AS customers FROM customers c LEFT JOIN orders o ON o.customer_id = c.id WHERE o.id IS NULL;",
     ordered: false,
+    testCases: [
+      { note: "every customer ordered, so the answer is empty", seedSQL: "INSERT INTO ...;" },
+      { note: "an order with a NULL customer plus repeats", seedSQL: "INSERT INTO ...;" },
+    ],
   },
 ];
 ```
@@ -58,7 +62,19 @@ parses it and fails the file if it disagrees with the records.
 - `schemaSQL` — 1–4 tables, PostgreSQL dialect, explicit types, `PRIMARY KEY`/`REFERENCES` where
   meaningful. No `DROP`, no `SET`, no extensions.
 - `seedSQL` — `INSERT INTO ... VALUES ...`, 6–20 rows total across all tables, every table non-empty,
-  and it MUST include the edge cases the description mentions (use `NULL` deliberately).
+  and it MUST include the edge cases the description mentions (use `NULL` deliberately). This is
+  **test case 1** (the "default dataset" shown in the app).
+- `testCases` — **at least 2** (up to 4) extra datasets, `{ note, seedSQL }`:
+  - `seedSQL` is a *complete replacement* dataset for the same tables (the app drops and recreates
+    the tables per case), 3–20 rows, at least one table non-empty, deterministic, no `DROP`/`SET`;
+  - `note` is a lowercase 3–8 word phrase describing what the case exercises (shown in the app's
+    *test case* dropdown);
+  - case 2 should be the dataset that catches the classic wrong answer for the task (`NOT IN` with a
+    NULL, `RANK` vs `DENSE_RANK`, an inclusive/exclusive boundary, a tie, `COUNT(*)` vs
+    `COUNT(DISTINCT)`, a hardcoded value); case 3 a second distinct situation;
+  - an **empty result is allowed and encouraged** for extra cases (case 1 must return rows);
+  - `schemaSQL` is shared by all cases — never change it per case.
+  Submit grades every case, so a query hardcoded to the default dataset fails.
 - `solutionSQL` — reference answer: a single read-only `SELECT`/`WITH` query, PostgreSQL dialect.
   It must return a non-empty result set with exactly the required output columns (alias them).
   If `ordered: true`, the query must include `ORDER BY`.

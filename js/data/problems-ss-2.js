@@ -31,6 +31,22 @@ export const problems = [
       "GROUP BY h.nationality\n" +
       "ORDER BY units_rented DESC, nationality;",
     ordered: true,
+    testCases: [
+      {
+        note: "a unit exactly on the five-night boundary",
+        seedSQL:
+          "INSERT INTO hosts VALUES (1, 'Amara Osei', 'Italy'), (2, 'Paolo Bianchi', 'Peru'), (3, 'Giulia Conti', 'Italy'), (4, 'Wanjiru Kimani', 'Kenya');\n" +
+          "INSERT INTO units VALUES (11, 1, 'Entire home'), (12, 2, 'Private room'), (13, 3, 'Entire home');\n" +
+          "INSERT INTO bookings VALUES (101, 11, 5), (102, 12, 4), (103, 13, 6);",
+      },
+      {
+        note: "no unit reaches the five-night threshold",
+        seedSQL:
+          "INSERT INTO hosts VALUES (1, 'Amara Osei', 'Italy'), (2, 'Wanjiru Kimani', 'Kenya');\n" +
+          "INSERT INTO units VALUES (11, 1, 'Entire home'), (12, 1, 'Private room'), (13, 2, 'Entire home');\n" +
+          "INSERT INTO bookings VALUES (101, 11, 2), (102, 12, 1), (103, 13, 4);",
+      },
+    ],
   },
   {
     id: "ss-10159-ranking-most-active-guests",
@@ -57,6 +73,19 @@ export const problems = [
       "GROUP BY g.guest_id, g.guest_name\n" +
       "ORDER BY activity_rank, guest_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "tied message counts skip the following rank",
+        seedSQL:
+          "INSERT INTO guests VALUES (1, 'Ana'), (2, 'Bruno'), (3, 'Chandra'), (4, 'Dmitri'), (5, 'Elena');\n" +
+          "INSERT INTO guest_messages VALUES (1, 1, 'Hi'), (2, 1, 'Any update?'), (3, 2, 'Hello'), (4, 2, 'Thanks'), (5, 3, 'Hey');",
+      },
+      {
+        note: "no guest ever messaged so every rank ties",
+        seedSQL:
+          "INSERT INTO guests VALUES (1, 'Ana'), (2, 'Bruno'), (3, 'Chandra'), (4, 'Dmitri');",
+      },
+    ],
   },
   {
     id: "ss-10285-acceptance-rate-by-date",
@@ -86,6 +115,20 @@ export const problems = [
       "GROUP BY r.request_date\n" +
       "ORDER BY request_date;",
     ordered: true,
+    testCases: [
+      {
+        note: "a request accepted twice on different days",
+        seedSQL:
+          "INSERT INTO friend_requests VALUES (1, 101, 102, '2023-02-01'), (2, 103, 104, '2023-02-01'), (3, 105, 106, '2023-02-02');\n" +
+          "INSERT INTO request_events VALUES (1, 1, 'sent', '2023-02-01'), (2, 1, 'accepted', '2023-02-02'), (3, 1, 'accepted', '2023-02-03'), (4, 2, 'sent', '2023-02-01'), (5, 3, 'sent', '2023-02-02');",
+      },
+      {
+        note: "one send date with no acceptances",
+        seedSQL:
+          "INSERT INTO friend_requests VALUES (1, 101, 102, '2023-03-05'), (2, 103, 104, '2023-03-05');\n" +
+          "INSERT INTO request_events VALUES (1, 1, 'sent', '2023-03-05'), (2, 2, 'sent', '2023-03-05');",
+      },
+    ],
   },
   {
     id: "ss-10352-users-by-average-session-time",
@@ -118,6 +161,20 @@ export const problems = [
       "GROUP BY u.user_id, u.user_name\n" +
       "ORDER BY avg_session_minutes DESC, user_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "single-action days give zero-minute sessions",
+        seedSQL:
+          "INSERT INTO users VALUES (1, 'Ana'), (2, 'Bruno'), (3, 'Chen');\n" +
+          "INSERT INTO user_actions VALUES (1, 1, 'login', '2023-04-01 08:00:00'), (2, 1, 'logout', '2023-04-01 09:30:00'), (3, 2, 'login', '2023-04-01 23:00:00'), (4, 2, 'logout', '2023-04-02 00:30:00'), (5, 3, 'login', '2023-04-01 12:00:00');",
+      },
+      {
+        note: "a user with no actions is left out",
+        seedSQL:
+          "INSERT INTO users VALUES (1, 'Ana'), (2, 'Bruno'), (3, 'Chen');\n" +
+          "INSERT INTO user_actions VALUES (1, 1, 'login', '2023-05-01 10:00:00'), (2, 1, 'click', '2023-05-01 10:20:00'), (3, 1, 'logout', '2023-05-01 11:40:00'), (4, 2, 'login', '2023-05-01 09:00:00'), (5, 2, 'logout', '2023-05-01 09:45:00'), (6, 2, 'login', '2023-05-02 09:00:00'), (7, 2, 'logout', '2023-05-02 10:15:00');",
+      },
+    ],
   },
   {
     id: "ss-10354-most-profitable-companies",
@@ -144,6 +201,18 @@ export const problems = [
       "WHERE r.rnk <= 3\n" +
       "ORDER BY profits DESC, company_name;",
     ordered: true,
+    testCases: [
+      {
+        note: "ties at the third rank survive the cutoff",
+        seedSQL:
+          "INSERT INTO companies VALUES (1, 'Vertex Energy', 'Energy', 100), (2, 'Lumen Tech', 'Technology', 100), (3, 'Northwind Retail', 'Retail', 90), (4, 'Kestrel Aerospace', 'Aerospace', 80), (5, 'Orbit Telecom', 'Telecom', 70);",
+      },
+      {
+        note: "every company ties on the same profit",
+        seedSQL:
+          "INSERT INTO companies VALUES (1, 'Vertex Energy', 'Energy', 40), (2, 'Northwind Retail', 'Retail', 40), (3, 'Lumen Tech', 'Technology', 40);",
+      },
+    ],
   },
   {
     id: "ss-10353-workers-with-the-highest-salaries",
@@ -177,6 +246,22 @@ export const problems = [
       "WHERE r.rnk = 1\n" +
       "ORDER BY department_name, salary DESC, title;",
     ordered: true,
+    testCases: [
+      {
+        note: "two workers tie for the top salary",
+        seedSQL:
+          "INSERT INTO departments VALUES (1, 'Engineering'), (2, 'Sales');\n" +
+          "INSERT INTO workers VALUES (11, 'Ana Ruiz', 100000, 1), (12, 'Bruno Silva', 100000, 1), (13, 'Cara Ndiaye', 90000, 2), (14, 'Dan Okoro', 80000, 2);\n" +
+          "INSERT INTO job_titles VALUES (11, 'Analyst'), (12, 'Senior Analyst'), (13, 'Account Manager'), (14, 'Sales Lead');",
+      },
+      {
+        note: "one department where everyone ties",
+        seedSQL:
+          "INSERT INTO departments VALUES (1, 'Support');\n" +
+          "INSERT INTO workers VALUES (11, 'Ana Ruiz', 50000, 1), (12, 'Bruno Silva', 50000, 1);\n" +
+          "INSERT INTO job_titles VALUES (11, 'Support Analyst'), (12, 'Support Lead');",
+      },
+    ],
   },
   {
     id: "ss-10351-activity-rank",
@@ -204,6 +289,18 @@ export const problems = [
       "FROM daily d\n" +
       "ORDER BY sent_on, activity_rank, sender;",
     ordered: true,
+    testCases: [
+      {
+        note: "a tie inside one day skips a rank",
+        seedSQL:
+          "INSERT INTO gmail_emails VALUES (1, 'ana@mail.com', 'bruno@mail.com', '2023-05-01'), (2, 'ana@mail.com', 'cara@mail.com', '2023-05-01'), (3, 'bruno@mail.com', 'ana@mail.com', '2023-05-01'), (4, 'bruno@mail.com', 'dan@mail.com', '2023-05-01'), (5, 'cara@mail.com', 'ana@mail.com', '2023-05-01'), (6, 'dan@mail.com', 'ana@mail.com', '2023-05-02'), (7, 'dan@mail.com', 'bruno@mail.com', '2023-05-02');",
+      },
+      {
+        note: "all senders tie on the same day",
+        seedSQL:
+          "INSERT INTO gmail_emails VALUES (1, 'ana@mail.com', 'bruno@mail.com', '2023-06-01'), (2, 'bruno@mail.com', 'ana@mail.com', '2023-06-01'), (3, 'cara@mail.com', 'ana@mail.com', '2023-06-01');",
+      },
+    ],
   },
   {
     id: "ss-10068-user-email-labels",
@@ -232,6 +329,22 @@ export const problems = [
       "GROUP BY u.user_id, u.user_name\n" +
       "ORDER BY user_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "the same label attached twice to one user",
+        seedSQL:
+          "INSERT INTO users VALUES (1, 'Ana'), (2, 'Bruno'), (3, 'Chen');\n" +
+          "INSERT INTO labels VALUES (1, 'work'), (2, 'inbox'), (3, 'travel');\n" +
+          "INSERT INTO assigned_labels VALUES (1, 1, 1), (2, 1, 1), (3, 1, 2), (4, 2, 3);",
+      },
+      {
+        note: "a user holding a single label",
+        seedSQL:
+          "INSERT INTO users VALUES (1, 'Ana'), (2, 'Bruno');\n" +
+          "INSERT INTO labels VALUES (1, 'solo');\n" +
+          "INSERT INTO assigned_labels VALUES (1, 1, 1);",
+      },
+    ],
   },
   {
     id: "ss-10304-risky-projects",
@@ -263,6 +376,20 @@ export const problems = [
       "WHERE p.duration_months > 3 * a.avg_months\n" +
       "ORDER BY duration_months DESC, project_title;",
     ordered: true,
+    testCases: [
+      {
+        note: "a project exactly on the three-times boundary",
+        seedSQL:
+          "INSERT INTO clients VALUES (1, 'Acme Analytics'), (2, 'Borealis Labs'), (3, 'Cyan Works');\n" +
+          "INSERT INTO projects VALUES (11, 1, 'Atlas', 9), (12, 1, 'Beacon', 1), (13, 1, 'Cobalt', 1), (14, 1, 'Delta', 1), (15, 2, 'Echo', 20), (16, 2, 'Fjord', 1), (17, 2, 'Grotto', 1), (18, 2, 'Helios', 1), (19, 3, 'Iris', 50);",
+      },
+      {
+        note: "no project beats its client average",
+        seedSQL:
+          "INSERT INTO clients VALUES (1, 'Acme Analytics'), (2, 'Borealis Labs');\n" +
+          "INSERT INTO projects VALUES (11, 1, 'Atlas', 10), (12, 1, 'Beacon', 10), (13, 2, 'Echo', 7);",
+      },
+    ],
   },
   {
     id: "ss-10324-distances-traveled",
@@ -287,6 +414,20 @@ export const problems = [
       "ORDER BY total_distance DESC, user_name\n" +
       "LIMIT 10;",
     ordered: true,
+    testCases: [
+      {
+        note: "two riders tie on the same total",
+        seedSQL:
+          "INSERT INTO users VALUES (1, 'Ana'), (2, 'Bruno'), (3, 'Cara');\n" +
+          "INSERT INTO rides VALUES (101, 1, 5.0), (102, 2, 5.0), (103, 3, 5.0), (104, 1, 2.5);",
+      },
+      {
+        note: "a missing distance skipped by the sum",
+        seedSQL:
+          "INSERT INTO users VALUES (1, 'Ana'), (2, 'Bruno');\n" +
+          "INSERT INTO rides VALUES (101, 1, 4.0), (102, 1, NULL), (103, 2, 0.0), (104, 2, 1.5);",
+      },
+    ],
   },
   {
     id: "ss-10301-expensive-projects",
@@ -319,6 +460,20 @@ export const problems = [
       "WHERE p.budget > s.avg_budget\n" +
       "ORDER BY c.client_name, p.budget DESC;",
     ordered: true,
+    testCases: [
+      {
+        note: "two equal budgets are not above average",
+        seedSQL:
+          "INSERT INTO clients VALUES (1, 'Acme Analytics'), (2, 'Borealis Labs'), (3, 'Cyan Works');\n" +
+          "INSERT INTO projects VALUES (11, 1, 'Atlas', 100), (12, 1, 'Beacon', 100), (13, 2, 'Cobalt', 10), (14, 3, 'Delta', 50), (15, 3, 'Echo', 50), (16, 3, 'Fjord', 90);",
+      },
+      {
+        note: "all budgets in a portfolio are equal",
+        seedSQL:
+          "INSERT INTO clients VALUES (1, 'Acme Analytics'), (2, 'Borealis Labs');\n" +
+          "INSERT INTO projects VALUES (11, 1, 'Atlas', 10), (12, 1, 'Beacon', 10), (13, 2, 'Cobalt', 25), (14, 2, 'Delta', 25), (15, 2, 'Echo', 25);",
+      },
+    ],
   },
   {
     id: "ss-9901-super-managers",
@@ -341,6 +496,18 @@ export const problems = [
       "HAVING m.salary > AVG(e.salary)\n" +
       "ORDER BY subordinate_count DESC, manager_name;",
     ordered: true,
+    testCases: [
+      {
+        note: "a manager whose only report has no salary",
+        seedSQL:
+          "INSERT INTO employees VALUES (1, 'Amara Osei', 400, NULL), (2, 'Boris Petrov', 500, 1), (3, 'Chen Wei', 999, 1), (4, 'Dana Krause', 300, 2), (5, 'Emeka Balogun', 350, 2), (6, 'Farah Haddad', NULL, 3);",
+      },
+      {
+        note: "managers whose reports earn exactly the same",
+        seedSQL:
+          "INSERT INTO employees VALUES (1, 'Amara Osei', 100, NULL), (2, 'Boris Petrov', 100, 1), (3, 'Chen Wei', 100, NULL), (4, 'Dana Krause', 100, 1), (5, 'Emeka Balogun', 100, 2);",
+      },
+    ],
   },
   {
     id: "ss-9895-duplicate-emails",
@@ -362,6 +529,18 @@ export const problems = [
       "HAVING COUNT(*) > 1\n" +
       "ORDER BY account_count DESC, email;",
     ordered: true,
+    testCases: [
+      {
+        note: "the same address reused with three casings",
+        seedSQL:
+          "INSERT INTO accounts VALUES (1, 'X@y.com', '2022-01-01'), (2, 'x@Y.com', '2022-02-01'), (3, 'x@y.COM', '2022-03-01'), (4, 'z@y.com', '2022-04-01');",
+      },
+      {
+        note: "every address is registered exactly once",
+        seedSQL:
+          "INSERT INTO accounts VALUES (1, 'Ana@Mail.com', '2023-01-01'), (2, 'bruno@mail.com', '2023-02-02'), (3, 'Cara@Mail.com', '2023-03-03');",
+      },
+    ],
   },
   {
     id: "ss-9904-highest-target",
@@ -390,6 +569,18 @@ export const problems = [
       "WHERE r.rnk = 1\n" +
       "ORDER BY manager_name, target DESC, employee_name;",
     ordered: true,
+    testCases: [
+      {
+        note: "one manager whose whole team has no target",
+        seedSQL:
+          "INSERT INTO sales_teams VALUES (1, 'Ana', 'Rhea', 100), (2, 'Bruno', 'Rhea', 100), (3, 'Cara', 'Sana', NULL), (4, 'Dev', 'Sana', NULL), (5, 'Elif', 'Omar', 50), (6, 'Finn', 'Omar', 90);",
+      },
+      {
+        note: "every manager has exactly one employee",
+        seedSQL:
+          "INSERT INTO sales_teams VALUES (1, 'Ana', 'Rhea', NULL), (2, 'Bruno', 'Sana', 75), (3, 'Cara', 'Omar', 80);",
+      },
+    ],
   },
   {
     id: "ss-2037-delivering-and-placing-orders",
@@ -419,11 +610,26 @@ export const problems = [
       "       COUNT(*)::int AS orders_placed,\n" +
       "       COUNT(*) FILTER (WHERE s.delivered_date > s.promised_date)::int AS late_deliveries,\n" +
       "       COUNT(*) FILTER (WHERE s.delivered_date IS NULL)::int AS undelivered,\n" +
-      "       ROUND(100.0 * COUNT(*) FILTER (WHERE s.delivered_date IS NOT NULL AND s.delivered_date <= s.promised_date) / COUNT(*), 1) AS on_time_pct\n" +
+      "       ROUND(100.0 * COUNT(*) FILTER (WHERE s.delivered_date IS NOT NULL AND s.delivered_date <= s.promised_date)\n" +
+      "             / NULLIF(COUNT(*) FILTER (WHERE s.delivered_date IS NOT NULL), 0), 1) AS on_time_pct\n" +
       "FROM order_state s\n" +
       "GROUP BY s.order_month\n" +
       "ORDER BY order_month;",
     ordered: true,
+    testCases: [
+      {
+        note: "a month mixing late, on-time and undelivered orders",
+        seedSQL:
+          "INSERT INTO orders VALUES (1, 101, '2023-03-02', '2023-03-09'), (2, 102, '2023-03-15', '2023-03-20'), (3, 103, '2023-03-25', '2023-03-30'), (4, 104, '2023-04-01', '2023-04-05');\n" +
+          "INSERT INTO deliveries VALUES (11, 1, '2023-03-08'), (12, 2, '2023-03-22'), (13, 4, '2023-04-04');",
+      },
+      {
+        note: "every order arrives on time",
+        seedSQL:
+          "INSERT INTO orders VALUES (1, 201, '2023-05-04', '2023-05-10'), (2, 202, '2023-05-18', '2023-05-19'), (3, 203, '2023-05-27', '2023-05-31');\n" +
+          "INSERT INTO deliveries VALUES (11, 1, '2023-05-10'), (12, 2, '2023-05-19'), (13, 3, '2023-05-30');",
+      },
+    ],
   },
   {
     id: "ss-2044-most-senior-and-junior-employee",
@@ -458,6 +664,18 @@ export const problems = [
       "JOIN junior j ON j.department = s.department\n" +
       "ORDER BY department;",
     ordered: true,
+    testCases: [
+      {
+        note: "a department where everyone shares a hire date",
+        seedSQL:
+          "INSERT INTO employees VALUES (1, 'Zoe Marsh', 'Design', '2021-05-05'), (2, 'Ana Reyes', 'Design', '2021-05-05'), (3, 'Kim Lee', 'Sales', '2019-01-01');",
+      },
+      {
+        note: "three distinct dates plus a lone teammate",
+        seedSQL:
+          "INSERT INTO employees VALUES (1, 'Ana Ruiz', 'Alpha', '2015-02-02'), (2, 'Bruno Silva', 'Alpha', '2020-02-02'), (3, 'Cara Ndiaye', 'Alpha', '2024-02-02'), (4, 'Dev Patel', 'Beta', '2019-09-09');",
+      },
+    ],
   },
   {
     id: "ss-2053-retention-rate",
@@ -492,6 +710,18 @@ export const problems = [
       "GROUP BY f.login_date\n" +
       "ORDER BY activity_date;",
     ordered: true,
+    testCases: [
+      {
+        note: "duplicate logins collapse into one visit",
+        seedSQL:
+          "INSERT INTO user_logins VALUES (1, 1, '2023-06-01'), (2, 2, '2023-06-01'), (3, 1, '2023-06-02'), (4, 2, '2023-06-02'), (5, 2, '2023-06-02'), (6, 3, '2023-06-03'), (7, 2, '2023-06-03');",
+      },
+      {
+        note: "a quiet day with no logins is skipped",
+        seedSQL:
+          "INSERT INTO user_logins VALUES (1, 1, '2023-07-01'), (2, 1, '2023-07-02'), (3, 2, '2023-07-03');",
+      },
+    ],
   },
   {
     id: "ss-2054-consecutive-days",
@@ -526,6 +756,18 @@ export const problems = [
       "HAVING COUNT(*) >= 3\n" +
       "ORDER BY user_id, streak_start;",
     ordered: true,
+    testCases: [
+      {
+        note: "runs of exactly three days next to a gap",
+        seedSQL:
+          "INSERT INTO activity_log VALUES (1, 1, '2023-07-01'), (2, 1, '2023-07-02'), (3, 1, '2023-07-03'), (4, 1, '2023-07-05'), (5, 1, '2023-07-06'), (6, 2, '2023-07-10'), (7, 2, '2023-07-11'), (8, 3, '2023-07-01'), (9, 3, '2023-07-02'), (10, 3, '2023-07-03'), (11, 3, '2023-07-04'), (12, 3, '2023-07-01');",
+      },
+      {
+        note: "two separate streaks for the same user",
+        seedSQL:
+          "INSERT INTO activity_log VALUES (1, 1, '2023-08-01'), (2, 1, '2023-08-02'), (3, 1, '2023-08-03'), (4, 1, '2023-08-05'), (5, 1, '2023-08-06'), (6, 1, '2023-08-07'), (7, 2, '2023-08-01'), (8, 2, '2023-08-02');",
+      },
+    ],
   },
   {
     id: "ss-2059-player-with-longest-streak",
@@ -567,6 +809,18 @@ export const problems = [
       "WHERE b.longest_streak = (SELECT MAX(x.longest_streak) FROM best x)\n" +
       "ORDER BY player_name;",
     ordered: true,
+    testCases: [
+      {
+        note: "total wins differ from the longest streak",
+        seedSQL:
+          "INSERT INTO matches VALUES (1, 'Ana', '2023-08-01', 'Win'), (2, 'Ana', '2023-08-02', 'Loss'), (3, 'Ana', '2023-08-03', 'Win'), (4, 'Ana', '2023-08-04', 'Win'), (5, 'Bruno', '2023-08-01', 'Win'), (6, 'Bruno', '2023-08-02', 'Win'), (7, 'Bruno', '2023-08-03', 'Win'), (8, 'Cara', '2023-08-01', 'Loss'), (9, 'Cara', '2023-08-02', 'Loss');",
+      },
+      {
+        note: "two players tie on the longest streak",
+        seedSQL:
+          "INSERT INTO matches VALUES (1, 'Ana', '2023-09-01', 'Win'), (2, 'Ana', '2023-09-02', 'Win'), (3, 'Bruno', '2023-09-01', 'Loss'), (4, 'Bruno', '2023-09-02', 'Win'), (5, 'Bruno', '2023-09-03', 'Win');",
+      },
+    ],
   },
   {
     id: "ss-2073-popular-posts",
@@ -604,6 +858,20 @@ export const problems = [
       "WHERE r.rn = 1\n" +
       "ORDER BY user_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "two posts tie so the smaller id wins",
+        seedSQL:
+          "INSERT INTO posts VALUES (1, 1, '2023-09-01'), (2, 1, '2023-09-02'), (3, 2, '2023-09-01');\n" +
+          "INSERT INTO interactions VALUES (1, 1, 'like'), (2, 2, 'like');",
+      },
+      {
+        note: "an author whose posts score zero points",
+        seedSQL:
+          "INSERT INTO posts VALUES (1, 1, '2023-10-01'), (2, 1, '2023-10-05'), (3, 2, '2023-10-03');\n" +
+          "INSERT INTO interactions VALUES (1, 3, 'share');",
+      },
+    ],
   },
   {
     id: "ss-2076-trips-in-consecutive-months",
@@ -641,6 +909,18 @@ export const problems = [
       "HAVING MAX(s.streak_length) >= 3\n" +
       "ORDER BY user_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "a run crossing the year boundary",
+        seedSQL:
+          "INSERT INTO trips VALUES (1, 1, '2023-11-05'), (2, 1, '2023-12-01'), (3, 1, '2024-01-20'), (4, 1, '2024-02-02'), (5, 2, '2023-01-01'), (6, 2, '2023-01-15'), (7, 2, '2023-02-01'), (8, 3, '2023-03-01'), (9, 3, '2023-05-01');",
+      },
+      {
+        note: "three trips in one month count once",
+        seedSQL:
+          "INSERT INTO trips VALUES (1, 1, '2023-01-05'), (2, 1, '2023-02-05'), (3, 1, '2023-03-05'), (4, 2, '2023-01-05'), (5, 2, '2023-01-10'), (6, 2, '2023-01-20'), (7, 3, '2023-06-01'), (8, 3, '2023-06-15'), (9, 3, '2023-07-01'), (10, 3, '2023-08-01');",
+      },
+    ],
   },
   {
     id: "ss-2078-from-microsoft-to-google",
@@ -676,5 +956,17 @@ export const problems = [
       "WHERE s.company = 'Microsoft' AND s.end_date IS NOT NULL AND s.end_date < g.google_start\n" +
       "ORDER BY s.employee_id, s.end_date DESC;",
     ordered: true,
+    testCases: [
+      {
+        note: "an unfinished microsoft stint cannot qualify",
+        seedSQL:
+          "INSERT INTO employment_history VALUES (1, 1, 'Microsoft', '2015-01-01', '2016-01-01'), (2, 1, 'Microsoft', '2017-01-01', '2018-01-01'), (3, 1, 'Google', '2019-01-01', NULL), (4, 2, 'Microsoft', '2018-01-01', '2020-01-01'), (5, 2, 'Microsoft', '2020-06-01', NULL), (6, 2, 'Google', '2021-01-01', NULL), (7, 3, 'Microsoft', '2016-01-01', '2017-01-01'), (8, 3, 'Google', '2017-01-01', NULL);",
+      },
+      {
+        note: "moves in the wrong order are ignored",
+        seedSQL:
+          "INSERT INTO employment_history VALUES (1, 1, 'Google', '2020-01-01', NULL), (2, 2, 'Microsoft', '2019-01-01', '2021-01-01'), (3, 3, 'Microsoft', '2018-01-01', '2019-01-01'), (4, 3, 'Google', '2020-01-01', NULL);",
+      },
+    ],
   },
 ];

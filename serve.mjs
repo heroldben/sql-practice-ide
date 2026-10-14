@@ -6,6 +6,7 @@
  *   node serve.mjs --port=9000
  *   node serve.mjs --open     # also open the default browser (once)
  *   node serve.mjs --host=0.0.0.0   # expose on the LAN (loopback by default)
+ *   node serve.mjs --data-dir=D:\\progress   # where the shared progress DB lives (.local by default)
  *
  * If this app is already being served on the requested port, this exits with
  * code 3 without starting a second server or opening another browser tab, so
@@ -21,10 +22,12 @@ import { stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
+import { createProgressStore, sanitizeEntries } from './progress-store.mjs';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const MARKER = 'SQL Practice IDE';
 const MAX_PORT_ATTEMPTS = 10;
+const MAX_BODY_BYTES = 4 * 1024 * 1024;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -46,7 +49,12 @@ const portArg = args.find((arg) => arg.startsWith('--port='));
 const preferredPort = Number(portArg ? portArg.split('=')[1] : (process.env.PORT ?? 8080));
 const hostArg = args.find((arg) => arg.startsWith('--host='));
 const host = hostArg ? hostArg.split('=')[1] : '127.0.0.1';
+const dataDirArg = args.find((arg) => arg.startsWith('--data-dir='));
+const dataDir = dataDirArg ? path.resolve(dataDirArg.slice('--data-dir='.length)) : path.join(ROOT, '.local');
 const shouldOpen = args.includes('--open');
+
+/** Shared progress for every browser on this machine (`/api/progress`). */
+const progressStore = createProgressStore({ dir: dataDir });
 
 let browserOpened = false;
 
@@ -85,9 +93,56 @@ async function resolveFile(urlPath) {
   }
 }
 
+function sendJson(res, status, payload) {
+  const body = JSON.stringify(payload);
+  res.writeHead(status, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store',
+    'Content-Length': Buffer.byteLength(body),
+  });
+  res.end(body);
+}
+
+async function readJsonBody(req) {
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > MAX_BODY_BYTES) throw new Error('request body too large');
+    chunks.push(chunk);
+  }
+  const text = Buffer.concat(chunks).toString('utf8');
+  return text ? JSON.parse(text) : {};
+}
+
+/** GET/PUT/DELETE /api/progress — the shared store behind cross-browser progress. */
+async function handleProgressApi(req, res) {
+  const method = req.method || 'GET';
+  if (method === 'GET' || method === 'HEAD') {
+    return sendJson(res, 200, { ok: true, backend: progressStore.backend, progress: progressStore.read() });
+  }
+  if (method === 'PUT' || method === 'POST') {
+    try {
+      const body = await readJsonBody(req);
+      const entries = sanitizeEntries(body.entries ?? body.progress ?? body);
+      const merged = progressStore.write(entries);
+      return sendJson(res, 200, { ok: true, backend: progressStore.backend, accepted: Object.keys(entries).length, progress: merged });
+    } catch (error) {
+      return sendJson(res, 400, { ok: false, error: error.message });
+    }
+  }
+  if (method === 'DELETE') {
+    progressStore.reset();
+    return sendJson(res, 200, { ok: true, backend: progressStore.backend, progress: {} });
+  }
+  return sendJson(res, 405, { ok: false, error: `${method} not allowed` });
+}
+
 async function handle(req, res) {
-  if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, 'Method not allowed');
   const urlPath = (req.url || '/').split('?')[0];
+  if (urlPath === '/api/progress') return handleProgressApi(req, res);
+  if (urlPath.startsWith('/api/')) return sendJson(res, 404, { ok: false, error: `unknown endpoint: ${urlPath}` });
+  if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, 'Method not allowed');
   if (urlPath !== '/' && urlPath.endsWith('/')) {
     res.writeHead(301, { Location: urlPath.slice(0, -1) + (req.url.includes('?') ? `?${req.url.split('?')[1]}` : '') });
     return res.end();
@@ -130,6 +185,7 @@ function startServer(port, attempt = 0) {
   server.listen(port, host, () => {
     const url = `http://localhost:${port}/`;
     console.log(`SQL Practice IDE → ${url}   (keep this window open; Ctrl+C to stop)`);
+    console.log(`progress store: ${progressStore.backend} · ${path.relative(ROOT, progressStore.file).replaceAll('\\', '/')} (shared by every browser on this machine)`);
     if (shouldOpen) openBrowserOnce(url);
   });
 }

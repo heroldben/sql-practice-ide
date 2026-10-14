@@ -16,6 +16,18 @@ export const problems = [
     solutionSQL:
       "WITH peaks AS (\n  SELECT artist, song_name, MIN(chart_rank) AS best_rank\n  FROM billboard_charts\n  WHERE chart_week >= DATE '2010-01-01' AND chart_week < DATE '2011-01-01'\n  GROUP BY artist, song_name\n)\nSELECT artist, song_name, best_rank\nFROM peaks\nORDER BY best_rank, artist, song_name\nLIMIT 10;",
     ordered: true,
+    testCases: [
+      {
+        note: "songs from other years plus a repeated peak rank",
+        seedSQL:
+          "INSERT INTO billboard_charts (id, chart_week, chart_rank, artist, song_name) VALUES\n  (1, DATE '2009-06-06', 1, 'Zed Nova', 'Oldest Hit'),\n  (2, DATE '2010-03-06', 1, 'Anna Cole', 'Winter Light'),\n  (3, DATE '2010-03-13', 1, 'Anna Cole', 'Winter Light'),\n  (4, DATE '2011-05-07', 1, 'Bo Reyes', 'Later Hit'),\n  (5, DATE '2010-12-31', 5, 'Cara Wu', 'Year End'),\n  (6, DATE '2010-01-01', 3, 'Dan Lee', 'New Year');",
+      },
+      {
+        note: "eleven peaking songs exercise the ten row cap",
+        seedSQL:
+          "INSERT INTO billboard_charts (id, chart_week, chart_rank, artist, song_name) VALUES\n  (1, DATE '2010-02-06', 1, 'Aria One', 'Sunrise'),\n  (2, DATE '2010-02-06', 2, 'Bela Two', 'Moonrise'),\n  (3, DATE '2010-02-06', 3, 'Cora Three', 'Tide'),\n  (4, DATE '2010-02-06', 4, 'Dana Four', 'Ember'),\n  (5, DATE '2010-02-06', 5, 'Elle Five', 'Frost'),\n  (6, DATE '2010-02-06', 6, 'Finn Six', 'Glow'),\n  (7, DATE '2010-02-06', 7, 'Gia Seven', 'Haze'),\n  (8, DATE '2010-02-06', 8, 'Hugo Eight', 'Iris'),\n  (9, DATE '2010-02-06', 9, 'Iris Nine', 'Jade'),\n  (10, DATE '2010-02-06', 10, 'Juno Ten', 'Kite'),\n  (11, DATE '2010-02-06', 11, 'Kai Eleven', 'Lark');",
+      },
+    ],
   },
   {
     id: "ss-9781-find-the-rate-of-processed-tickets-for-each-type",
@@ -33,6 +45,18 @@ export const problems = [
     solutionSQL:
       "SELECT ticket_type AS category, ROUND(AVG(processed)::numeric, 2) AS processed_rate\nFROM support_tickets\nGROUP BY ticket_type\nORDER BY category;",
     ordered: true,
+    testCases: [
+      {
+        note: "a category where nothing was processed",
+        seedSQL:
+          "INSERT INTO support_tickets (ticket_id, ticket_type, processed) VALUES\n  (1, 1, 1),\n  (2, 1, 1),\n  (3, 1, 0),\n  (4, 1, 0),\n  (5, 2, 0),\n  (6, 2, 0),\n  (7, 2, 0),\n  (8, 3, 1),\n  (9, 3, 1);",
+      },
+      {
+        note: "ratios that need rounding to two decimals",
+        seedSQL:
+          "INSERT INTO support_tickets (ticket_id, ticket_type, processed) VALUES\n  (1, 5, 1),\n  (2, 5, 0),\n  (3, 5, 0),\n  (4, 6, 1),\n  (5, 6, 1),\n  (6, 6, 0),\n  (7, 7, 1);",
+      },
+    ],
   },
   {
     id: "ss-9782-customer-revenue-in-march",
@@ -50,6 +74,18 @@ export const problems = [
     solutionSQL:
       "SELECT SUM(o.total_order_cost) AS total_revenue\nFROM orders o\nJOIN customers c ON c.id = o.cust_id\nWHERE o.order_date >= DATE '2019-03-01'\n  AND o.order_date < DATE '2019-04-01';",
     ordered: false,
+    testCases: [
+      {
+        note: "guest checkout and boundary march dates",
+        seedSQL:
+          "INSERT INTO customers (id, first_name) VALUES (1, 'Ivy'), (2, 'Jon');\nINSERT INTO orders (id, cust_id, order_date, total_order_cost) VALUES\n  (201, 1, DATE '2019-03-31', 10.00),\n  (202, 1, DATE '2019-04-01', 999.00),\n  (203, 2, DATE '2019-02-28', 777.00),\n  (204, NULL, DATE '2019-03-15', 500.00),\n  (205, 2, DATE '2019-03-01', 20.00);",
+      },
+      {
+        note: "one march order among out of range orders",
+        seedSQL:
+          "INSERT INTO customers (id, first_name) VALUES (1, 'Nia'), (2, 'Oleg');\nINSERT INTO orders (id, cust_id, order_date, total_order_cost) VALUES\n  (401, 1, DATE '2019-04-01', 111.00),\n  (402, 2, DATE '2019-02-28', 222.00),\n  (403, 1, DATE '2019-03-31', 33.33),\n  (404, NULL, DATE '2020-03-15', 333.00),\n  (405, 2, DATE '2018-03-10', 444.00);",
+      },
+    ],
   },
   {
     id: "ss-9894-employee-and-manager-salaries",
@@ -67,6 +103,18 @@ export const problems = [
     solutionSQL:
       "SELECT e.id, e.first_name, e.last_name, e.salary\nFROM employees e\nJOIN employees m ON m.id = e.manager_id\nWHERE e.salary > m.salary\nORDER BY e.salary DESC, e.id;",
     ordered: true,
+    testCases: [
+      {
+        note: "a tied pair and a null manager",
+        seedSQL:
+          "INSERT INTO employees (id, first_name, last_name, salary, manager_id) VALUES\n  (1, 'Ada', 'Alpha', 100.00, NULL),\n  (2, 'Ben', 'Beta', 100.00, 1),\n  (3, 'Cleo', 'Gamma', 150.00, 1),\n  (4, 'Dev', 'Delta', 200.00, 3),\n  (5, 'Eve', 'Epsilon', 50.00, 3),\n  (6, 'Fay', 'Zeta', 200.00, 5);",
+      },
+      {
+        note: "nobody outearns their manager",
+        seedSQL:
+          "INSERT INTO employees (id, first_name, last_name, salary, manager_id) VALUES\n  (1, 'Gus', 'Eta', 100.00, NULL),\n  (2, 'Hana', 'Theta', 100.00, 1),\n  (3, 'Ivan', 'Iota', 90.00, 1),\n  (4, 'Jo', 'Kappa', 50.00, 2),\n  (5, 'Kim', 'Lambda', 50.00, 4);",
+      },
+    ],
   },
   {
     id: "ss-9897-highest-salary-in-department",
@@ -84,6 +132,18 @@ export const problems = [
     solutionSQL:
       "WITH ranked AS (\n  SELECT d.name AS department, e.first_name, e.last_name, e.salary,\n         RANK() OVER (PARTITION BY e.department_id ORDER BY e.salary DESC) AS rnk\n  FROM employee e\n  JOIN department d ON d.id = e.department_id\n)\nSELECT department, first_name, last_name, salary\nFROM ranked\nWHERE rnk = 1\nORDER BY department, salary DESC, first_name;",
     ordered: true,
+    testCases: [
+      {
+        note: "an empty department and two tied top earners",
+        seedSQL:
+          "INSERT INTO department (id, name) VALUES (10, 'Sales'), (11, 'Support'), (12, 'Legal');\nINSERT INTO employee (id, first_name, last_name, salary, department_id) VALUES\n  (1, 'Ana', 'Reyes', 100.00, 10),\n  (2, 'Bil', 'Chan', 100.00, 10),\n  (3, 'Cleo', 'Diaz', 50.00, 10),\n  (4, 'Dev', 'Eng', 80.00, 11),\n  (5, 'Eve', 'Fox', 80.00, 11),\n  (6, 'Fay', 'Guo', 10.00, NULL);",
+      },
+      {
+        note: "a lone employee and a three way tie",
+        seedSQL:
+          "INSERT INTO department (id, name) VALUES (20, 'Kiosk'), (21, 'Cafe');\nINSERT INTO employee (id, first_name, last_name, salary, department_id) VALUES\n  (7, 'Gus', 'Hall', 0.00, 20),\n  (8, 'Hana', 'Ito', 90.00, 21),\n  (9, 'Ivan', 'Jung', 90.00, 21),\n  (10, 'Jo', 'Kim', 90.00, 21);",
+      },
+    ],
   },
   {
     id: "ss-9905-highest-target-under-manager",
@@ -101,6 +161,18 @@ export const problems = [
     solutionSQL:
       "WITH ranked AS (\n  SELECT manager, salesperson, target,\n         RANK() OVER (PARTITION BY manager ORDER BY target DESC) AS rnk\n  FROM sales_targets\n  WHERE manager IS NOT NULL\n)\nSELECT manager, salesperson, target\nFROM ranked\nWHERE rnk = 1\nORDER BY manager, target DESC, salesperson;",
     ordered: true,
+    testCases: [
+      {
+        note: "null managers with huge targets and a tied pair",
+        seedSQL:
+          "INSERT INTO sales_targets (id, salesperson, manager, target) VALUES\n  (1, 'Ada', 'Nia', 100.00),\n  (2, 'Bea', 'Nia', 100.00),\n  (3, 'Cara', 'Nia', 50.00),\n  (4, 'Dora', 'Omar', 10.00),\n  (5, 'Elle', NULL, 9999.00),\n  (6, 'Fern', NULL, 9999.00);",
+      },
+      {
+        note: "all equal groups and negative targets",
+        seedSQL:
+          "INSERT INTO sales_targets (id, salesperson, manager, target) VALUES\n  (1, 'Gus', 'Pia', 0.00),\n  (2, 'Hana', 'Pia', 0.00),\n  (3, 'Ida', 'Quinn', -5.00),\n  (4, 'Jon', 'Rex', -1.00),\n  (5, 'Kim', 'Rex', -1.00);",
+      },
+    ],
   },
   {
     id: "ss-9942-largest-olympics",
@@ -118,6 +190,18 @@ export const problems = [
     solutionSQL:
       "WITH editions AS (\n  SELECT games, COUNT(DISTINCT athlete_name) AS athlete_count\n  FROM olympics_athletes\n  GROUP BY games\n), ranked AS (\n  SELECT games, athlete_count, RANK() OVER (ORDER BY athlete_count DESC) AS rnk\n  FROM editions\n)\nSELECT games, athlete_count\nFROM ranked\nWHERE rnk = 1\nORDER BY games;",
     ordered: true,
+    testCases: [
+      {
+        note: "two editions tied on the largest athlete count",
+        seedSQL:
+          "INSERT INTO olympics_athletes (id, athlete_name, games, sport) VALUES\n  (1, 'Ana', '2004 Summer', 'Swimming'),\n  (2, 'Ben', '2004 Summer', 'Judo'),\n  (3, 'Cleo', '2004 Summer', 'Judo'),\n  (4, 'Dana', '2000 Summer', 'Rowing'),\n  (5, 'Eli', '2000 Summer', 'Rowing'),\n  (6, 'Fay', '2000 Summer', 'Boxing'),\n  (7, 'Gus', '1996 Summer', 'Sailing');",
+      },
+      {
+        note: "the same athlete across editions counted once each",
+        seedSQL:
+          "INSERT INTO olympics_athletes (id, athlete_name, games, sport) VALUES\n  (1, 'Ana', '2004 Summer', 'Swimming'),\n  (2, 'Ana', '2008 Summer', 'Swimming'),\n  (3, 'Ben', '2008 Summer', 'Judo'),\n  (4, 'Cleo', '2008 Summer', 'Judo'),\n  (5, 'Ana', '2012 Summer', 'Swimming');",
+      },
+    ],
   },
   {
     id: "ss-9991-top-ranked-songs",
@@ -135,6 +219,18 @@ export const problems = [
     solutionSQL:
       "WITH first_place AS (\n  SELECT artist, trackname, COUNT(*) AS days_at_number_one\n  FROM song_ranking\n  WHERE chart_position = 1\n  GROUP BY artist, trackname\n), ranked AS (\n  SELECT artist, trackname, days_at_number_one,\n         RANK() OVER (ORDER BY days_at_number_one DESC) AS rnk\n  FROM first_place\n)\nSELECT artist, trackname, days_at_number_one\nFROM ranked\nWHERE rnk = 1\nORDER BY trackname;",
     ordered: true,
+    testCases: [
+      {
+        note: "chart days mostly below number one",
+        seedSQL:
+          "INSERT INTO song_ranking (id, chart_date, chart_position, trackname, artist) VALUES\n  (1, DATE '2018-01-06', 1, 'Amber Sky', 'Lior'),\n  (2, DATE '2018-01-13', 2, 'Amber Sky', 'Lior'),\n  (3, DATE '2018-01-20', 3, 'Amber Sky', 'Lior'),\n  (4, DATE '2018-01-27', 4, 'Amber Sky', 'Lior'),\n  (5, DATE '2018-02-03', 5, 'Amber Sky', 'Lior'),\n  (6, DATE '2018-02-10', 1, 'Blue Hour', 'Mina'),\n  (7, DATE '2018-02-17', 1, 'Blue Hour', 'Mina'),\n  (8, DATE '2018-02-24', 1, 'Blue Hour', 'Mina');",
+      },
+      {
+        note: "a tie for most days at number one",
+        seedSQL:
+          "INSERT INTO song_ranking (id, chart_date, chart_position, trackname, artist) VALUES\n  (1, DATE '2015-03-07', 1, 'Cedar', 'Nova'),\n  (2, DATE '2015-03-14', 1, 'Cedar', 'Nova'),\n  (3, DATE '2015-03-21', 1, 'Dune', 'Ora'),\n  (4, DATE '2015-03-28', 1, 'Dune', 'Ora'),\n  (5, DATE '2015-04-04', 2, 'Ember', 'Pax');",
+      },
+    ],
   },
   {
     id: "ss-10026-find-all-wineries-which-produce-wines-by-possess",
@@ -152,6 +248,18 @@ export const problems = [
     solutionSQL:
       "SELECT DISTINCT winery\nFROM wine_reviews\nWHERE description IS NOT NULL\n  AND (description ILIKE '%plum%'\n    OR description ILIKE '%cherry%'\n    OR description ILIKE '%rose%'\n    OR description ILIKE '%hazelnut%')\nORDER BY winery;",
     ordered: true,
+    testCases: [
+      {
+        note: "uppercase aromas and duplicate matching reviews",
+        seedSQL:
+          "INSERT INTO wine_reviews (id, winery, variety, description) VALUES\n  (1, 'Pine Ridge', 'Chardonnay', 'Stewed PLUM and clove.'),\n  (2, 'Pine Ridge', 'Syrah', 'Plum jam and violet.'),\n  (3, 'Quiet Creek', 'Riesling', NULL),\n  (4, 'Quiet Creek', 'Merlot', NULL),\n  (5, 'Rocky Point', 'Zinfandel', 'Blackberry and cracked pepper.'),\n  (6, 'Sable Hills', 'Pinot Noir', 'Wild CHERRY and forest floor.');",
+      },
+      {
+        note: "no tasting note mentions any of the aromas",
+        seedSQL:
+          "INSERT INTO wine_reviews (id, winery, variety, description) VALUES\n  (1, 'Tam Valley', 'Merlot', 'Blackberry and graphite.'),\n  (2, 'Tam Valley', 'Syrah', NULL),\n  (3, 'Upland Row', 'Chardonnay', 'Vanilla and toast.'),\n  (4, 'Upland Row', 'Riesling', 'Lime and wet slate.');",
+      },
+    ],
   },
   {
     id: "ss-10048-top-businesses-with-most-reviews",
@@ -169,6 +277,18 @@ export const problems = [
     solutionSQL:
       "SELECT name, COALESCE(review_count, 0) AS review_count\nFROM businesses\nORDER BY COALESCE(review_count, 0) DESC, name\nLIMIT 5;",
     ordered: true,
+    testCases: [
+      {
+        note: "a missing review count inside the top five",
+        seedSQL:
+          "INSERT INTO businesses (id, name, review_count) VALUES\n  (1, 'Zebra Cafe', 10),\n  (2, 'Yard Bar', 10),\n  (3, 'Xylo Deli', 10),\n  (4, 'Beta Bites', 5),\n  (5, 'Alpha Grill', 5),\n  (6, 'Aardvark Inn', NULL);",
+      },
+      {
+        note: "null count tied at the fifth row",
+        seedSQL:
+          "INSERT INTO businesses (id, name, review_count) VALUES\n  (1, 'Ivy Lane', 4),\n  (2, 'Juniper', 4),\n  (3, 'Kelp Cove', 1),\n  (4, 'Larch Row', 0),\n  (5, 'Maple Mill', NULL),\n  (6, 'Nettle Nook', NULL);",
+      },
+    ],
   },
   {
     id: "ss-10049-reviews-of-categories",
@@ -186,6 +306,18 @@ export const problems = [
     solutionSQL:
       "WITH unique_pairs AS (\n  SELECT DISTINCT business_id, category\n  FROM business_categories\n  WHERE category IS NOT NULL\n)\nSELECT u.category, SUM(b.review_count) AS total_reviews\nFROM unique_pairs u\nJOIN businesses b ON b.id = u.business_id\nGROUP BY u.category\nORDER BY total_reviews DESC, u.category;",
     ordered: true,
+    testCases: [
+      {
+        note: "duplicated listing and category pairs counted once",
+        seedSQL:
+          "INSERT INTO businesses (id, name, review_count) VALUES\n  (1, 'Harbor Cafe', 50),\n  (2, 'Ivy Books', 20),\n  (3, 'Jet Wash', 30),\n  (4, 'Kiwi Deli', 40);\nINSERT INTO business_categories (business_id, category) VALUES\n  (1, 'Coffee'),\n  (1, 'Coffee'),\n  (1, 'Coffee'),\n  (2, 'Coffee'),\n  (3, NULL),\n  (4, 'Deli'),\n  (4, 'Deli');",
+      },
+      {
+        note: "a listing in two categories and a zero total",
+        seedSQL:
+          "INSERT INTO businesses (id, name, review_count) VALUES\n  (1, 'Lime Lounge', 0),\n  (2, 'Mango Mart', 15),\n  (3, 'Nutmeg Nook', 5);\nINSERT INTO business_categories (business_id, category) VALUES\n  (1, 'Lounge'),\n  (1, 'Bar'),\n  (2, 'Bar'),\n  (3, 'Bakery');",
+      },
+    ],
   },
   {
     id: "ss-10060-top-cool-votes",
@@ -203,6 +335,18 @@ export const problems = [
     solutionSQL:
       "WITH totals AS (\n  SELECT b.name AS business_name, SUM(r.cool) AS total_cool_votes\n  FROM business b\n  JOIN review r ON r.business_id = b.id\n  GROUP BY b.name\n), ranked AS (\n  SELECT business_name, total_cool_votes,\n         RANK() OVER (ORDER BY total_cool_votes DESC) AS rnk\n  FROM totals\n)\nSELECT business_name, total_cool_votes\nFROM ranked\nWHERE rnk = 1\nORDER BY total_cool_votes DESC, business_name;",
     ordered: true,
+    testCases: [
+      {
+        note: "a business without reviews and a tied top",
+        seedSQL:
+          "INSERT INTO business (id, name) VALUES (1, 'Alpha'), (2, 'Bravo'), (3, 'Cyan'), (4, 'Delta'), (5, 'Echo');\nINSERT INTO review (id, business_id, cool) VALUES\n  (1, 1, 0),\n  (2, 1, 0),\n  (3, 2, 5),\n  (4, 2, 5),\n  (5, 3, 4),\n  (6, 3, 6),\n  (7, 4, 1);",
+      },
+      {
+        note: "a single review with no cool votes",
+        seedSQL:
+          "INSERT INTO business (id, name) VALUES (1, 'Foxtrot'), (2, 'Gamma');\nINSERT INTO review (id, business_id, cool) VALUES (1, 1, 0);",
+      },
+    ],
   },
   {
     id: "ss-10064-highest-energy-consumption",
@@ -220,6 +364,18 @@ export const problems = [
     solutionSQL:
       "WITH daily AS (\n  SELECT consumption_date, SUM(consumption) AS total_consumption\n  FROM energy_consumption\n  GROUP BY consumption_date\n), ranked AS (\n  SELECT consumption_date, total_consumption,\n         RANK() OVER (ORDER BY total_consumption DESC) AS rnk\n  FROM daily\n)\nSELECT consumption_date, total_consumption\nFROM ranked\nWHERE rnk = 1\nORDER BY consumption_date;",
     ordered: true,
+    testCases: [
+      {
+        note: "a daily peak built from two moderate rows",
+        seedSQL:
+          "INSERT INTO energy_consumption (id, consumption_date, consumption_type, consumption) VALUES\n  (1, DATE '2017-03-01', 'gas', 60.00),\n  (2, DATE '2017-03-01', 'electricity', 60.00),\n  (3, DATE '2017-03-02', 'gas', 100.00),\n  (4, DATE '2017-03-03', 'gas', 50.00),\n  (5, DATE '2017-03-03', 'water', 25.00);",
+      },
+      {
+        note: "two dates tied at the top",
+        seedSQL:
+          "INSERT INTO energy_consumption (id, consumption_date, consumption_type, consumption) VALUES\n  (1, DATE '2018-06-01', 'gas', 50.00),\n  (2, DATE '2018-06-01', 'electricity', 50.00),\n  (3, DATE '2018-06-02', 'gas', 150.00),\n  (4, DATE '2018-06-02', 'water', -50.00),\n  (5, DATE '2018-06-03', 'gas', 10.00);",
+      },
+    ],
   },
   {
     id: "ss-10077-income-by-title-and-gender",
@@ -237,6 +393,18 @@ export const problems = [
     solutionSQL:
       "WITH qualified AS (\n  SELECT jobtitle\n  FROM sf_salaries\n  WHERE gender IS NOT NULL\n  GROUP BY jobtitle\n  HAVING COUNT(DISTINCT gender) = 2\n)\nSELECT s.jobtitle, s.gender, ROUND(AVG(s.total_compensation), 2) AS average_compensation\nFROM sf_salaries s\nJOIN qualified q ON q.jobtitle = s.jobtitle\nWHERE s.gender IS NOT NULL\nGROUP BY s.jobtitle, s.gender\nORDER BY s.jobtitle, s.gender;",
     ordered: true,
+    testCases: [
+      {
+        note: "titles staffed by only one gender",
+        seedSQL:
+          "INSERT INTO sf_salaries (id, employeename, jobtitle, gender, total_compensation) VALUES\n  (1, 'Ada', 'Analyst', 'M', 100.00),\n  (2, 'Ben', 'Analyst', 'F', 200.00),\n  (3, 'Cleo', 'Baker', 'F', 300.00),\n  (4, 'Dan', 'Baker', 'F', 350.00),\n  (5, 'Eve', 'Cook', 'M', 400.00),\n  (6, 'Fay', 'Cook', NULL, 999.00);",
+      },
+      {
+        note: "an average that needs rounding down",
+        seedSQL:
+          "INSERT INTO sf_salaries (id, employeename, jobtitle, gender, total_compensation) VALUES\n  (1, 'Gus', 'Driver', 'M', 100.00),\n  (2, 'Hal', 'Driver', 'M', 100.00),\n  (3, 'Iris', 'Driver', 'M', 101.00),\n  (4, 'Jon', 'Driver', 'F', 50.00),\n  (5, 'Kim', 'Editor', 'M', 10.00),\n  (6, 'Lou', 'Editor', 'F', 20.00);",
+      },
+    ],
   },
   {
     id: "ss-10078-find-matching-hosts-and-guests-in-a-way-that-the",
@@ -254,6 +422,18 @@ export const problems = [
     solutionSQL:
       "SELECT h.host_id, g.guest_id, h.nationality, h.gender\nFROM airbnb_hosts h\nJOIN airbnb_guests g\n  ON g.nationality = h.nationality\n AND g.gender = h.gender\nWHERE h.nationality IS NOT NULL\n  AND h.gender IS NOT NULL\n  AND g.nationality IS NOT NULL\n  AND g.gender IS NOT NULL\nORDER BY h.host_id, g.guest_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "null gender on both sides cannot match",
+        seedSQL:
+          "INSERT INTO airbnb_hosts (host_id, nationality, gender) VALUES\n  (1, 'Spain', NULL),\n  (2, NULL, 'F'),\n  (3, 'Italy', 'M');\nINSERT INTO airbnb_guests (guest_id, nationality, gender) VALUES\n  (101, 'Spain', NULL),\n  (102, NULL, 'F'),\n  (103, 'Italy', 'M'),\n  (104, 'Italy', 'F');",
+      },
+      {
+        note: "two matching hosts against two matching guests",
+        seedSQL:
+          "INSERT INTO airbnb_hosts (host_id, nationality, gender) VALUES\n  (4, 'Japan', 'F'),\n  (5, 'Japan', 'F'),\n  (6, 'Kenya', 'M');\nINSERT INTO airbnb_guests (guest_id, nationality, gender) VALUES\n  (105, 'Japan', 'F'),\n  (106, 'Japan', 'F'),\n  (107, 'Kenya', 'F');",
+      },
+    ],
   },
   {
     id: "ss-2007-rank-variance-per-country",
@@ -271,6 +451,18 @@ export const problems = [
     solutionSQL:
       "WITH ranked AS (\n  SELECT country, snapshot_date, rank_pos,\n         ROW_NUMBER() OVER (PARTITION BY country ORDER BY snapshot_date DESC) AS rn\n  FROM country_rankings\n  WHERE rank_pos IS NOT NULL\n)\nSELECT a.country,\n       b.rank_pos AS previous_rank,\n       a.rank_pos AS latest_rank,\n       b.rank_pos - a.rank_pos AS rank_variance\nFROM ranked a\nJOIN ranked b ON b.country = a.country AND b.rn = 2\nWHERE a.rn = 1\n  AND b.rank_pos <> a.rank_pos\nORDER BY rank_variance DESC, a.country;",
     ordered: true,
+    testCases: [
+      {
+        note: "three snapshots with an unchanged country",
+        seedSQL:
+          "INSERT INTO country_rankings (id, country, snapshot_date, rank_pos) VALUES\n  (1, 'Austria', DATE '2023-01-01', 5),\n  (2, 'Austria', DATE '2023-02-01', 4),\n  (3, 'Austria', DATE '2023-03-01', 2),\n  (4, 'Belgium', DATE '2023-01-01', 3),\n  (5, 'Belgium', DATE '2023-02-01', 3),\n  (6, 'Chile', DATE '2023-01-01', 7),\n  (7, 'Denmark', DATE '2023-01-01', 1),\n  (8, 'Denmark', DATE '2023-02-01', 6);",
+      },
+      {
+        note: "a null rank on the latest snapshot falls back",
+        seedSQL:
+          "INSERT INTO country_rankings (id, country, snapshot_date, rank_pos) VALUES\n  (1, 'Estonia', DATE '2022-01-01', 10),\n  (2, 'Estonia', DATE '2022-02-01', 8),\n  (3, 'Estonia', DATE '2022-03-01', NULL),\n  (4, 'Fiji', DATE '2022-01-01', NULL),\n  (5, 'Fiji', DATE '2022-02-01', 4),\n  (6, 'Fiji', DATE '2022-03-01', 6),\n  (7, 'Ghana', DATE '2022-01-01', 3),\n  (8, 'Ghana', DATE '2022-02-01', NULL);",
+      },
+    ],
   },
   {
     id: "ss-2008-the-cheapest-airline-connection",
@@ -288,6 +480,18 @@ export const problems = [
     solutionSQL:
       "WITH itineraries AS (\n  SELECT f1.origin,\n         f1.destination AS stopover,\n         f2.destination AS destination,\n         f1.price + f2.price AS total_price\n  FROM flights f1\n  JOIN flights f2 ON f2.origin = f1.destination\n  WHERE f1.origin = 'JFK'\n    AND f2.destination = 'LAX'\n    AND f1.destination <> 'JFK'\n    AND f1.destination <> 'LAX'\n    AND f1.price IS NOT NULL\n    AND f2.price IS NOT NULL\n), ranked AS (\n  SELECT origin, stopover, destination, total_price,\n         RANK() OVER (ORDER BY total_price) AS rnk\n  FROM itineraries\n)\nSELECT origin, stopover, destination, total_price\nFROM ranked\nWHERE rnk = 1\nORDER BY stopover;",
     ordered: true,
+    testCases: [
+      {
+        note: "a cheap direct flight and an unsellable leg",
+        seedSQL:
+          "INSERT INTO flights (id, origin, destination, price) VALUES\n  (1, 'JFK', 'LAX', 30.00),\n  (2, 'JFK', 'ORD', 60.00),\n  (3, 'ORD', 'LAX', 70.00),\n  (4, 'JFK', 'DEN', 90.00),\n  (5, 'DEN', 'LAX', 80.00),\n  (6, 'JFK', 'SEA', 20.00),\n  (7, 'SEA', 'LAX', NULL);",
+      },
+      {
+        note: "two one stop itineraries tied on price",
+        seedSQL:
+          "INSERT INTO flights (id, origin, destination, price) VALUES\n  (1, 'JFK', 'BOS', 40.00),\n  (2, 'BOS', 'LAX', 40.00),\n  (3, 'JFK', 'PHX', 50.00),\n  (4, 'PHX', 'LAX', 30.00),\n  (5, 'JFK', 'JFK', 1.00),\n  (6, 'JFK', 'LAX', 10.00),\n  (7, 'LAX', 'LAX', 0.00);",
+      },
+    ],
   },
   {
     id: "ss-2012-viewers-turned-streamers",
@@ -305,6 +509,18 @@ export const problems = [
     solutionSQL:
       "WITH firsts AS (\n  SELECT user_id,\n         MIN(session_start) FILTER (WHERE session_type = 'viewer') AS first_viewer_at,\n         MIN(session_start) FILTER (WHERE session_type = 'streamer') AS first_stream_at\n  FROM twitch_sessions\n  GROUP BY user_id\n)\nSELECT user_id, first_viewer_at, first_stream_at\nFROM firsts\nWHERE first_viewer_at IS NOT NULL\n  AND first_stream_at IS NOT NULL\n  AND first_viewer_at < first_stream_at\nORDER BY user_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "equal first timestamps and a missing session type",
+        seedSQL:
+          "INSERT INTO twitch_sessions (id, user_id, session_type, session_start) VALUES\n  (1, 11, 'viewer', TIMESTAMP '2022-01-01 10:00:00'),\n  (2, 11, 'streamer', TIMESTAMP '2022-01-01 10:00:00'),\n  (3, 12, 'viewer', TIMESTAMP '2022-02-01 09:00:00'),\n  (4, 12, 'streamer', TIMESTAMP '2022-02-02 09:00:00'),\n  (5, 13, 'streamer', TIMESTAMP '2022-03-01 09:00:00'),\n  (6, 14, 'viewer', TIMESTAMP '2022-04-01 09:00:00'),\n  (7, 14, 'viewer', TIMESTAMP '2022-04-02 09:00:00');",
+      },
+      {
+        note: "first stream before the first view",
+        seedSQL:
+          "INSERT INTO twitch_sessions (id, user_id, session_type, session_start) VALUES\n  (1, 21, 'streamer', TIMESTAMP '2023-01-01 08:00:00'),\n  (2, 21, 'viewer', TIMESTAMP '2023-01-02 08:00:00'),\n  (3, 22, 'viewer', TIMESTAMP '2023-01-05 08:00:00'),\n  (4, 22, 'viewer', TIMESTAMP '2023-01-06 08:00:00'),\n  (5, 22, 'streamer', TIMESTAMP '2023-01-07 08:00:00'),\n  (6, 23, 'viewer', TIMESTAMP '2023-02-01 08:00:00'),\n  (7, 23, 'streamer', TIMESTAMP '2023-02-01 07:59:00');",
+      },
+    ],
   },
   {
     id: "ss-2028-new-and-existing-users",
@@ -322,6 +538,18 @@ export const problems = [
     solutionSQL:
       "WITH monthly_users AS (\n  SELECT DISTINCT m.user_id,\n         m.date_joined,\n         date_trunc('month', l.login_date)::date AS month\n  FROM logins l\n  JOIN members m ON m.user_id = l.user_id\n)\nSELECT month,\n       COUNT(*) FILTER (WHERE date_trunc('month', date_joined)::date = month) AS new_users,\n       COUNT(*) FILTER (WHERE date_trunc('month', date_joined)::date <> month) AS existing_users\nFROM monthly_users\nGROUP BY month\nORDER BY month;",
     ordered: true,
+    testCases: [
+      {
+        note: "repeated logins in a month counted once",
+        seedSQL:
+          "INSERT INTO members (user_id, date_joined) VALUES\n  (1, DATE '2024-04-10'),\n  (2, DATE '2024-04-20'),\n  (3, DATE '2024-05-15');\nINSERT INTO logins (id, user_id, login_date) VALUES\n  (1, 1, DATE '2024-04-11'),\n  (2, 1, DATE '2024-04-25'),\n  (3, 2, DATE '2024-05-02'),\n  (4, 2, DATE '2024-05-09'),\n  (5, 3, DATE '2024-05-16'),\n  (6, 1, DATE '2024-05-20'),\n  (7, 3, DATE '2024-06-01');",
+      },
+      {
+        note: "a join date on the login date is still new",
+        seedSQL:
+          "INSERT INTO members (user_id, date_joined) VALUES\n  (1, DATE '2024-01-31'),\n  (2, DATE '2024-02-01'),\n  (3, DATE '2024-03-10');\nINSERT INTO logins (id, user_id, login_date) VALUES\n  (1, 1, DATE '2024-01-31'),\n  (2, 1, DATE '2024-02-01'),\n  (3, 2, DATE '2024-02-05');",
+      },
+    ],
   },
   {
     id: "ss-2029-the-most-popular-client-id-among-users-using-vid",
@@ -339,6 +567,18 @@ export const problems = [
     solutionSQL:
       "WITH qualified AS (\n  SELECT user_id\n  FROM call_events\n  GROUP BY user_id\n  HAVING COUNT(*) FILTER (WHERE event_type LIKE 'video%') > 0\n     AND COUNT(*) FILTER (WHERE event_type LIKE 'voice%') > 0\n), usage AS (\n  SELECT DISTINCT e.client_id, e.user_id\n  FROM call_events e\n  JOIN qualified q ON q.user_id = e.user_id\n), counts AS (\n  SELECT client_id, COUNT(*) AS user_count\n  FROM usage\n  GROUP BY client_id\n), ranked AS (\n  SELECT client_id, user_count, RANK() OVER (ORDER BY user_count DESC) AS rnk\n  FROM counts\n)\nSELECT client_id, user_count\nFROM ranked\nWHERE rnk = 1\nORDER BY client_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "many events by one user on one client",
+        seedSQL:
+          "INSERT INTO call_events (id, user_id, event_type, client_id) VALUES\n  (1, 1, 'video call received', 1),\n  (2, 1, 'voice call received', 1),\n  (3, 1, 'video call transmitted', 1),\n  (4, 1, 'voice call transmitted', 1),\n  (5, 2, 'video call received', 1),\n  (6, 2, 'voice call received', 1),\n  (7, 3, 'video call received', 2),\n  (8, 3, 'voice call received', 2),\n  (9, 4, 'video call received', 3),\n  (10, 4, 'video call received', 3),\n  (11, 4, 'video call transmitted', 3);",
+      },
+      {
+        note: "two clients tied on distinct users",
+        seedSQL:
+          "INSERT INTO call_events (id, user_id, event_type, client_id) VALUES\n  (1, 5, 'video call received', 7),\n  (2, 5, 'voice call received', 7),\n  (3, 6, 'video call received', 8),\n  (4, 6, 'voice call transmitted', 8),\n  (5, 7, 'video call received', 7),\n  (6, 7, 'voice call transmitted', 8);",
+      },
+    ],
   },
   {
     id: "ss-2033-find-the-most-profitable-location",
@@ -356,6 +596,18 @@ export const problems = [
     solutionSQL:
       "WITH totals AS (\n  SELECT l.location_name,\n         SUM(COALESCE(s.revenue, 0)) - SUM(COALESCE(s.expense, 0)) AS total_profit\n  FROM locations l\n  JOIN sales s ON s.location_id = l.id\n  GROUP BY l.location_name\n), ranked AS (\n  SELECT location_name, total_profit,\n         RANK() OVER (ORDER BY total_profit DESC) AS rnk\n  FROM totals\n)\nSELECT location_name, total_profit\nFROM ranked\nWHERE rnk = 1\nORDER BY total_profit DESC, location_name;",
     ordered: true,
+    testCases: [
+      {
+        note: "a null expense on the most profitable site",
+        seedSQL:
+          "INSERT INTO locations (id, location_name) VALUES (1, 'North'), (2, 'South'), (3, 'East');\nINSERT INTO sales (id, location_id, revenue, expense) VALUES\n  (1, 1, 200.00, NULL),\n  (2, 1, 100.00, 50.00),\n  (3, 2, 150.00, 20.00),\n  (4, 2, 60.00, 10.00),\n  (5, 3, 30.00, 100.00);",
+      },
+      {
+        note: "two sites tied on total profit",
+        seedSQL:
+          "INSERT INTO locations (id, location_name) VALUES (1, 'West'), (2, 'Central'), (3, 'Dock'), (4, 'Harbor');\nINSERT INTO sales (id, location_id, revenue, expense) VALUES\n  (1, 1, 50.00, 20.00),\n  (2, 1, 30.00, 10.00),\n  (3, 2, 90.00, 40.00),\n  (4, 3, NULL, 15.00);",
+      },
+    ],
   },
   {
     id: "ss-2036-lowest-revenue-generated-restaurants",
@@ -373,5 +625,17 @@ export const problems = [
     solutionSQL:
       "WITH totals AS (\n  SELECT r.name, COALESCE(SUM(o.order_total), 0) AS total_revenue\n  FROM restaurants r\n  LEFT JOIN orders o ON o.restaurant_id = r.id\n  GROUP BY r.id, r.name\n)\nSELECT name, total_revenue\nFROM totals\nWHERE total_revenue < (SELECT AVG(total_revenue) FROM totals)\nORDER BY total_revenue, name;",
     ordered: true,
+    testCases: [
+      {
+        note: "zero revenue restaurants pull the average down",
+        seedSQL:
+          "INSERT INTO restaurants (id, name) VALUES (1, 'Alpha'), (2, 'Bravo'), (3, 'Charlie'), (4, 'Delta');\nINSERT INTO orders (id, restaurant_id, order_total) VALUES\n  (1, 1, 100.00),\n  (2, 2, 300.00),\n  (3, 2, NULL);",
+      },
+      {
+        note: "a restaurant exactly on the average is excluded",
+        seedSQL:
+          "INSERT INTO restaurants (id, name) VALUES (1, 'Echo'), (2, 'Foxtrot'), (3, 'Golf');\nINSERT INTO orders (id, restaurant_id, order_total) VALUES\n  (1, 1, 20.00),\n  (2, 3, 40.00);",
+      },
+    ],
   },
 ];

@@ -50,6 +50,33 @@ JOIN first_sale f ON f.product_id = p.product_id
 WHERE f.first_sale_date - p.launch_date <= 30
 ORDER BY f.first_sale_date, p.product_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "sales landing exactly on the thirty day boundary",
+        seedSQL: `INSERT INTO products VALUES
+  (11, 'Beta Fan', DATE '2024-01-01'),
+  (12, 'Gamma Box', DATE '2024-01-01'),
+  (13, 'Delta Mat', DATE '2024-02-01'),
+  (14, 'Cobalt Lamp', DATE '2024-03-10');
+INSERT INTO sales VALUES
+  (201, 11, DATE '2024-01-31', 2),
+  (202, 12, DATE '2024-02-01', 1),
+  (203, 13, DATE '2024-02-25', 3),
+  (204, 11, DATE '2024-03-05', 1),
+  (205, 14, DATE '2024-04-20', 1);`,
+      },
+      {
+        note: "one product sells on launch day and another never sells",
+        seedSQL: `INSERT INTO products VALUES
+  (21, 'Ember Lamp', DATE '2024-05-01'),
+  (22, 'Frost Box', DATE '2024-05-01'),
+  (23, 'Glint Rug', DATE '2024-05-02');
+INSERT INTO sales VALUES
+  (301, 21, DATE '2024-05-01', 1),
+  (302, 21, DATE '2024-05-20', 2),
+  (303, 23, DATE '2024-06-15', 1);`,
+      },
+    ],
   },
   {
     id: "ss-10169-highest-total-miles",
@@ -104,6 +131,37 @@ FROM ranked
 WHERE rnk = 1
 ORDER BY ride_month, driver_name;`,
     ordered: true,
+    testCases: [
+      {
+        note: "two drivers share the monthly lead",
+        seedSQL: `INSERT INTO drivers VALUES
+  (11, 'Elsa', 'Braga'),
+  (12, 'Filipe', 'Evora'),
+  (13, 'Goncalo', 'Porto');
+INSERT INTO rides VALUES
+  (101, 11, DATE '2024-03-05', 10.0),
+  (102, 11, DATE '2024-03-18', 15.0),
+  (103, 12, DATE '2024-03-07', 25.0),
+  (104, 13, DATE '2024-03-09', 20.0),
+  (105, 13, DATE '2024-03-22', 4.9),
+  (106, 11, DATE '2024-04-03', 40.0),
+  (107, 12, DATE '2024-04-11', 12.0);`,
+      },
+      {
+        note: "every driver finishes the month on the same total",
+        seedSQL: `INSERT INTO drivers VALUES
+  (21, 'Hana', 'Faro'),
+  (22, 'Igor', 'Sintra'),
+  (23, 'Joana', 'Braga'),
+  (24, 'Kiko', 'Porto');
+INSERT INTO rides VALUES
+  (201, 21, DATE '2024-07-02', 12.5),
+  (202, 21, DATE '2024-07-19', 7.5),
+  (203, 22, DATE '2024-07-04', 20.0),
+  (204, 23, DATE '2024-07-08', 5.0),
+  (205, 23, DATE '2024-07-21', 15.0);`,
+      },
+    ],
   },
   {
     id: "ss-10315-cities-with-the-most-expensive-homes",
@@ -144,6 +202,27 @@ HAVING AVG(nightly_price) > (
 )
 ORDER BY avg_price DESC, city;`,
     ordered: true,
+    testCases: [
+      {
+        note: "one city sits exactly on the overall average",
+        seedSQL: `INSERT INTO listings VALUES
+  (11, 'Aveiro', 100.00, 'entire'),
+  (12, 'Aveiro', 300.00, 'private'),
+  (13, 'Beja', 100.00, 'entire'),
+  (14, 'Coimbra', 300.00, 'entire'),
+  (15, 'Evora', NULL, 'shared'),
+  (16, 'Evora', NULL, 'entire');`,
+      },
+      {
+        note: "two cities tie on the top average with different listing counts",
+        seedSQL: `INSERT INTO listings VALUES
+  (21, 'Funchal', 400.00, 'entire'),
+  (22, 'Guarda', 300.00, 'entire'),
+  (23, 'Guarda', 500.00, 'private'),
+  (24, 'Horta', 10.00, 'shared'),
+  (25, 'Horta', NULL, 'private');`,
+      },
+    ],
   },
   {
     id: "ss-10322-finding-user-purchases",
@@ -187,6 +266,29 @@ WHERE previous_date IS NOT NULL
   AND purchase_date - previous_date <= 7
 ORDER BY user_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "gaps of exactly seven and eight days separate buyers",
+        seedSQL: `INSERT INTO purchases VALUES
+  (201, 201, DATE '2024-06-01', 10.00),
+  (202, 201, DATE '2024-06-08', 12.00),
+  (203, 202, DATE '2024-06-01', 10.00),
+  (204, 202, DATE '2024-06-09', 12.00),
+  (205, 203, DATE '2024-06-01', 10.00),
+  (206, 203, DATE '2024-07-01', 12.00),
+  (207, 203, DATE '2024-07-06', 8.00),
+  (208, 204, DATE '2024-06-03', 5.00),
+  (209, 204, DATE '2024-06-03', 5.00);`,
+      },
+      {
+        note: "every user buys only once so nobody qualifies",
+        seedSQL: `INSERT INTO purchases VALUES
+  (301, 301, DATE '2024-08-01', 10.00),
+  (302, 302, DATE '2024-08-02', 10.00),
+  (303, 303, DATE '2024-08-03', 10.00),
+  (304, 304, DATE '2024-08-04', 10.00);`,
+      },
+    ],
   },
   {
     id: "ss-9915-highest-cost-orders",
@@ -240,6 +342,34 @@ JOIN customers c ON c.customer_id = r.customer_id
 WHERE r.rnk = 1
 ORDER BY r.order_date, r.order_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "two days have joint top orders while another has one",
+        seedSQL: `INSERT INTO customers VALUES
+  (11, 'Elsa', 'Braga'),
+  (12, 'Filipe', 'Evora'),
+  (13, 'Goncalo', 'Porto'),
+  (14, 'Hana', 'Faro');
+INSERT INTO orders VALUES
+  (201, 11, DATE '2024-02-01', 500.00),
+  (202, 12, DATE '2024-02-01', 500.00),
+  (203, 13, DATE '2024-02-01', 100.00),
+  (204, 14, DATE '2024-02-02', 300.00),
+  (205, 11, DATE '2024-02-03', 250.00),
+  (206, 12, DATE '2024-02-03', 250.00),
+  (207, 13, DATE '2024-02-03', 250.00);`,
+      },
+      {
+        note: "a day whose highest order amount is zero",
+        seedSQL: `INSERT INTO customers VALUES
+  (21, 'Igor', 'Sintra'),
+  (22, 'Joana', 'Braga');
+INSERT INTO orders VALUES
+  (301, 21, DATE '2024-03-01', 0.00),
+  (302, 22, DATE '2024-03-01', -10.00),
+  (303, 21, DATE '2024-03-02', 25.00);`,
+      },
+    ],
   },
   {
     id: "ss-9908-customer-orders-and-details",
@@ -288,6 +418,29 @@ LEFT JOIN orders o ON o.customer_id = c.customer_id
 GROUP BY c.customer_id, c.first_name, c.last_name
 ORDER BY c.customer_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "customers with no orders and only cancelled orders",
+        seedSQL: `INSERT INTO customers VALUES
+  (21, 'Greta', 'Melo'),
+  (22, 'Hugo', 'Neves'),
+  (23, 'Ines', 'Pardo');
+INSERT INTO orders VALUES
+  (401, 22, DATE '2024-05-01', 80.00, 'cancelled'),
+  (402, 22, DATE '2024-05-02', 20.00, 'cancelled');`,
+      },
+      {
+        note: "active totals that include a free zero amount order",
+        seedSQL: `INSERT INTO customers VALUES
+  (31, 'Jose', 'Queiros'),
+  (32, 'Katia', 'Ramos');
+INSERT INTO orders VALUES
+  (501, 31, DATE '2024-06-01', 0.00, 'delivered'),
+  (502, 31, DATE '2024-06-02', 30.00, 'shipped'),
+  (503, 31, DATE '2024-06-03', 500.00, 'cancelled'),
+  (504, 32, DATE '2024-06-04', 10.00, 'pending');`,
+      },
+    ],
   },
   {
     id: "ss-9910-favorite-customer",
@@ -342,6 +495,36 @@ FROM ranked
 WHERE rnk = 1
 ORDER BY customer_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "two customers share the highest order count",
+        seedSQL: `INSERT INTO customers VALUES
+  (11, 'Elsa'),
+  (12, 'Filipe'),
+  (13, 'Goncalo'),
+  (14, 'Hana');
+INSERT INTO orders VALUES
+  (401, 11, DATE '2024-07-01', 10.00),
+  (402, 11, DATE '2024-07-02', 10.00),
+  (403, 11, DATE '2024-07-03', 10.00),
+  (404, 12, DATE '2024-07-04', 20.00),
+  (405, 12, DATE '2024-07-05', 20.00),
+  (406, 12, DATE '2024-07-06', 20.00),
+  (407, 13, DATE '2024-07-07', 5.00),
+  (408, 13, DATE '2024-07-08', 5.00);`,
+      },
+      {
+        note: "every customer places exactly one order",
+        seedSQL: `INSERT INTO customers VALUES
+  (21, 'Igor'),
+  (22, 'Joana'),
+  (23, 'Kiko');
+INSERT INTO orders VALUES
+  (501, 21, DATE '2024-08-01', 10.00),
+  (502, 22, DATE '2024-08-02', 10.00),
+  (503, 23, DATE '2024-08-03', 10.00);`,
+      },
+    ],
   },
   {
     id: "ss-9912-lowest-priced-orders",
@@ -392,6 +575,32 @@ JOIN customers c ON c.customer_id = r.customer_id
 WHERE r.rnk = 1
 ORDER BY r.order_date, r.order_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "two orders tie for the lowest amount of the day",
+        seedSQL: `INSERT INTO customers VALUES
+  (11, 'Elsa'),
+  (12, 'Filipe'),
+  (13, 'Goncalo');
+INSERT INTO orders VALUES
+  (201, 11, DATE '2024-06-01', 30.00),
+  (202, 12, DATE '2024-06-01', 30.00),
+  (203, 13, DATE '2024-06-01', 45.00),
+  (204, 11, DATE '2024-06-02', 12.00),
+  (205, 12, DATE '2024-06-02', 12.50);`,
+      },
+      {
+        note: "a day whose cheapest order costs nothing",
+        seedSQL: `INSERT INTO customers VALUES
+  (21, 'Igor'),
+  (22, 'Joana');
+INSERT INTO orders VALUES
+  (301, 21, DATE '2024-07-01', 15.00),
+  (302, 22, DATE '2024-07-01', 0.00),
+  (303, 21, DATE '2024-07-01', 40.00),
+  (304, 22, DATE '2024-07-02', 10.00);`,
+      },
+    ],
   },
   {
     id: "ss-9899-percentage-of-total-spend",
@@ -423,6 +632,23 @@ FROM spend
 GROUP BY user_id
 ORDER BY pct_of_total DESC, user_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a single spender takes the whole total",
+        seedSQL: `INSERT INTO spend VALUES
+  (11, 11, DATE '2024-04-01', 250.00),
+  (12, 11, DATE '2024-04-12', 250.00),
+  (13, 12, DATE '2024-04-15', 0.00);`,
+      },
+      {
+        note: "three users split the total equally",
+        seedSQL: `INSERT INTO spend VALUES
+  (21, 21, DATE '2024-05-01', 100.00),
+  (22, 22, DATE '2024-05-02', 50.00),
+  (23, 22, DATE '2024-05-03', 50.00),
+  (24, 23, DATE '2024-05-04', 100.00);`,
+      },
+    ],
   },
   {
     id: "ss-9892-second-highest-salary",
@@ -450,6 +676,25 @@ ORDER BY pct_of_total DESC, user_id;`,
 FROM employees
 WHERE salary < (SELECT MAX(salary) FROM employees);`,
     ordered: false,
+    testCases: [
+      {
+        note: "the top salary appears twice before the runner up",
+        seedSQL: `INSERT INTO employees VALUES
+  (11, 'Elsa', 'Sales', 90000.00),
+  (12, 'Filipe', 'Sales', 90000.00),
+  (13, 'Goncalo', 'Support', 80000.00),
+  (14, 'Hana', 'Support', 80000.00),
+  (15, 'Igor', 'Legal', NULL);`,
+      },
+      {
+        note: "only two distinct salaries are recorded",
+        seedSQL: `INSERT INTO employees VALUES
+  (21, 'Joana', 'Sales', 120000.00),
+  (22, 'Kiko', 'Engineering', 95000.00),
+  (23, 'Lia', 'Engineering', NULL),
+  (24, 'Mario', 'Legal', NULL);`,
+      },
+    ],
   },
   {
     id: "ss-9896-customers-without-orders",
@@ -491,6 +736,32 @@ WHERE c.signup_date < DATE '2024-06-01'
   )
 ORDER BY c.signup_date, c.customer_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "an order row with no customer must not hide anyone",
+        seedSQL: `INSERT INTO customers VALUES
+  (11, 'Lia', DATE '2024-01-05'),
+  (12, 'Mario', DATE '2024-03-01'),
+  (13, 'Nuno', DATE '2024-05-30'),
+  (14, 'Olga', DATE '2024-06-01'),
+  (15, 'Paula', DATE '2024-07-01');
+INSERT INTO orders VALUES
+  (601, 11, DATE '2024-02-01', 10.00),
+  (602, NULL, DATE '2024-02-02', 20.00),
+  (603, 12, DATE '2024-04-01', 5.00),
+  (604, 14, DATE '2024-06-10', 30.00);`,
+      },
+      {
+        note: "every early customer has ordered at least once",
+        seedSQL: `INSERT INTO customers VALUES
+  (21, 'Quim', DATE '2024-02-01'),
+  (22, 'Rita', DATE '2024-04-01');
+INSERT INTO orders VALUES
+  (701, 21, DATE '2024-03-01', 10.00),
+  (702, 22, DATE '2024-05-01', 20.00),
+  (703, NULL, DATE '2024-05-02', 30.00);`,
+      },
+    ],
   },
   {
     id: "ss-9921-department-salaries",
@@ -541,6 +812,34 @@ FROM totals
 WHERE total_salary = (SELECT MAX(total_salary) FROM totals)
 ORDER BY department_name;`,
     ordered: true,
+    testCases: [
+      {
+        note: "two departments tie on payroll while one has no staff",
+        seedSQL: `INSERT INTO departments VALUES
+  (11, 'Marketing'),
+  (12, 'Finance'),
+  (13, 'Research'),
+  (14, 'Facilities');
+INSERT INTO employees VALUES
+  (21, 'Rui', 11, 100000.00),
+  (22, 'Sara', 12, 60000.00),
+  (23, 'Tomas', 12, 40000.00),
+  (24, 'Vera', 14, 30000.00),
+  (25, 'Zeca', NULL, 90000.00);`,
+      },
+      {
+        note: "the winning department has fewer staff than the runner up",
+        seedSQL: `INSERT INTO departments VALUES
+  (21, 'Retail'),
+  (22, 'Logistics');
+INSERT INTO employees VALUES
+  (31, 'Ana', 21, 100000.00),
+  (32, 'Bruno', 22, 24000.00),
+  (33, 'Carla', 22, 24000.00),
+  (34, 'Diogo', 22, 24000.00),
+  (35, 'Elsa', 22, 24000.00);`,
+      },
+    ],
   },
   {
     id: "ss-9893-frequent-customers",
@@ -576,6 +875,27 @@ GROUP BY customer_id
 HAVING COUNT(DISTINCT order_date) >= 3
 ORDER BY customer_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "many orders on one day count as a single date",
+        seedSQL: `INSERT INTO orders VALUES
+  (701, 11, DATE '2024-04-01', 10.00),
+  (702, 11, DATE '2024-04-01', 11.00),
+  (703, 11, DATE '2024-04-01', 12.00),
+  (704, 11, DATE '2024-04-01', 13.00),
+  (705, 12, DATE '2024-04-02', 5.00),
+  (706, 12, DATE '2024-04-02', 6.00),
+  (707, 12, DATE '2024-04-05', 7.00),
+  (708, 12, DATE '2024-04-09', 8.00);`,
+      },
+      {
+        note: "three orders spread over only two days",
+        seedSQL: `INSERT INTO orders VALUES
+  (801, 21, DATE '2024-05-01', 1.00),
+  (802, 21, DATE '2024-05-02', 2.00),
+  (803, 21, DATE '2024-05-02', 3.00);`,
+      },
+    ],
   },
   {
     id: "ss-10310-class-performance",
@@ -627,6 +947,32 @@ JOIN exam_scores e ON e.student_id = s.student_id
 GROUP BY s.class_name
 ORDER BY s.class_name;`,
     ordered: true,
+    testCases: [
+      {
+        note: "one score lands exactly on the school average",
+        seedSQL: `INSERT INTO students VALUES
+  (11, 'Kai', 'A'),
+  (12, 'Leo', 'A'),
+  (13, 'Mia', 'B'),
+  (14, 'Nia', 'B'),
+  (15, 'Ola', 'C');
+INSERT INTO exam_scores VALUES
+  (901, 11, DATE '2024-07-01', 100.00),
+  (902, 12, DATE '2024-07-01', 50.00),
+  (903, 13, DATE '2024-07-01', 60.00),
+  (904, 14, DATE '2024-07-01', NULL),
+  (905, 15, DATE '2024-07-01', 70.00);`,
+      },
+      {
+        note: "every class average equals the school average",
+        seedSQL: `INSERT INTO students VALUES
+  (21, 'Pia', 'A'),
+  (22, 'Quim', 'B');
+INSERT INTO exam_scores VALUES
+  (906, 21, DATE '2024-08-01', 80.00),
+  (907, 22, DATE '2024-08-01', 80.00);`,
+      },
+    ],
   },
   {
     id: "ss-2082-minimum-number-of-platforms",
@@ -664,6 +1010,24 @@ running AS (
 SELECT MAX(platforms_in_use) AS min_platforms
 FROM running;`,
     ordered: false,
+    testCases: [
+      {
+        note: "arrivals land exactly when other trains depart",
+        seedSQL: `INSERT INTO train_schedule VALUES
+  (11, 'X1', TIMESTAMP '2024-04-01 09:00', TIMESTAMP '2024-04-01 10:00'),
+  (12, 'X2', TIMESTAMP '2024-04-01 10:00', TIMESTAMP '2024-04-01 11:00'),
+  (13, 'X3', TIMESTAMP '2024-04-01 09:00', TIMESTAMP '2024-04-01 10:00'),
+  (14, 'X4', TIMESTAMP '2024-04-01 10:00', TIMESTAMP '2024-04-01 12:00');`,
+      },
+      {
+        note: "four trains overlap in the same station slot",
+        seedSQL: `INSERT INTO train_schedule VALUES
+  (21, 'Y1', TIMESTAMP '2024-05-01 06:00', TIMESTAMP '2024-05-01 09:00'),
+  (22, 'Y2', TIMESTAMP '2024-05-01 06:30', TIMESTAMP '2024-05-01 08:00'),
+  (23, 'Y3', TIMESTAMP '2024-05-01 07:00', TIMESTAMP '2024-05-01 07:45'),
+  (24, 'Y4', TIMESTAMP '2024-05-01 07:15', TIMESTAMP '2024-05-01 10:00');`,
+      },
+    ],
   },
   {
     id: "ss-2087-negative-reviews-in-new-locations",
@@ -737,6 +1101,40 @@ WHERE f.reviews_considered = 3
   AND f.negative_reviews >= 2
 ORDER BY f.negative_reviews DESC, h.hotel_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "unrated reviews must not take one of the first slots",
+        seedSQL: `INSERT INTO hotels VALUES
+  (11, 'Foxtrot', 'Lisbon'),
+  (12, 'Golf', 'Porto'),
+  (13, 'Hotelx', 'Faro');
+INSERT INTO reviews VALUES
+  (2001, 11, DATE '2024-06-01', 2),
+  (2002, 11, DATE '2024-06-01', 1),
+  (2003, 11, DATE '2024-06-01', 5),
+  (2004, 11, DATE '2024-06-05', 1),
+  (2005, 12, DATE '2024-06-02', 1),
+  (2006, 12, DATE '2024-06-03', NULL),
+  (2007, 12, DATE '2024-06-04', 2),
+  (2008, 12, DATE '2024-06-05', 3),
+  (2009, 12, DATE '2024-06-06', 1),
+  (2010, 13, DATE '2024-06-01', 1),
+  (2011, 13, DATE '2024-06-02', 2);`,
+      },
+      {
+        note: "a hotel with three perfect ratings is left out",
+        seedSQL: `INSERT INTO hotels VALUES
+  (21, 'India', 'Braga'),
+  (22, 'Juliet', 'Evora');
+INSERT INTO reviews VALUES
+  (2101, 21, DATE '2024-07-01', 5),
+  (2102, 21, DATE '2024-07-02', 5),
+  (2103, 21, DATE '2024-07-03', 5),
+  (2104, 22, DATE '2024-07-04', 2),
+  (2105, 22, DATE '2024-07-05', 2),
+  (2106, 22, DATE '2024-07-06', 2);`,
+      },
+    ],
   },
   {
     id: "ss-2088-seat-availability",
@@ -810,6 +1208,26 @@ SELECT DISTINCT ON (screening_id)
 FROM blocks
 ORDER BY screening_id, block_size DESC, block_start;`,
     ordered: true,
+    testCases: [
+      {
+        note: "a screening with no bookings and a tie between blocks",
+        seedSQL: `INSERT INTO screenings VALUES
+  (11, 'Vertigo', 5),
+  (12, 'Metropolis', 4);
+INSERT INTO seat_bookings VALUES
+  (301, 11, 3);`,
+      },
+      {
+        note: "every seat of one screening is already booked",
+        seedSQL: `INSERT INTO screenings VALUES
+  (21, 'Rashomon', 3),
+  (22, 'Ikiru', 2);
+INSERT INTO seat_bookings VALUES
+  (401, 21, 1),
+  (402, 21, 2),
+  (403, 21, 3);`,
+      },
+    ],
   },
   {
     id: "ss-2089-cookbook-recipes",
@@ -884,6 +1302,40 @@ WHERE NOT EXISTS (
       )
 ORDER BY base.recipe_name, richer_recipe;`,
     ordered: true,
+    testCases: [
+      {
+        note: "recipes sharing the exact same ingredient list must not pair",
+        seedSQL: `INSERT INTO recipes VALUES
+  (11, 'Herb Butter', 2),
+  (12, 'Garlic Butter', 3),
+  (13, 'Cafe Butter', 3),
+  (14, 'Plain Toast', 1);
+INSERT INTO recipe_ingredients VALUES
+  (11, 'butter'),
+  (11, 'herb'),
+  (12, 'butter'),
+  (12, 'garlic'),
+  (12, 'herb'),
+  (13, 'butter'),
+  (13, 'garlic'),
+  (13, 'herb'),
+  (14, 'bread');`,
+      },
+      {
+        note: "a small recipe is contained in two larger ones",
+        seedSQL: `INSERT INTO recipes VALUES
+  (21, 'Base Rub', 1),
+  (22, 'Mid Rub', 2),
+  (23, 'Full Rub', 3);
+INSERT INTO recipe_ingredients VALUES
+  (21, 'salt'),
+  (22, 'salt'),
+  (22, 'pepper'),
+  (23, 'salt'),
+  (23, 'pepper'),
+  (23, 'chili');`,
+      },
+    ],
   },
   {
     id: "ss-2090-first-day-retention-rate",
@@ -937,6 +1389,35 @@ LEFT JOIN activity a
 GROUP BY s.signup_date
 ORDER BY s.signup_date;`,
     ordered: true,
+    testCases: [
+      {
+        note: "same day activity does not count as retention",
+        seedSQL: `INSERT INTO signups VALUES
+  (11, DATE '2024-06-01', 'organic'),
+  (12, DATE '2024-06-01', 'ads'),
+  (13, DATE '2024-06-02', 'ads'),
+  (14, DATE '2024-06-02', 'organic');
+INSERT INTO activity VALUES
+  (1001, 11, DATE '2024-06-01'),
+  (1002, 11, DATE '2024-06-02'),
+  (1003, 12, DATE '2024-06-01'),
+  (1004, 12, DATE '2024-06-02'),
+  (1005, 12, DATE '2024-06-02'),
+  (1006, 13, DATE '2024-06-03'),
+  (1007, 14, DATE '2024-06-05');`,
+      },
+      {
+        note: "a cohort where nobody returns the next day",
+        seedSQL: `INSERT INTO signups VALUES
+  (21, DATE '2024-07-01', 'ads'),
+  (22, DATE '2024-07-01', 'ads'),
+  (23, DATE '2024-07-02', 'organic');
+INSERT INTO activity VALUES
+  (1008, 21, DATE '2024-07-01'),
+  (1009, 22, DATE '2024-07-10'),
+  (1010, 23, DATE '2024-07-02');`,
+      },
+    ],
   },
   {
     id: "ss-2094-highest-earning-merchants",
@@ -1003,6 +1484,34 @@ FROM ranked
 WHERE rnk <= 3
 ORDER BY category, rnk, merchant_name;`,
     ordered: true,
+    testCases: [
+      {
+        note: "the third place is shared by two merchants",
+        seedSQL: `INSERT INTO merchants VALUES
+  (11, 'Golf', 'Home'),
+  (12, 'Hotel', 'Home'),
+  (13, 'India', 'Home'),
+  (14, 'Juliet', 'Home'),
+  (15, 'Kilo', NULL);
+INSERT INTO merchant_sales VALUES
+  (1, 11, DATE '2024-01-10', 100.00, 'completed'),
+  (2, 12, DATE '2024-01-11', 90.00, 'completed'),
+  (3, 13, DATE '2024-01-12', 80.00, 'completed'),
+  (4, 14, DATE '2024-01-13', 80.00, 'completed'),
+  (5, 15, DATE '2024-01-14', 500.00, 'refunded');`,
+      },
+      {
+        note: "a merchant with only pending sales still ranks",
+        seedSQL: `INSERT INTO merchants VALUES
+  (21, 'Lima', 'Toys'),
+  (22, 'Mike', 'Toys'),
+  (23, 'Nova', 'Garden');
+INSERT INTO merchant_sales VALUES
+  (6, 21, DATE '2024-02-01', 50.00, 'completed'),
+  (7, 22, DATE '2024-02-02', 0.00, 'completed'),
+  (8, 23, DATE '2024-02-03', 40.00, 'pending');`,
+      },
+    ],
   },
   {
     id: "ss-2103-reviewed-flags-of-top-videos",
@@ -1079,5 +1588,42 @@ FROM ranked
 WHERE rnk <= 3
 ORDER BY flag_count DESC, video_id;`,
     ordered: true,
+    testCases: [
+      {
+        note: "one user flags a video twice and ties reach rank three",
+        seedSQL: `INSERT INTO videos VALUES
+  (11, 'Alpha', 'A'),
+  (12, 'Beta', 'B'),
+  (13, 'Gamma', 'C'),
+  (14, 'Delta', 'D'),
+  (15, 'Epsilon', 'E');
+INSERT INTO content_flags VALUES
+  (201, 11, 'u1', DATE '2024-06-01', 'spam'),
+  (202, 11, 'u1', DATE '2024-06-02', 'spam'),
+  (203, 11, 'u2', DATE '2024-06-03', 'abuse'),
+  (204, 12, 'u3', DATE '2024-06-01', 'abuse'),
+  (205, 12, 'u4', DATE '2024-06-02', 'spam'),
+  (206, 12, 'u5', DATE '2024-06-03', 'misleading'),
+  (207, 13, 'u2', DATE '2024-06-04', 'spam'),
+  (208, 13, 'u6', DATE '2024-06-05', 'abuse'),
+  (209, 14, 'u7', DATE '2024-06-06', 'spam');
+INSERT INTO moderation_reviews VALUES
+  (101, 204, DATE '2024-06-10', 'dismissed');`,
+      },
+      {
+        note: "the leading count is tied and one video has no flags",
+        seedSQL: `INSERT INTO videos VALUES
+  (21, 'Zeta', 'F'),
+  (22, 'Eta', 'G'),
+  (23, 'Theta', 'H');
+INSERT INTO content_flags VALUES
+  (301, 21, 'u1', DATE '2024-07-01', 'spam'),
+  (302, 21, 'u1', DATE '2024-07-02', 'abuse'),
+  (303, 21, 'u2', DATE '2024-07-03', 'spam'),
+  (304, 22, 'u3', DATE '2024-07-04', 'spam'),
+  (305, 22, 'u4', DATE '2024-07-05', 'abuse'),
+  (306, 22, 'u5', DATE '2024-07-06', 'spam');`,
+      },
+    ],
   },
 ];

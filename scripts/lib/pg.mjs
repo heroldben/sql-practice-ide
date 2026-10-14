@@ -7,7 +7,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { PGlite } from '@electric-sql/pglite';
-import { PG_OPTIONS, SESSION_SETUP_SQL, lastTable, resultToTable, serializeResult } from '../../js/pg-config.js';
+import { PG_OPTIONS, SESSION_SETUP_SQL, lastTable, resultToTable, serializeResult, testCasesOf } from '../../js/pg-config.js';
 
 export const ROOT = path.resolve(import.meta.dirname, '..', '..');
 export const DATA_DIR = path.join(ROOT, 'js', 'data');
@@ -22,6 +22,10 @@ export const TOPIC_VOCABULARY = [
   'top-n', 'percentages', 'cumulative', 'union', 'case-expressions', 'recursion',
 ];
 export const SOURCE_PREFIX = { leetcode: 'lc-', datalemur: 'dl-', stratascratch: 'ss-' };
+
+/** Every problem ships 1 primary seed plus these extra cases (>= 3 datasets total). */
+export const MIN_EXTRA_CASES = 2;
+export const MAX_EXTRA_CASES = 4;
 
 const VOLATILE_RE = /\b(now\s*\(\s*\)|current_timestamp|current_date|current_time|localtime|clock_timestamp\s*\(\s*\)|random\s*\(\s*\()/i;
 const STATEMENT_RE = /^\s*(set|begin|commit|rollback|drop|truncate|create\s+(database|extension))\b/im;
@@ -103,6 +107,30 @@ export function validateRecord(problem, seenIds) {
       require_(!volatileMatch, `${field} must be deterministic (found "${volatileMatch ? volatileMatch[0] : ''}")`);
     }
   }
+
+  // Extra test cases: seedSQL is case 1, these are cases 2..N. Every problem must
+  // ship at least MIN_TEST_CASES total so answers are checked against more than
+  // one dataset (a query hardcoded to case 1 must fail).
+  if (!Array.isArray(problem.testCases) || problem.testCases.length < MIN_EXTRA_CASES) {
+    require_(false, `testCases must be an array with at least ${MIN_EXTRA_CASES} extra cases (seedSQL counts as case 1, so at least ${MIN_EXTRA_CASES + 1} total)`);
+  } else {
+    require_(problem.testCases.length <= MAX_EXTRA_CASES, `testCases must have at most ${MAX_EXTRA_CASES} extra cases`);
+    problem.testCases.forEach((testCase, index) => {
+      const label = `testCases[${index}] (case ${index + 2} of ${problem.testCases.length + 1})`;
+      if (!testCase || typeof testCase !== 'object') {
+        require_(false, `${label} must be an object with a seedSQL`);
+        return;
+      }
+      require_(typeof testCase.seedSQL === 'string' && /insert\s+into/i.test(testCase.seedSQL), `${label}.seedSQL must insert rows`);
+      require_(typeof testCase.note === 'string' && testCase.note.trim().length >= 4, `${label}.note must describe what the case exercises`);
+      if (typeof testCase.seedSQL === 'string') {
+        require_(testCase.seedSQL.trim() !== problem.seedSQL.trim(), `${label}.seedSQL must differ from the primary seed`);
+        require_(!STATEMENT_RE.test(testCase.seedSQL), `${label}.seedSQL must not contain DROP/session/transaction statements`);
+        const volatileMatch = testCase.seedSQL.match(VOLATILE_RE);
+        require_(!volatileMatch, `${label}.seedSQL must be deterministic (found "${volatileMatch ? volatileMatch[0] : ''}")`);
+      }
+    });
+  }
   return errors;
 }
 
@@ -129,17 +157,39 @@ export async function tableRowCounts(db) {
   return counts;
 }
 
+/** Drop everything the previous test case created, so cases cannot leak into each other. */
+export async function resetPublicSchema(db) {
+  const tables = await db.query(`select tablename from pg_tables where schemaname = 'public'`);
+  for (const row of tables.rows) await db.exec(`DROP TABLE IF EXISTS "${row.tablename}" CASCADE`);
+  const views = await db.query(`select viewname from pg_views where schemaname = 'public'`);
+  for (const row of views.rows) await db.exec(`DROP VIEW IF EXISTS "${row.viewname}" CASCADE`);
+  const sequences = await db.query(`select sequence_name from information_schema.sequences where sequence_schema = 'public'`);
+  for (const row of sequences.rows) await db.exec(`DROP SEQUENCE IF EXISTS "${row.sequence_name}" CASCADE`);
+}
+
 /**
- * Build the problem's state and run its reference solution.
- * @returns {Promise<{columns: string[], rows: any[][], counts: Record<string, number>}>}
+ * Build and run every test case of a problem: schema + the case's seed, then the
+ * reference solution.
+ * @returns {Promise<{cases: {columns: string[], rows: any[][], counts: Record<string, number>, seeded: number, note: string}[], counts: Record<string, number>, seeded: number}>}
  */
 export async function executeProblem(db, problem) {
-  await db.exec(problem.schemaSQL);
-  await db.exec(problem.seedSQL);
-  const counts = await tableRowCounts(db);
-  const result = lastTable(await db.exec(problem.solutionSQL));
-  if (!result) throw new Error('reference solution returned no result set');
-  return { ...result, counts };
+  const cases = [];
+  for (const [index, testCase] of testCasesOf(problem).entries()) {
+    await resetPublicSchema(db);
+    await db.exec(problem.schemaSQL);
+    await db.exec(testCase.seedSQL);
+    const counts = await tableRowCounts(db);
+    const result = lastTable(await db.exec(problem.solutionSQL));
+    if (!result) throw new Error(`test case ${index + 1}: reference solution returned no result set`);
+    cases.push({
+      note: testCase.note,
+      columns: result.columns,
+      rows: result.rows,
+      counts,
+      seeded: Object.values(counts).reduce((sum, n) => sum + n, 0),
+    });
+  }
+  return { cases, counts: cases[0].counts, seeded: cases[0].seeded };
 }
 
 /** Fresh PGlite instance per problem (isolation guaranteed). */
@@ -152,11 +202,16 @@ export async function executeProblemFresh(problem) {
   }
 }
 
+/** `{ columns, rows }` for every test case of a problem, in order. */
+export function serializeProblemCases(executed) {
+  return { cases: executed.cases.map((testCase) => serializeResult(testCase)) };
+}
+
 /** Run every problem and build the committed `expected.json` payload. */
 export async function buildExpected(problems) {
   const expected = {};
   for (const problem of problems) {
-    expected[problem.id] = serializeResult(await executeProblemFresh(problem));
+    expected[problem.id] = serializeProblemCases(await executeProblemFresh(problem));
   }
   return expected;
 }
@@ -166,4 +221,4 @@ export function expectedJsonText(expected) {
   return `${JSON.stringify(expected, null, 2)}\n`;
 }
 
-export { serializeResult, EXPECTED_FILE as expectedFile };
+export { serializeResult, testCasesOf, EXPECTED_FILE as expectedFile };

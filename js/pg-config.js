@@ -139,6 +139,24 @@ export function compareResults(got, expected, options = {}) {
   };
 }
 
+/**
+ * Test cases of a problem: the primary `seedSQL` first (case 1), then the extra
+ * `testCases`. Shared by the browser checker and the Node tooling so both run
+ * exactly the same datasets in the same order.
+ * @param {{seedSQL: string, testCases?: {note?: string, seedSQL: string}[]}} problem
+ * @returns {{note: string, seedSQL: string}[]}
+ */
+export function testCasesOf(problem) {
+  const extra = Array.isArray(problem?.testCases) ? problem.testCases : [];
+  return [
+    { note: 'default dataset', seedSQL: problem?.seedSQL },
+    ...extra.map((testCase, index) => ({
+      note: typeof testCase?.note === 'string' && testCase.note ? testCase.note : `case ${index + 2}`,
+      seedSQL: testCase?.seedSQL,
+    })),
+  ];
+}
+
 /** Build the committed representation of a result: `{ columns, rows }`. */
 export function serializeResult(result) {
   return {

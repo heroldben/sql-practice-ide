@@ -16,6 +16,28 @@ export const problems = [
     solutionSQL:
       "SELECT e.employee_id,\n       COUNT(r.employee_id) + 1 AS team_size\nFROM employee e\nLEFT JOIN employee r ON r.manager_id = e.employee_id\nGROUP BY e.employee_id\nORDER BY e.employee_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "three employees who manage nobody, so every team size is one",
+        seedSQL: `
+      INSERT INTO employee VALUES
+        (201, 'Nia', NULL),
+        (202, 'Ola', NULL),
+        (203, 'Pio', NULL);
+    `,
+      },
+      {
+        note: "a deep reporting chain where only direct reports must be counted",
+        seedSQL: `
+      INSERT INTO employee VALUES
+        (301, 'Quinn', NULL),
+        (302, 'Rex', 301),
+        (303, 'Sara', 302),
+        (304, 'Tom', 302),
+        (305, 'Uma', 301);
+    `,
+      },
+    ],
   },
   {
     id: "lc-512-game-play-analysis-ii",
@@ -33,6 +55,28 @@ export const problems = [
     solutionSQL:
       "WITH first_day AS (\n  SELECT player_id,\n         device_id,\n         ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY event_date, device_id) AS rn\n  FROM activity\n)\nSELECT player_id, device_id\nFROM first_day\nWHERE rn = 1\nORDER BY player_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "each player appears on exactly one day",
+        seedSQL: `
+      INSERT INTO activity VALUES
+        (11, 1, DATE '2019-01-05', 2),
+        (12, 2, DATE '2020-07-19', 7),
+        (13, 3, DATE '2021-11-30', 0);
+    `,
+      },
+      {
+        note: "players whose earliest day is listed later in the table",
+        seedSQL: `
+      INSERT INTO activity VALUES
+        (21, 5, DATE '2021-01-10', 3),
+        (21, 2, DATE '2020-05-01', 9),
+        (21, 4, DATE '2020-06-01', 1),
+        (22, 3, DATE '2022-02-02', 0),
+        (22, 1, DATE '2022-01-15', 4);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1757-recyclable-and-low-fat-products",
@@ -50,6 +94,28 @@ export const problems = [
     solutionSQL:
       "SELECT product_id\nFROM products\nWHERE low_fats = 'Y' AND recyclable = 'Y'\nORDER BY product_id;",
     ordered: true,
+    testCases: [
+      {
+        note: "no product is both low fat and recyclable, so the answer is empty",
+        seedSQL: `
+      INSERT INTO products VALUES
+        (10, 'Butter', 'N', 'Y'),
+        (11, 'Cream', 'Y', 'N'),
+        (12, 'Lard', 'N', 'N');
+    `,
+      },
+      {
+        note: "a single Y/Y product mixed with NULL and one-sided flags",
+        seedSQL: `
+      INSERT INTO products VALUES
+        (20, 'Tempeh', NULL, 'Y'),
+        (21, 'Seaweed', 'Y', 'Y'),
+        (22, 'Coconut', 'N', NULL),
+        (23, 'Almonds', 'Y', NULL),
+        (24, 'Lentils', NULL, NULL);
+    `,
+      },
+    ],
   },
   {
     id: "lc-584-find-customer-referee",
@@ -66,6 +132,29 @@ export const problems = [
       "INSERT INTO customer VALUES\n  (1, 'Will', NULL),\n  (2, 'Jane', NULL),\n  (3, 'Alex', 2),\n  (4, 'Bill', NULL),\n  (5, 'Zack', 1),\n  (6, 'Mark', 2),\n  (7, 'Kim', 3);",
     solutionSQL: "SELECT name\nFROM customer\nWHERE referee_id IS DISTINCT FROM 2;",
     ordered: false,
+    testCases: [
+      {
+        note: "most customers have no referee and only one was referred by id 2",
+        seedSQL: `
+      INSERT INTO customer VALUES
+        (1, 'Ana', NULL),
+        (2, 'Ben', NULL),
+        (3, 'Cara', 2),
+        (4, 'Dan', NULL),
+        (5, 'Eve', 1);
+    `,
+      },
+      {
+        note: "nobody is referred by id 2 so every customer is returned",
+        seedSQL: `
+      INSERT INTO customer VALUES
+        (1, 'Fay', NULL),
+        (2, 'Gil', 1),
+        (3, 'Hal', 1),
+        (4, 'Ida', 3);
+    `,
+      },
+    ],
   },
   {
     id: "lc-1341-movie-rating",
@@ -83,6 +172,37 @@ export const problems = [
     solutionSQL:
       "WITH top_user AS (\n  SELECT u.name AS results\n  FROM users u\n  JOIN movie_rating mr ON mr.user_id = u.user_id\n  GROUP BY u.user_id, u.name\n  ORDER BY COUNT(*) DESC, u.name ASC\n  LIMIT 1\n),\ntop_movie AS (\n  SELECT m.title AS results\n  FROM movies m\n  JOIN movie_rating mr ON mr.movie_id = m.movie_id\n  WHERE mr.created_at >= DATE '2020-02-01'\n    AND mr.created_at < DATE '2020-03-01'\n  GROUP BY m.movie_id, m.title\n  ORDER BY AVG(mr.rating) DESC, m.title ASC\n  LIMIT 1\n)\nSELECT results FROM top_user\nUNION ALL\nSELECT results FROM top_movie;",
     ordered: true,
+    testCases: [
+      {
+        note: "a tie in rating counts broken by the smaller member name",
+        seedSQL: `
+      INSERT INTO movies VALUES
+        (1, 'Alpha'),
+        (2, 'Beta');
+      INSERT INTO users VALUES
+        (1, 'Zoe'),
+        (2, 'Amy');
+      INSERT INTO movie_rating VALUES
+        (1, 1, 5, DATE '2020-01-05'),
+        (2, 2, 3, DATE '2020-02-10');
+    `,
+      },
+      {
+        note: "February boundary dates excluded while the busiest member sits outside February",
+        seedSQL: `
+      INSERT INTO movies VALUES
+        (10, 'Zeta'),
+        (11, 'Alps');
+      INSERT INTO users VALUES
+        (10, 'Mia'),
+        (11, 'Noah');
+      INSERT INTO movie_rating VALUES
+        (10, 10, 5, DATE '2020-01-31'),
+        (11, 10, 4, DATE '2020-03-01'),
+        (11, 11, 3, DATE '2020-02-05');
+    `,
+      },
+    ],
   },
   {
     id: "lc-1321-restaurant-growth",
@@ -100,6 +220,36 @@ export const problems = [
     solutionSQL:
       "WITH daily AS (\n  SELECT visited_on, SUM(amount) AS amount\n  FROM customer\n  GROUP BY visited_on\n),\nrolling AS (\n  SELECT visited_on,\n         SUM(amount) OVER (ORDER BY visited_on ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS amount\n  FROM daily\n)\nSELECT visited_on,\n       amount,\n       ROUND(amount / 7, 2) AS average_amount\nFROM rolling\nWHERE visited_on >= (SELECT MIN(visited_on) FROM customer) + 6\nORDER BY visited_on;",
     ordered: true,
+    testCases: [
+      {
+        note: "exactly seven consecutive days produce a single window row",
+        seedSQL: `
+      INSERT INTO customer VALUES
+        (1, 'Ana', DATE '2021-01-01', 10.00),
+        (2, 'Ben', DATE '2021-01-02', 20.00),
+        (3, 'Cara', DATE '2021-01-03', 30.00),
+        (4, 'Dan', DATE '2021-01-04', 40.00),
+        (5, 'Eve', DATE '2021-01-05', 50.00),
+        (6, 'Fay', DATE '2021-01-06', 60.00),
+        (7, 'Gil', DATE '2021-01-07', 70.00);
+    `,
+      },
+      {
+        note: "two orders on one day plus gap days inside the window",
+        seedSQL: `
+      INSERT INTO customer VALUES
+        (1, 'Hal', DATE '2022-02-01', 5.00),
+        (2, 'Ida', DATE '2022-02-01', 15.00),
+        (3, 'Jo', DATE '2022-02-02', 10.00),
+        (4, 'Kim', DATE '2022-02-03', 10.00),
+        (5, 'Lee', DATE '2022-02-04', 10.00),
+        (6, 'Mia', DATE '2022-02-05', 10.00),
+        (7, 'Nia', DATE '2022-02-06', 10.00),
+        (8, 'Oli', DATE '2022-02-07', 20.00),
+        (9, 'Pia', DATE '2022-02-10', 30.00);
+    `,
+      },
+    ],
   },
   {
     id: "lc-602-friend-requests-ii-who-has-the-most-friends",
@@ -117,6 +267,30 @@ export const problems = [
     solutionSQL:
       "WITH friendship AS (\n  SELECT requester_id AS id, accepter_id AS friend_id FROM request_accepted\n  UNION\n  SELECT accepter_id AS id, requester_id AS friend_id FROM request_accepted\n)\nSELECT id,\n       COUNT(*) AS num\nFROM friendship\nGROUP BY id\nORDER BY num DESC, id ASC\nLIMIT 1;",
     ordered: true,
+    testCases: [
+      {
+        note: "the same friendship logged in both directions, all three people tied",
+        seedSQL: `
+      INSERT INTO request_accepted VALUES
+        (1, 1, 2, DATE '2020-01-01'),
+        (2, 2, 1, DATE '2020-01-02'),
+        (3, 1, 3, DATE '2020-01-03'),
+        (4, 3, 1, DATE '2020-01-04'),
+        (5, 2, 3, DATE '2020-01-05');
+    `,
+      },
+      {
+        note: "one hub with three distinct friends and a duplicated pair",
+        seedSQL: `
+      INSERT INTO request_accepted VALUES
+        (1, 10, 11, DATE '2020-02-01'),
+        (2, 10, 12, DATE '2020-02-02'),
+        (3, 10, 13, DATE '2020-02-03'),
+        (4, 11, 10, DATE '2020-02-04'),
+        (5, 13, 12, DATE '2020-02-05');
+    `,
+      },
+    ],
   },
   {
     id: "lc-585-investments-in-2016",
@@ -134,6 +308,28 @@ export const problems = [
     solutionSQL:
       "SELECT ROUND(SUM(tiv_2016), 2) AS tiv_2016\nFROM insurance\nWHERE tiv_2015 IN (\n        SELECT tiv_2015\n        FROM insurance\n        GROUP BY tiv_2015\n        HAVING COUNT(*) > 1\n      )\n  AND (lat, lon) IN (\n        SELECT lat, lon\n        FROM insurance\n        GROUP BY lat, lon\n        HAVING COUNT(*) = 1\n      );",
     ordered: false,
+    testCases: [
+      {
+        note: "every 2015 value is unique so nothing qualifies and the total is NULL",
+        seedSQL: `
+      INSERT INTO insurance VALUES
+        (1, 10.00, 5.00, 1.00, 1.00),
+        (2, 20.00, 6.00, 2.00, 2.00),
+        (3, 30.00, 7.00, 3.00, 3.00);
+    `,
+      },
+      {
+        note: "a repeated 2015 value at a shared location is excluded and NULL coordinates never count",
+        seedSQL: `
+      INSERT INTO insurance VALUES
+        (1, 5.00, 100.00, 10.00, 10.00),
+        (2, 5.00, 200.00, 20.00, 20.00),
+        (3, 7.00, 300.00, 20.00, 20.00),
+        (4, 9.00, 400.00, 30.00, 30.00),
+        (5, 9.00, 500.00, NULL, NULL);
+    `,
+      },
+    ],
   },
   {
     id: "lc-176-second-highest-salary",
@@ -151,6 +347,28 @@ export const problems = [
     solutionSQL:
       "WITH known AS (\n  SELECT DISTINCT salary\n  FROM employee\n  WHERE salary IS NOT NULL\n),\ngraded AS (\n  SELECT mine.salary,\n         (SELECT COUNT(*) FROM known AS other WHERE other.salary > mine.salary) AS higher\n  FROM known AS mine\n)\nSELECT MAX(salary) FILTER (WHERE higher = 1) AS \"SecondHighestSalary\"\nFROM graded;",
     ordered: false,
+    testCases: [
+      {
+        note: "every salary is identical so there is no second distinct value",
+        seedSQL: `
+      INSERT INTO employee VALUES
+        (1, 'Ana', 100),
+        (2, 'Ben', 100),
+        (3, 'Cara', 100);
+    `,
+      },
+      {
+        note: "two distinct known salaries mixed with NULLs",
+        seedSQL: `
+      INSERT INTO employee VALUES
+        (1, 'Dee', 500),
+        (2, 'Eli', 300),
+        (3, 'Fay', 500),
+        (4, 'Gus', NULL),
+        (5, 'Hal', 300);
+    `,
+      },
+    ],
   },
   {
     id: "lc-185-department-top-three-salaries",
@@ -168,5 +386,35 @@ export const problems = [
     solutionSQL:
       "WITH ranked AS (\n  SELECT d.name AS department,\n         e.name AS employee,\n         e.salary,\n         DENSE_RANK() OVER (PARTITION BY e.department_id ORDER BY e.salary DESC) AS rnk\n  FROM employee e\n  JOIN department d ON d.id = e.department_id\n)\nSELECT department, employee, salary\nFROM ranked\nWHERE rnk <= 3\nORDER BY department ASC, salary DESC, employee ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "a triple tie at the top salary and a department with no employees",
+        seedSQL: `
+      INSERT INTO department VALUES
+        (1, 'Research'),
+        (2, 'Marketing');
+      INSERT INTO employee VALUES
+        (1, 'Ada', 100, 1),
+        (2, 'Ben', 100, 1),
+        (3, 'Cleo', 100, 1),
+        (4, 'Dan', 50, 1),
+        (5, 'Eve', 40, 1),
+        (6, 'Fay', 30, 1);
+    `,
+      },
+      {
+        note: "departments with fewer than three employees and one with none",
+        seedSQL: `
+      INSERT INTO department VALUES
+        (1, 'Support'),
+        (2, 'Legal'),
+        (3, 'Empty');
+      INSERT INTO employee VALUES
+        (1, 'Gil', 90, 1),
+        (2, 'Hal', 80, 1),
+        (3, 'Ida', 70, 2);
+    `,
+      },
+    ],
   },
 ];

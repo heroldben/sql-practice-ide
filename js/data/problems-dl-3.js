@@ -16,6 +16,18 @@ export const problems = [
     solutionSQL:
       "SELECT u.city AS city,\n       COUNT(*) AS completed_trades\nFROM trades t\nJOIN users u ON u.user_id = t.user_id\nWHERE t.status = 'Completed'\nGROUP BY u.city\nORDER BY completed_trades DESC, city ASC\nLIMIT 3;",
     ordered: true,
+    testCases: [
+      {
+        note: "cancelled trades and a lowercase status",
+        seedSQL:
+          "INSERT INTO users VALUES (11, 'Boston'), (12, 'Denver'), (13, 'Fresno'), (14, 'Akron');\nINSERT INTO trades VALUES\n  (201, 11, 10, 'Completed', '2024-05-01'),\n  (202, 11, 5, 'Completed', '2024-05-02'),\n  (203, 11, 8, 'Completed', '2024-05-03'),\n  (204, 12, 4, 'Completed', '2024-05-04'),\n  (205, 12, 2, 'Completed', '2024-05-05'),\n  (206, 12, 9, 'Cancelled', '2024-05-06'),\n  (207, 12, 1, 'Cancelled', '2024-05-07'),\n  (208, 12, 3, 'Cancelled', '2024-05-08'),\n  (209, 13, 6, 'Completed', '2024-05-09'),\n  (210, 13, 7, 'Completed', '2024-05-10'),\n  (211, 14, 11, 'completed', '2024-05-11'),\n  (212, 14, 12, 'completed', '2024-05-12'),\n  (213, 14, 13, 'completed', '2024-05-13'),\n  (214, 14, 14, 'Completed', '2024-05-14');",
+      },
+      {
+        note: "two users sharing one city, one idle",
+        seedSQL:
+          "INSERT INTO users VALUES (21, 'Zurich'), (22, 'Oslo'), (23, 'Lima'), (24, 'Cairo'), (25, 'Oslo');\nINSERT INTO trades VALUES\n  (221, 21, 5, 'Completed', '2024-06-01'),\n  (222, 22, 4, 'Completed', '2024-06-02'),\n  (223, 23, 3, 'Completed', '2024-06-03'),\n  (224, 24, 2, 'Pending', '2024-06-04'),\n  (225, 25, 6, 'Completed', '2024-06-05');",
+      },
+    ],
   },
   {
     id: "dl-sql-avg-review-ratings",
@@ -33,6 +45,18 @@ export const problems = [
     solutionSQL:
       "SELECT EXTRACT(MONTH FROM submit_date)::int AS month,\n       product_id AS product_id,\n       ROUND(AVG(stars), 2) AS avg_stars\nFROM reviews\nGROUP BY EXTRACT(MONTH FROM submit_date), product_id\nORDER BY month ASC, product_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "same month number in two different years",
+        seedSQL:
+          "INSERT INTO reviews VALUES\n  (11, 201, '2023-01-15', 2001, 5),\n  (12, 202, '2024-01-20', 2001, 3),\n  (13, 203, '2024-01-05', 2002, 2),\n  (14, 204, '2024-02-10', 2002, 4),\n  (15, 201, '2024-02-29', 2001, 1),\n  (16, 205, '2024-12-31', 2001, 3),\n  (17, 205, '2023-12-01', 2002, 5);",
+      },
+      {
+        note: "first and last day of month boundaries",
+        seedSQL:
+          "INSERT INTO reviews VALUES\n  (21, 301, '2024-03-01', 3001, 4),\n  (22, 302, '2024-03-31', 3001, 5),\n  (23, 303, '2024-04-01', 3001, 3),\n  (24, 304, '2024-04-30', 3002, 1),\n  (25, 305, '2024-05-15', 3001, 4),\n  (26, 306, '2024-05-16', 3001, 4),\n  (27, 307, '2024-05-17', 3001, 5);",
+      },
+    ],
   },
   {
     id: "dl-sql-well-paid-employees",
@@ -50,6 +74,18 @@ export const problems = [
     solutionSQL:
       "SELECT e.employee_id AS employee_id,\n       e.employee_name AS employee_name,\n       m.employee_name AS manager_name\nFROM employees e\nJOIN employees m ON m.employee_id = e.manager_id\nWHERE e.salary > m.salary\nORDER BY e.employee_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "equal pay and a just-above manager gap",
+        seedSQL:
+          "INSERT INTO employees VALUES\n  (11, 'Root Boss', 200000, 1, NULL),\n  (12, 'Equal Earn', 120000, 1, 11),\n  (13, 'Big Earner', 150000, 1, 12),\n  (14, 'Low Ball', 90000, 2, 13),\n  (15, 'Slight Edge', 120001, 1, 12),\n  (16, 'Prime Peer', 150000, 1, 11);",
+      },
+      {
+        note: "equal salaries make the answer empty",
+        seedSQL:
+          "INSERT INTO employees VALUES\n  (21, 'Chief Two', 200000, 4, NULL),\n  (22, 'Same Pay', 200000, 4, 21),\n  (23, 'Also Same', 200000, 4, 22);",
+      },
+    ],
   },
   {
     id: "dl-final-account-balance",
@@ -67,6 +103,18 @@ export const problems = [
     solutionSQL:
       "SELECT a.account_id AS account_id,\n       a.account_name AS account_name,\n       COALESCE(SUM(CASE WHEN t.transaction_type = 'deposit' THEN t.amount ELSE -t.amount END), 0)::numeric(12,2) AS final_balance\nFROM accounts a\nLEFT JOIN transactions t ON t.account_id = a.account_id\nGROUP BY a.account_id, a.account_name\nORDER BY a.account_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "zero net, overdrawn and untouched accounts",
+        seedSQL:
+          "INSERT INTO accounts VALUES (5, 'Zero Net'), (6, 'Overdrawn'), (7, 'Untouched'), (8, 'Deposit Only');\nINSERT INTO transactions VALUES\n  (2001, 5, '2024-04-01', 250.00, 'deposit'),\n  (2002, 5, '2024-04-02', 250.00, 'withdrawal'),\n  (2003, 6, '2024-04-03', 40.00, 'deposit'),\n  (2004, 6, '2024-04-04', 140.00, 'withdrawal'),\n  (2005, 8, '2024-04-05', 0.01, 'deposit');",
+      },
+      {
+        note: "large amounts and many small ones",
+        seedSQL:
+          "INSERT INTO accounts VALUES (9, 'Many Small'), (10, 'One Big'), (11, 'Empty Ledger');\nINSERT INTO transactions VALUES\n  (2011, 9, '2024-05-01', 33.33, 'deposit'),\n  (2012, 9, '2024-05-02', 33.33, 'deposit'),\n  (2013, 9, '2024-05-03', 33.34, 'deposit'),\n  (2014, 9, '2024-05-04', 10.00, 'withdrawal'),\n  (2015, 10, '2024-05-05', 999999.99, 'deposit'),\n  (2016, 10, '2024-05-06', 1.00, 'withdrawal');",
+      },
+    ],
   },
   {
     id: "dl-sql-swapped-food-delivery",
@@ -82,8 +130,20 @@ export const problems = [
     seedSQL:
       "INSERT INTO delivery_orders VALUES\n  (1, 'Pizza'),\n  (2, 'Burger'),\n  (3, 'Pasta'),\n  (4, 'Salad'),\n  (5, 'Sushi'),\n  (6, 'Tacos'),\n  (7, 'Ramen'),\n  (8, 'Curry'),\n  (9, 'Bagel');",
     solutionSQL:
-      "SELECT o.order_id AS order_id,\n       CASE\n         WHEN o.order_id % 2 = 1 THEN COALESCE(n.item, o.item)\n         ELSE COALESCE(p.item, o.item)\n       END AS item\nFROM delivery_orders o\nLEFT JOIN delivery_orders n ON n.order_id = o.order_id + 1\nLEFT JOIN delivery_orders p ON p.order_id = o.order_id - 1\nORDER BY o.order_id ASC;",
+      "WITH sequenced AS (\n  SELECT order_id,\n         item,\n         ROW_NUMBER() OVER (ORDER BY order_id ASC) AS seq\n  FROM delivery_orders\n)\nSELECT s.order_id AS order_id,\n       COALESCE(p.item, s.item) AS item\nFROM sequenced s\nLEFT JOIN sequenced p\n  ON p.seq = CASE WHEN s.seq % 2 = 1 THEN s.seq + 1 ELSE s.seq - 1 END\nORDER BY s.order_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "non-contiguous ids with wide gaps",
+        seedSQL:
+          "INSERT INTO delivery_orders VALUES\n  (10, 'Pizza'),\n  (21, 'Burger'),\n  (32, 'Pasta'),\n  (47, 'Salad'),\n  (60, 'Sushi'),\n  (61, 'Tacos');",
+      },
+      {
+        note: "odd count ending on an unpaired order",
+        seedSQL:
+          "INSERT INTO delivery_orders VALUES\n  (2, 'Falafel'),\n  (4, 'Gyro'),\n  (6, 'Panini'),\n  (8, 'Kebab'),\n  (10, 'Pho');",
+      },
+    ],
   },
   {
     id: "dl-sql-bloomberg-stock-min-max-1",
@@ -101,6 +161,18 @@ export const problems = [
     solutionSQL:
       "WITH ranked AS (\n  SELECT ticker,\n         EXTRACT(MONTH FROM price_date)::int AS mth,\n         open_price,\n         ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY open_price DESC, price_date ASC) AS high_rn,\n         ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY open_price ASC, price_date ASC) AS low_rn\n  FROM stock_prices\n)\nSELECT h.ticker AS ticker,\n       h.mth AS highest_mth,\n       h.open_price AS highest_open,\n       l.mth AS lowest_mth,\n       l.open_price AS lowest_open\nFROM ranked h\nJOIN ranked l ON l.ticker = h.ticker AND l.low_rn = 1\nWHERE h.high_rn = 1\nORDER BY h.ticker ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "tied extremes and a single-row ticker",
+        seedSQL:
+          "INSERT INTO stock_prices VALUES\n  (21, 'TIE1', '2024-01-10', 250.00, 255.00),\n  (22, 'TIE1', '2024-02-15', 250.00, 249.00),\n  (23, 'TIE1', '2024-03-01', 180.00, 190.00),\n  (24, 'SOLO', '2024-06-20', 100.00, 101.00),\n  (25, 'MIXED', '2024-04-02', 300.00, 305.00),\n  (26, 'MIXED', '2024-05-03', 305.00, 310.00),\n  (27, 'MIXED', '2024-06-04', 299.99, 300.00),\n  (28, 'MIXED', '2024-07-05', 300.00, 301.00);",
+      },
+      {
+        note: "ties on both the high and the low",
+        seedSQL:
+          "INSERT INTO stock_prices VALUES\n  (31, 'ALFA', '2024-05-05', 50.00, 49.00),\n  (32, 'ALFA', '2024-06-06', 60.00, 61.00),\n  (33, 'ALFA', '2024-07-07', 55.00, 54.00),\n  (34, 'ZETA', '2024-01-31', 120.00, 118.00),\n  (35, 'ZETA', '2024-02-01', 120.00, 121.00),\n  (36, 'ZETA', '2024-03-10', 90.00, 95.00),\n  (37, 'ZETA', '2024-04-11', 90.00, 88.00);",
+      },
+    ],
   },
   {
     id: "dl-best-selling-products",
@@ -118,6 +190,18 @@ export const problems = [
     solutionSQL:
       "WITH totals AS (\n  SELECT p.brand, p.product_id, p.product_name, SUM(s.quantity) AS total_units\n  FROM products p\n  JOIN sales s ON s.product_id = p.product_id\n  GROUP BY p.brand, p.product_id, p.product_name\n),\nranked AS (\n  SELECT brand, product_id, product_name, total_units,\n         ROW_NUMBER() OVER (PARTITION BY brand ORDER BY total_units DESC, product_id ASC) AS rn\n  FROM totals\n)\nSELECT brand AS brand,\n       product_name AS product_name,\n       total_units AS total_units\nFROM ranked\nWHERE rn = 1\nORDER BY brand ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "row count versus summed units",
+        seedSQL:
+          "INSERT INTO products VALUES\n  (11, 'Feather Lite', 'Apex'),\n  (12, 'Heavy Pro', 'Apex'),\n  (13, 'Unsold X', 'Apex'),\n  (14, 'Fast One', 'Bolt'),\n  (15, 'Slow Two', 'Bolt'),\n  (16, 'Never Sold', 'Crux');\nINSERT INTO sales VALUES\n  (301, 11, 1, '2024-06-01'),\n  (302, 11, 1, '2024-06-02'),\n  (303, 11, 1, '2024-06-03'),\n  (304, 11, 1, '2024-06-04'),\n  (305, 12, 10, '2024-06-05'),\n  (306, 14, 3, '2024-06-06'),\n  (307, 15, 3, '2024-06-07');",
+      },
+      {
+        note: "two brands each decided by a tie-break",
+        seedSQL:
+          "INSERT INTO products VALUES\n  (21, 'Gamma A', 'Gamma'),\n  (22, 'Gamma B', 'Gamma'),\n  (23, 'Delta A', 'Delta'),\n  (24, 'Delta B', 'Delta');\nINSERT INTO sales VALUES\n  (401, 21, 20, '2024-07-01'),\n  (402, 21, 20, '2024-07-02'),\n  (403, 22, 5, '2024-07-03'),\n  (404, 22, 35, '2024-07-04'),\n  (405, 23, 100, '2024-07-05'),\n  (406, 24, 60, '2024-07-06'),\n  (407, 24, 60, '2024-07-07'),\n  (408, 24, 60, '2024-07-08');",
+      },
+    ],
   },
   {
     id: "dl-amazon-shopping-spree",
@@ -135,6 +219,18 @@ export const problems = [
     solutionSQL:
       "WITH distinct_days AS (\n  SELECT DISTINCT user_id, purchase_date\n  FROM purchases\n),\nislands AS (\n  SELECT user_id,\n         purchase_date,\n         purchase_date - (ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY purchase_date))::int AS grp\n  FROM distinct_days\n)\nSELECT user_id AS user_id\nFROM islands\nGROUP BY user_id, grp\nHAVING COUNT(*) >= 3\nORDER BY user_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "duplicate days, gaps and a two-day run",
+        seedSQL:
+          "INSERT INTO purchases VALUES\n  (101, 1, '2024-05-01', 10.00),\n  (102, 1, '2024-05-01', 12.00),\n  (103, 1, '2024-05-02', 8.00),\n  (104, 1, '2024-05-03', 9.00),\n  (105, 2, '2024-05-01', 5.00),\n  (106, 2, '2024-05-02', 6.00),\n  (107, 2, '2024-05-04', 7.00),\n  (108, 3, '2024-06-10', 3.00),\n  (109, 3, '2024-06-10', 4.00),\n  (110, 3, '2024-06-10', 5.00),\n  (111, 3, '2024-06-11', 6.00),\n  (112, 3, '2024-06-11', 7.00),\n  (113, 4, '2024-07-01', 11.00),\n  (114, 4, '2024-07-02', 12.00),\n  (115, 4, '2024-07-03', 13.00),\n  (116, 4, '2024-07-04', 14.00);",
+      },
+      {
+        note: "runs across month, year and leap-day edges",
+        seedSQL:
+          "INSERT INTO purchases VALUES\n  (121, 10, '2024-12-30', 20.00),\n  (122, 10, '2024-12-31', 21.00),\n  (123, 10, '2025-01-01', 22.00),\n  (124, 11, '2024-01-05', 23.00),\n  (125, 11, '2024-01-06', 24.00),\n  (126, 11, '2024-01-08', 25.00),\n  (127, 11, '2024-01-09', 26.00),\n  (128, 11, '2024-01-10', 27.00),\n  (129, 12, '2024-01-01', 28.00),\n  (130, 12, '2024-01-02', 29.00),\n  (131, 13, '2024-02-28', 30.00),\n  (132, 13, '2024-02-29', 31.00),\n  (133, 13, '2024-03-01', 32.00);",
+      },
+    ],
   },
   {
     id: "dl-histogram-users-purchases",
@@ -152,6 +248,18 @@ export const problems = [
     solutionSQL:
       "WITH latest AS (\n  SELECT user_id, MAX(transaction_date) AS latest_date\n  FROM user_transactions\n  GROUP BY user_id\n)\nSELECT t.transaction_date AS transaction_date,\n       t.user_id AS user_id,\n       COUNT(*) AS purchase_count\nFROM user_transactions t\nJOIN latest l ON l.user_id = t.user_id AND l.latest_date = t.transaction_date\nGROUP BY t.transaction_date, t.user_id\nORDER BY t.transaction_date ASC, t.user_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "shared latest date and a single-row user",
+        seedSQL:
+          "INSERT INTO user_transactions VALUES\n  (101, 101, 1, 10.00, '2024-06-01'),\n  (102, 102, 1, 20.00, '2024-06-05'),\n  (103, 103, 1, 30.00, '2024-06-05'),\n  (104, 104, 2, 15.00, '2024-06-05'),\n  (105, 105, 3, 25.00, '2024-05-30'),\n  (106, 106, 3, 35.00, '2024-06-01');",
+      },
+      {
+        note: "repeated product on the latest date",
+        seedSQL:
+          "INSERT INTO user_transactions VALUES\n  (201, 201, 10, 5.00, '2024-07-01'),\n  (202, 201, 10, 6.00, '2024-07-02'),\n  (203, 201, 10, 7.00, '2024-07-02'),\n  (204, 202, 11, 9.00, '2024-07-02'),\n  (205, 203, 11, 11.00, '2024-07-03'),\n  (206, 205, 12, 13.00, '2024-07-04'),\n  (207, 205, 12, 14.00, '2024-07-04');",
+      },
+    ],
   },
   {
     id: "dl-alibaba-compressed-mode",
@@ -167,8 +275,20 @@ export const problems = [
     seedSQL:
       "INSERT INTO items VALUES\n  (1, 5, 'Furniture'),\n  (2, 4, 'Furniture'),\n  (3, 5, 'Electronics'),\n  (4, 3, 'Electronics'),\n  (5, 5, 'Clothing'),\n  (6, 4, 'Clothing'),\n  (7, 4, 'Electronics'),\n  (8, NULL, 'Furniture'),\n  (9, 2, 'Clothing'),\n  (10, NULL, 'Electronics'),\n  (11, 5, 'Furniture');",
     solutionSQL:
-      "WITH frequency AS (\n  SELECT item_count, COUNT(*) AS freq\n  FROM items\n  WHERE item_count IS NOT NULL\n  GROUP BY item_count\n),\nranked AS (\n  SELECT item_count,\n         RANK() OVER (ORDER BY freq DESC, item_count ASC) AS rnk\n  FROM frequency\n)\nSELECT item_count AS mode_item_count\nFROM ranked\nWHERE rnk = 1\nORDER BY mode_item_count ASC;",
+      "WITH frequency AS (\n  SELECT item_count, COUNT(*) AS freq\n  FROM items\n  WHERE item_count IS NOT NULL\n  GROUP BY item_count\n),\nranked AS (\n  SELECT item_count,\n         RANK() OVER (ORDER BY freq DESC) AS rnk\n  FROM frequency\n)\nSELECT item_count AS mode_item_count\nFROM ranked\nWHERE rnk = 1\nORDER BY mode_item_count ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "nulls dominate while two values tie",
+        seedSQL:
+          "INSERT INTO items VALUES\n  (101, 7, 'A'),\n  (102, 7, 'B'),\n  (103, 9, 'A'),\n  (104, 9, 'C'),\n  (105, 4, 'B'),\n  (106, NULL, 'A'),\n  (107, NULL, 'B'),\n  (108, NULL, 'C');",
+      },
+      {
+        note: "all non-null counts identical",
+        seedSQL:
+          "INSERT INTO items VALUES\n  (201, 3, 'A'),\n  (202, 3, 'B'),\n  (203, 3, 'C'),\n  (204, NULL, 'A'),\n  (205, NULL, 'B'),\n  (206, NULL, 'C'),\n  (207, NULL, 'A');",
+      },
+    ],
   },
   {
     id: "dl-card-launch-success",
@@ -186,6 +306,18 @@ export const problems = [
     solutionSQL:
       "WITH first_month AS (\n  SELECT card_name,\n         issued_amount,\n         ROW_NUMBER() OVER (PARTITION BY card_name ORDER BY issue_year ASC, issue_month ASC) AS rn\n  FROM monthly_cards_issued\n),\nlaunches AS (\n  SELECT card_name, issued_amount\n  FROM first_month\n  WHERE rn = 1\n),\nranked AS (\n  SELECT card_name,\n         issued_amount,\n         RANK() OVER (ORDER BY issued_amount DESC) AS rnk\n  FROM launches\n)\nSELECT card_name AS card_name,\n       issued_amount AS issued_amount\nFROM ranked\nWHERE rnk = 1\nORDER BY issued_amount DESC, card_name ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "tied launch amounts across cards",
+        seedSQL:
+          "INSERT INTO monthly_cards_issued VALUES\n  (101, 'Tie Alpha', 4000, 2023, 12),\n  (102, 'Tie Alpha', 9000, 2024, 1),\n  (103, 'Tie Beta', 4000, 2024, 2),\n  (104, 'Tie Beta', 4000, 2024, 3),\n  (105, 'Tie Gamma', 2500, 2024, 5),\n  (106, 'Tie Gamma', 8000, 2024, 6);",
+      },
+      {
+        note: "single-row card beats later growth",
+        seedSQL:
+          "INSERT INTO monthly_cards_issued VALUES\n  (201, 'Solo Card', 1234, 2024, 3),\n  (202, 'Growth Card', 500, 2024, 1),\n  (203, 'Growth Card', 9999, 2024, 7),\n  (204, 'Riser', 1000, 2024, 8),\n  (205, 'Riser', 2000, 2024, 9),\n  (206, 'Early Bird', 3000, 2023, 11),\n  (207, 'Early Bird', 5000, 2024, 1);",
+      },
+    ],
   },
   {
     id: "dl-international-call-percentage",
@@ -203,6 +335,18 @@ export const problems = [
     solutionSQL:
       "SELECT ROUND(100.0 * COUNT(*) FILTER (WHERE c.country_id <> r.country_id) / COUNT(*), 1) AS international_calls_pct\nFROM phone_calls pc\nJOIN phone_info c ON c.phone_number = pc.caller_id\nJOIN phone_info r ON r.phone_number = pc.receiver_id;",
     ordered: false,
+    testCases: [
+      {
+        note: "every matched call is international",
+        seedSQL:
+          "INSERT INTO phone_info VALUES\n  (40, 7, 'Skyline'),\n  (41, 8, 'Telecom'),\n  (42, 9, 'Global');\nINSERT INTO phone_calls VALUES\n  (21, 40, 41, '2024-05-01', 100),\n  (22, 41, 42, '2024-05-02', 200),\n  (23, 40, 42, '2024-05-03', 300),\n  (24, 42, 40, '2024-05-04', 400);",
+      },
+      {
+        note: "unknown numbers plus a self-call",
+        seedSQL:
+          "INSERT INTO phone_info VALUES\n  (50, 5, 'Pine'),\n  (51, 5, 'Maple'),\n  (52, 6, 'Cedar');\nINSERT INTO phone_calls VALUES\n  (31, 50, 51, '2024-06-01', 120),\n  (32, 50, 50, '2024-06-02', 60),\n  (33, 51, 50, '2024-06-03', 90),\n  (34, 50, 999, '2024-06-04', 45);",
+      },
+    ],
   },
   {
     id: "dl-uncategorized-calls-percentage",
@@ -220,6 +364,18 @@ export const problems = [
     solutionSQL:
       "SELECT ROUND(100.0 * COUNT(*) FILTER (WHERE call_category IS NULL OR call_category = 'n/a') / COUNT(*), 1) AS uncategorised_call_pct\nFROM callers;",
     ordered: false,
+    testCases: [
+      {
+        note: "uppercase marker and nulls counted together",
+        seedSQL:
+          "INSERT INTO callers VALUES\n  (21, 7001, NULL, '2024-06-01', 100),\n  (22, 7001, 'n/a', '2024-06-02', 110),\n  (23, 7002, 'N/A', '2024-06-03', 120),\n  (24, 7002, NULL, '2024-06-04', 130);",
+      },
+      {
+        note: "no row is uncategorised at all",
+        seedSQL:
+          "INSERT INTO callers VALUES\n  (31, 8001, 'claim', '2024-07-01', 100),\n  (32, 8001, '', '2024-07-02', 110),\n  (33, 8002, 'N/A', '2024-07-03', 120),\n  (34, 8002, 'n/a ', '2024-07-04', 130),\n  (35, 8003, 'billing', '2024-07-05', 140);",
+      },
+    ],
   },
   {
     id: "dl-subscription-upgrade-paths",
@@ -237,6 +393,18 @@ export const problems = [
     solutionSQL:
       "WITH transitions AS (\n  SELECT user_id,\n         plan_name AS from_plan,\n         LEAD(plan_name) OVER (PARTITION BY user_id ORDER BY start_date ASC) AS to_plan\n  FROM subscription_events\n)\nSELECT t.from_plan AS from_plan,\n       t.to_plan AS to_plan,\n       COUNT(*) AS num_upgrades\nFROM transitions t\nJOIN plans pf ON pf.plan_name = t.from_plan\nJOIN plans pt ON pt.plan_name = t.to_plan\nWHERE t.to_plan IS NOT NULL\n  AND pt.tier > pf.tier\nGROUP BY t.from_plan, t.to_plan\nORDER BY num_upgrades DESC, from_plan ASC, to_plan ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "downgrades, skips and a lone user",
+        seedSQL:
+          "INSERT INTO plans VALUES ('Basic', 1), ('Pro', 2), ('Business', 3), ('Enterprise', 4);\nINSERT INTO subscription_events VALUES\n  (101, 10, 'Basic', '2024-05-01'),\n  (102, 10, 'Pro', '2024-06-01'),\n  (103, 10, 'Business', '2024-07-01'),\n  (104, 11, 'Business', '2024-05-05'),\n  (105, 11, 'Basic', '2024-06-05'),\n  (106, 12, 'Basic', '2024-05-10'),\n  (107, 12, 'Pro', '2024-06-10'),\n  (108, 13, 'Enterprise', '2024-05-15'),\n  (109, 14, 'Basic', '2024-05-20'),\n  (110, 14, 'Business', '2024-06-20');",
+      },
+      {
+        note: "same-tier switch and a repeated plan",
+        seedSQL:
+          "INSERT INTO plans VALUES ('Starter', 1), ('Lite', 1), ('Growth', 2), ('Scale', 3);\nINSERT INTO subscription_events VALUES\n  (201, 20, 'Starter', '2024-08-01'),\n  (202, 20, 'Lite', '2024-08-15'),\n  (203, 20, 'Growth', '2024-09-01'),\n  (204, 21, 'Starter', '2024-08-02'),\n  (205, 21, 'Growth', '2024-08-20'),\n  (206, 21, 'Scale', '2024-09-10'),\n  (207, 22, 'Scale', '2024-08-03'),\n  (208, 22, 'Growth', '2024-08-25'),\n  (209, 23, 'Starter', '2024-08-04'),\n  (210, 23, 'Starter', '2024-08-18'),\n  (211, 23, 'Scale', '2024-09-05');",
+      },
+    ],
   },
   {
     id: "dl-unread-notification-backlog",
@@ -254,6 +422,18 @@ export const problems = [
     solutionSQL:
       "SELECT user_id AS user_id,\n       COUNT(*) AS unread_count\nFROM notifications\nWHERE read_at IS NULL\n  AND created_at < DATE '2024-03-01'\nGROUP BY user_id\nHAVING COUNT(*) >= 3\nORDER BY unread_count DESC, user_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "leap day and a read backlog",
+        seedSQL:
+          "INSERT INTO notifications VALUES\n  (101, 7, '2024-01-01', NULL),\n  (102, 7, '2024-02-28', NULL),\n  (103, 7, '2024-02-29', NULL),\n  (104, 8, '2024-01-01', NULL),\n  (105, 8, '2024-01-02', NULL),\n  (106, 9, '2024-02-01', NULL),\n  (107, 9, '2024-02-02', NULL),\n  (108, 9, '2024-02-03', NULL),\n  (109, 9, '2024-03-01', NULL),\n  (110, 10, '2024-01-05', '2024-01-06'),\n  (111, 10, '2024-01-07', '2024-01-08'),\n  (112, 10, '2024-01-09', '2024-01-10');",
+      },
+      {
+        note: "every unread row sits on the cutoff",
+        seedSQL:
+          "INSERT INTO notifications VALUES\n  (201, 20, '2024-03-01', NULL),\n  (202, 20, '2024-03-01', NULL),\n  (203, 20, '2024-03-01', NULL),\n  (204, 21, '2024-03-02', NULL),\n  (205, 21, '2024-03-03', NULL),\n  (206, 21, '2024-03-04', NULL),\n  (207, 22, '2024-01-05', '2024-02-01'),\n  (208, 22, '2024-01-06', '2024-02-01'),\n  (209, 22, '2024-01-07', '2024-02-01');",
+      },
+    ],
   },
   {
     id: "dl-gift-card-balance-reconciliation",
@@ -271,6 +451,18 @@ export const problems = [
     solutionSQL:
       "SELECT c.card_id AS card_id,\n       c.issued_amount AS issued_amount,\n       (c.issued_amount + COALESCE(SUM(t.amount), 0))::numeric(10,2) AS remaining_balance\nFROM gift_cards c\nLEFT JOIN gift_card_transactions t ON t.card_id = c.card_id\nGROUP BY c.card_id, c.issued_amount\nHAVING c.issued_amount + COALESCE(SUM(t.amount), 0) < 0\nORDER BY remaining_balance ASC, c.card_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "balances that land exactly on zero",
+        seedSQL:
+          "INSERT INTO gift_cards VALUES\n  (11, 100.00, '2024-03-01'),\n  (12, 60.00, '2024-03-05'),\n  (13, 25.00, '2024-03-10'),\n  (14, 5.00, '2024-03-15');\nINSERT INTO gift_card_transactions VALUES\n  (101, 11, -100.00, '2024-03-02'),\n  (102, 12, -60.00, '2024-03-06'),\n  (103, 12, NULL, '2024-03-07'),\n  (104, 13, -30.00, '2024-03-11'),\n  (105, 14, NULL, '2024-03-16'),\n  (106, 14, NULL, '2024-03-17');",
+      },
+      {
+        note: "tied negative balances and a refund",
+        seedSQL:
+          "INSERT INTO gift_cards VALUES\n  (30, 40.00, '2024-04-01'),\n  (31, 20.00, '2024-04-05'),\n  (32, 10.00, '2024-04-10'),\n  (33, 50.00, '2024-04-15');\nINSERT INTO gift_card_transactions VALUES\n  (201, 30, -45.00, '2024-04-02'),\n  (202, 31, -25.00, '2024-04-06'),\n  (203, 32, -10.01, '2024-04-11'),\n  (204, 33, -60.00, '2024-04-16'),\n  (205, 33, 15.00, '2024-04-17');",
+      },
+    ],
   },
   {
     id: "dl-airline-load-factor-by-leg",
@@ -288,6 +480,18 @@ export const problems = [
     solutionSQL:
       "SELECT l.flight_id AS flight_id,\n       l.leg_no AS leg_no,\n       ROUND(COALESCE(SUM(b.passengers_boarded), 0)::numeric / l.capacity, 2) AS load_factor\nFROM flight_legs l\nLEFT JOIN leg_bookings b ON b.flight_id = l.flight_id AND b.leg_no = l.leg_no\nGROUP BY l.flight_id, l.leg_no, l.capacity\nHAVING COALESCE(SUM(b.passengers_boarded), 0)::numeric / l.capacity >= 0.80\nORDER BY load_factor DESC, l.flight_id ASC, l.leg_no ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "legs sitting exactly on the threshold",
+        seedSQL:
+          "INSERT INTO flight_legs VALUES\n  (400, 1, 'BOS', 'ORD', 100),\n  (400, 2, 'ORD', 'SFO', 50),\n  (401, 1, 'DEN', 'PHX', 80),\n  (401, 2, 'PHX', 'SAN', 200),\n  (402, 1, 'SEA', 'PDX', 150);\nINSERT INTO leg_bookings VALUES\n  (101, 400, 1, 80),\n  (102, 400, 1, NULL),\n  (103, 400, 2, 40),\n  (104, 401, 1, 50),\n  (105, 401, 1, 13),\n  (106, 401, 2, NULL);",
+      },
+      {
+        note: "overbooked leg and empty boarding rows",
+        seedSQL:
+          "INSERT INTO flight_legs VALUES\n  (500, 1, 'IAH', 'MSY', 90),\n  (500, 2, 'MSY', 'TPA', 160),\n  (501, 1, 'MCO', 'FLL', 50),\n  (501, 2, 'FLL', 'NAS', 100);\nINSERT INTO leg_bookings VALUES\n  (201, 500, 1, 108),\n  (202, 500, 2, 0),\n  (203, 501, 1, NULL),\n  (204, 501, 1, 25);",
+      },
+    ],
   },
   {
     id: "dl-repeated-payments",
@@ -305,6 +509,18 @@ export const problems = [
     solutionSQL:
       "SELECT COUNT(DISTINCT t1.transaction_id) AS repeated_payments_count\nFROM transactions t1\nJOIN transactions t2\n  ON t2.merchant_id = t1.merchant_id\n AND t2.credit_card_id = t1.credit_card_id\n AND t2.amount = t1.amount\n AND t2.transaction_timestamp < t1.transaction_timestamp\n AND t1.transaction_timestamp - t2.transaction_timestamp <= INTERVAL '10 minutes';",
     ordered: false,
+    testCases: [
+      {
+        note: "exactly ten minutes and null cards",
+        seedSQL:
+          "INSERT INTO transactions VALUES\n  (101, 10, 900, 10.00, '2024-03-01 08:00:00'),\n  (102, 10, 900, 10.00, '2024-03-01 08:10:00'),\n  (103, 10, 901, 10.00, '2024-03-01 08:00:00'),\n  (104, 10, 901, 10.00, '2024-03-01 08:10:01'),\n  (105, 11, 902, 20.00, '2024-03-02 09:00:00'),\n  (106, 11, 902, 20.00, '2024-03-02 09:05:00'),\n  (107, 11, 902, 20.00, '2024-03-02 09:09:00'),\n  (108, 12, NULL, 15.00, '2024-03-03 10:00:00'),\n  (109, 12, NULL, 15.00, '2024-03-03 10:01:00'),\n  (110, 13, 903, 30.00, '2024-03-04 11:00:00'),\n  (111, 13, 903, 30.01, '2024-03-04 11:01:00'),\n  (112, 14, 904, 40.00, '2024-03-05 12:00:00');",
+      },
+      {
+        note: "identical timestamps and multi-matches",
+        seedSQL:
+          "INSERT INTO transactions VALUES\n  (201, 20, 950, 10.00, '2024-04-01 07:00:00'),\n  (202, 20, 950, 10.00, '2024-04-01 07:00:00'),\n  (203, 21, 951, 5.00, '2024-04-02 08:00:00'),\n  (204, 21, 951, 5.00, '2024-04-02 08:02:00'),\n  (205, 21, 951, 5.00, '2024-04-02 08:04:00'),\n  (206, 22, 952, 7.00, '2024-04-03 09:00:00'),\n  (207, 22, 952, 7.00, '2024-04-03 09:11:00'),\n  (208, 23, 953, 9.00, '2024-04-04 10:00:00'),\n  (209, 23, 953, 9.00, '2024-04-04 10:00:30');",
+      },
+    ],
   },
   {
     id: "dl-reactivated-users",
@@ -322,6 +538,18 @@ export const problems = [
     solutionSQL:
       "WITH session_gaps AS (\n  SELECT s.user_id,\n         s.session_date,\n         LAG(s.session_date) OVER (PARTITION BY s.user_id ORDER BY s.session_date ASC) AS prev_session_date\n  FROM sessions s\n),\nreactivations AS (\n  SELECT user_id, MIN(session_date) AS reactivation_date\n  FROM session_gaps\n  WHERE prev_session_date IS NOT NULL\n    AND session_date - prev_session_date >= 30\n  GROUP BY user_id\n)\nSELECT r.user_id AS user_id,\n       u.email AS email,\n       r.reactivation_date AS reactivation_date\nFROM reactivations r\nJOIN users u ON u.user_id = r.user_id\nORDER BY r.user_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "exactly thirty days and a twenty-nine",
+        seedSQL:
+          "INSERT INTO users VALUES\n  (11, 'ines@example.com', '2023-11-01'),\n  (12, 'jon@example.com', '2024-01-01'),\n  (13, 'kit@example.com', '2024-02-01'),\n  (14, 'luz@example.com', '2024-05-01');\nINSERT INTO sessions VALUES\n  (101, 11, '2024-01-01'),\n  (102, 11, '2024-01-31'),\n  (103, 12, '2024-02-01'),\n  (104, 12, '2024-03-01'),\n  (105, 13, '2024-03-01'),\n  (106, 13, '2024-04-15'),\n  (107, 13, '2024-05-20'),\n  (108, 14, '2024-06-01');",
+      },
+      {
+        note: "same-day repeats and a twenty-nine day gap",
+        seedSQL:
+          "INSERT INTO users VALUES\n  (20, 'mira@example.com', '2023-12-01'),\n  (21, 'noa@example.com', '2023-10-01'),\n  (22, 'omar@example.com', '2024-02-01');\nINSERT INTO sessions VALUES\n  (201, 20, '2024-01-01'),\n  (202, 20, '2024-01-01'),\n  (203, 20, '2024-02-01'),\n  (204, 21, '2023-11-15'),\n  (205, 21, '2023-12-31'),\n  (206, 22, '2024-03-01'),\n  (207, 22, '2024-03-15'),\n  (208, 22, '2024-04-13');",
+      },
+    ],
   },
   {
     id: "dl-senior-managers-reportees",
@@ -339,6 +567,18 @@ export const problems = [
     solutionSQL:
       "WITH RECURSIVE reporting_chain AS (\n  SELECT e.employee_id AS manager_id, e.employee_id AS report_id\n  FROM employees e\n  UNION ALL\n  SELECT rc.manager_id, e.employee_id\n  FROM reporting_chain rc\n  JOIN employees e ON e.manager_id = rc.report_id\n)\nSELECT m.employee_id AS employee_id,\n       m.employee_name AS employee_name,\n       COUNT(*) AS total_reports\nFROM reporting_chain rc\nJOIN employees m ON m.employee_id = rc.manager_id\nWHERE rc.report_id <> rc.manager_id\nGROUP BY m.employee_id, m.employee_name\nHAVING COUNT(*) >= 3\nORDER BY total_reports DESC, m.employee_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "a deep chain and a three-leaf manager",
+        seedSQL:
+          "INSERT INTO employees VALUES\n  (100, 'Iris Bell', NULL, '2018-01-01', 230000),\n  (101, 'Jon Cole', 100, '2019-01-01', 180000),\n  (102, 'Kai Dunn', 101, '2020-01-01', 150000),\n  (103, 'Lena Fox', 102, '2021-01-01', 120000),\n  (104, 'Milo Gray', 103, '2022-01-01', 100000),\n  (105, 'Nina Hale', 100, '2019-06-01', 175000),\n  (106, 'Oleg Ilic', 105, '2021-03-01', 115000),\n  (107, 'Pia Jung', 105, '2021-04-01', 112000),\n  (108, 'Quinn Kerr', 105, '2021-05-01', 111000),\n  (109, 'Ravi Lal', NULL, '2023-01-01', 90000);",
+      },
+      {
+        note: "nobody has three people below",
+        seedSQL:
+          "INSERT INTO employees VALUES\n  (300, 'Sam Mott', NULL, '2019-01-01', 200000),\n  (301, 'Tess Nunez', 300, '2020-01-01', 150000),\n  (302, 'Umar Ortiz', 300, '2020-02-01', 148000),\n  (303, 'Vera Park', NULL, '2020-03-01', 149000),\n  (304, 'Wade Quinn', NULL, '2021-01-01', 120000),\n  (305, 'Xena Roth', 304, '2022-01-01', 100000);",
+      },
+    ],
   },
   {
     id: "dl-total-utilization-time",
@@ -356,5 +596,17 @@ export const problems = [
     solutionSQL:
       "WITH events AS (\n  SELECT server_id,\n         status_time,\n         session_status,\n         LAG(session_status) OVER (PARTITION BY server_id ORDER BY status_time ASC, log_id ASC) AS prev_status,\n         LAG(status_time) OVER (PARTITION BY server_id ORDER BY status_time ASC, log_id ASC) AS prev_time\n  FROM server_logs\n)\nSELECT server_id AS server_id,\n       ROUND(SUM(EXTRACT(EPOCH FROM (status_time - prev_time)) / 60.0)::numeric, 1) AS total_uptime_minutes\nFROM events\nWHERE session_status = 'stop'\n  AND prev_status = 'start'\nGROUP BY server_id\nORDER BY server_id ASC;",
     ordered: true,
+    testCases: [
+      {
+        note: "back-to-back stops and sub-minute sessions",
+        seedSQL:
+          "INSERT INTO server_logs VALUES\n  (101, 10, '2024-06-01 00:00:00', 'start'),\n  (102, 10, '2024-06-01 00:30:00', 'stop'),\n  (103, 10, '2024-06-01 01:00:00', 'stop'),\n  (104, 10, '2024-06-01 02:00:00', 'start'),\n  (105, 11, '2024-06-01 10:00:00', 'start'),\n  (106, 11, '2024-06-01 10:00:30', 'stop'),\n  (107, 11, '2024-06-01 10:05:00', 'start'),\n  (108, 11, '2024-06-01 10:05:20', 'stop'),\n  (109, 12, '2024-06-01 12:00:00', 'start');",
+      },
+      {
+        note: "a stop with no start and a zero session",
+        seedSQL:
+          "INSERT INTO server_logs VALUES\n  (201, 20, '2024-06-02 00:10:00', 'stop'),\n  (202, 20, '2024-06-02 01:00:00', 'start'),\n  (203, 20, '2024-06-02 01:45:00', 'stop'),\n  (204, 20, '2024-06-02 02:00:00', 'start'),\n  (205, 20, '2024-06-02 02:15:00', 'stop'),\n  (206, 21, '2024-06-03 05:00:00', 'start'),\n  (207, 21, '2024-06-03 05:00:00', 'stop'),\n  (208, 21, '2024-06-03 05:30:00', 'stop');",
+      },
+    ],
   },
 ];
