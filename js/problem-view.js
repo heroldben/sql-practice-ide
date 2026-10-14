@@ -1,8 +1,4 @@
-/**
- * Question page, laid out on DataLemur's question template: a wide content column
- * with labelled sections (The question → Table → Example input → Example output →
- * Solution) and a sticky editor rail, with the result set full width underneath.
- */
+/** Question view: description + schema, editor, per-case Run and all-case Submit. */
 import { clear, difficultyChip, el, resultTable } from './dom.js';
 import { SOURCE_LABELS, loadExpected, problemById } from './data/index.js';
 import { createEditor } from './editor.js';
@@ -18,12 +14,6 @@ async function expectedFor(problem) {
 }
 
 const SIDE_BY_SIDE_LIMIT = 5;
-
-function section(title, extra = null) {
-  return el('section', { class: 'question-section' }, [
-    el('h2', { class: 'section-title' }, [el('span', { text: title }), extra]),
-  ]);
-}
 
 /** `1 ✓ 2 ✗ 3 ·` chips telling the user which test case passed or failed. */
 function caseBadges(statuses) {
@@ -61,19 +51,19 @@ function verdictPanel(kind, message, comparison = null, statuses = null) {
   return el('div', { class: `verdict verdict-${kind}` }, children);
 }
 
-/** DataLemur-style "Table" section: each table with its columns and types. */
-function schemaTable({ table, columns }) {
-  return el('div', { class: 'schema-table' }, [
-    el('h3', { class: 'schema-name', text: table }),
+function schemaPanel(schema) {
+  return el('div', { class: 'schema-tables' }, schema.map(({ table, columns }) => el('div', { class: 'schema-table' }, [
+    el('h4', { text: table }),
     el('table', { class: 'schema-cols' }, [
-      el('thead', {}, [el('tr', {}, [el('th', { text: 'column' }), el('th', { text: 'type' }), el('th', { text: 'nullable' })])]),
+      el('thead', {}, [el('tr', {}, [el('th', { text: 'column' }), el('th', { text: 'type' }), el('th', { text: 'null' })])]),
       el('tbody', {}, columns.map((column) => el('tr', {}, [
-        el('td', { class: 'schema-column', text: column.primaryKey ? `${column.name} 🔑` : column.name }),
+        el('td', { text: column.primaryKey ? `${column.name} 🔑` : column.name }),
         el('td', { text: column.type }),
         el('td', { text: column.nullable ? 'yes' : 'no' }),
       ]))),
     ]),
-  ]);
+    el('p', { class: 'muted', text: `${columns.length} column(s)` }),
+  ])));
 }
 
 export async function openProblem(panel, problemId, context) {
@@ -90,10 +80,10 @@ export async function openProblem(panel, problemId, context) {
   const state = {
     got: null,
     error: null,
-    ranCase: null,
     expected: undefined,
     expectedError: null,
     revealed: false,
+    tab: 'result',
     caseIndex: 0,
     statuses: new Array(testCases.length).fill('pending'),
   };
@@ -113,13 +103,12 @@ export async function openProblem(panel, problemId, context) {
     context.onProgressChange();
   });
 
-  const header = el('header', { class: 'question-header' }, [
-    el('div', { class: 'question-headline' }, [
+  const header = el('header', { class: 'card problem-head' }, [
+    el('div', { class: 'problem-headline' }, [
       el('h1', { text: problem.title }),
-      el('p', { class: 'question-meta' }, [
-        el('span', { text: `${SOURCE_LABELS[problem.source]} SQL Interview Question` }),
-        el('span', { class: 'meta-sep', text: '·' }),
+      el('div', { class: 'chips' }, [
         difficultyChip(problem.difficulty),
+        el('span', { class: 'chip chip-source', text: SOURCE_LABELS[problem.source] }),
         problem.premium ? el('span', { class: 'chip chip-premium', text: 'premium' }) : null,
         el('span', { class: 'chip chip-cases', text: `${testCases.length} test cases` }),
         solvedBadge,
@@ -128,52 +117,37 @@ export async function openProblem(panel, problemId, context) {
     el('div', { class: 'problem-actions' }, [starButton]),
   ]);
 
-  // ---------------------------------------------------------------- main column
-  const questionSection = section('The question');
-  questionSection.classList.add('question-description');
-  questionSection.append(
-    el('p', { class: 'question-text', text: problem.description }),
-    el('div', { class: 'topic-row' }, problem.topics.map((topic) => el('span', { class: 'chip chip-topic', text: topic }))),
-  );
-
-  const tableSection = section('Table');
-  const tableBody = el('div', { class: 'schema-tables' }, [el('p', { class: 'muted', text: 'Loading tables…' })]);
-  tableSection.append(tableBody);
-
-  const caseSelect = el('select', { id: 'case-select' }, testCases.map((testCase, index) => el('option', {
-    value: String(index),
-    text: `${index + 1} · ${testCase.note}`,
-  })));
-  const inputSection = section('Example input', el('span', { class: 'section-extra' }, [
-    el('span', { class: 'muted', text: 'test case' }),
-    caseSelect,
-  ]));
-  const inputBody = el('div', { class: 'example-body' }, [el('p', { class: 'muted', text: 'Loading rows…' })]);
-  inputSection.append(inputBody);
-
-  const outputSection = section('Example output');
-  const outputBody = el('div', { class: 'example-body' });
-  outputSection.append(outputBody);
-
-  const solutionSection = section('Solution');
-  solutionSection.classList.add('question-solution', 'question-wide');
-  const solutionBody = el('div', { class: 'solution-body' });
-  solutionSection.append(solutionBody);
-
-  // ----------------------------------------------------------------- editor rail
-  const dbStatusLine = el('span', { class: 'muted db-status', text: 'starting Postgres…' });
-  const textarea = el('textarea', { id: 'sql-editor', spellcheck: 'false' });
-  const verdictHost = el('div', { class: 'verdict-host' });
-  const buttons = { run: null, submit: null };
-  const rail = el('aside', { class: 'question-rail' });
-
-  // -------------------------------------------------------------- results (wide)
-  const resultHost = el('div', { class: 'result-host' }, [el('p', { class: 'muted', text: 'Run your query to see the result here.' })]);
-  const resultsCard = el('section', { class: 'card results-card question-wide' }, [
-    el('div', { class: 'workbench-head' }, [el('h2', { class: 'section-title-inline', text: 'Your result' }), dbStatusLine]),
-    resultHost,
+  const schemaBlock = el('div', { class: 'schema-block' }, [
+    el('h3', { text: 'Schema' }),
+    el('p', { class: 'muted', text: 'Loading tables…' }),
+  ]);
+  const seedBlock = el('details', { class: 'seed-block' }, [
+    el('summary', { text: 'Seed data preview (first 10 rows per table)' }),
+    el('div', { class: 'seed-body' }, [el('p', { class: 'muted', text: 'Loading rows…' })]),
   ]);
 
+  const description = el('section', { class: 'card description' }, [
+    el('p', { class: 'description-text', text: problem.description }),
+    schemaBlock,
+    seedBlock,
+  ]);
+
+  const dbStatusLine = el('span', { class: 'muted db-status', text: 'starting Postgres…' });
+  const caseSelect = el('select', { id: 'case-select' }, testCases.map((testCase, index) => el('option', {
+    value: String(index),
+    text: `Test case ${index + 1}`,
+  })));
+  const caseBar = el('div', { class: 'case-bar' }, [
+    el('label', { class: 'field-case' }, [el('span', { text: 'Test case' }), caseSelect]),
+    el('span', { class: 'muted hint', text: `Run uses this dataset · Submit grades all ${testCases.length} cases` }),
+  ]);
+  const textarea = el('textarea', { id: 'sql-editor', spellcheck: 'false' });
+  const verdictHost = el('div', { class: 'verdict-host' });
+  const tabBody = el('div', { class: 'tab-body' });
+  const buttons = { run: null, submit: null };
+
+  // CodeMirror needs the textarea to be in the document, so the editor is created
+  // after the panel has been appended.
   let editor = null;
   let saveTimer = null;
   function attachEditor() {
@@ -187,16 +161,49 @@ export async function openProblem(panel, problemId, context) {
     });
   }
 
-  function renderResult() {
-    clear(resultHost);
-    if (state.error) resultHost.append(el('pre', { class: 'error-box', text: state.error }));
-    else resultHost.append(resultTable(state.got, 'Run your query to see the result here.'));
-  }
+  const tabs = [
+    { id: 'result', label: 'Your Result' },
+    { id: 'expected', label: 'Expected Answer' },
+    { id: 'solution', label: 'Solution' },
+  ];
+  const tabButtons = tabs.map((tab) => el('button', {
+    class: `tab${state.tab === tab.id ? ' active' : ''}`,
+    type: 'button',
+    dataset: { tab: tab.id },
+    text: tab.label,
+    onclick: () => {
+      state.tab = tab.id;
+      renderTabs();
+    },
+  }));
 
-  function renderSolution() {
-    clear(solutionBody);
+  function renderTabs() {
+    for (const button of tabButtons) button.classList.toggle('active', button.dataset.tab === state.tab);
+    clear(tabBody);
+    if (state.tab === 'result') {
+      if (state.error) tabBody.append(el('pre', { class: 'error-box', text: state.error }));
+      else tabBody.append(resultTable(state.got, 'Run your query to see the result here.'));
+      return;
+    }
+    if (state.tab === 'expected') {
+      if (state.expectedError) {
+        tabBody.append(el('pre', { class: 'error-box', text: state.expectedError }));
+        return;
+      }
+      if (state.expected === undefined) {
+        tabBody.append(el('p', { class: 'muted', text: 'Loading expected answer…' }));
+        return;
+      }
+      if (state.expected === null) {
+        tabBody.append(el('p', { class: 'muted', text: `No expected answer stored for ${problem.id}. Run "npm run build:expected".` }));
+        return;
+      }
+      tabBody.append(el('p', { class: 'muted', text: `Test case ${state.caseIndex + 1} of ${testCases.length}` }));
+      tabBody.append(resultTable(state.expected.cases?.[state.caseIndex] ?? null, `No expected answer stored for test case ${state.caseIndex + 1}.`));
+      return;
+    }
     if (!state.revealed) {
-      solutionBody.append(el('div', { class: 'spoiler' }, [
+      tabBody.append(el('div', { class: 'spoiler' }, [
         el('p', { class: 'muted', text: 'Reference solution — spoiler. Reveal only if you are stuck.' }),
         el('button', {
           class: 'btn',
@@ -205,14 +212,14 @@ export async function openProblem(panel, problemId, context) {
           onclick: () => {
             if (window.confirm('Reveal the reference solution for this question?')) {
               state.revealed = true;
-              renderSolution();
+              renderTabs();
             }
           },
         }),
       ]));
       return;
     }
-    solutionBody.append(el('div', { class: 'solution-block' }, [
+    tabBody.append(el('div', { class: 'solution-block' }, [
       el('pre', { class: 'code', text: problem.solutionSQL.trim() }),
       el('button', {
         class: 'btn',
@@ -221,25 +228,6 @@ export async function openProblem(panel, problemId, context) {
         onclick: () => editor.setValue(problem.solutionSQL.trim()),
       }),
     ]));
-  }
-
-  function renderExpected() {
-    clear(outputBody);
-    const note = el('p', { class: 'muted', text: `Test case ${state.caseIndex + 1} of ${testCases.length} — ${testCases[state.caseIndex].note}` });
-    if (state.expectedError) {
-      outputBody.append(el('pre', { class: 'error-box', text: state.expectedError }));
-      return;
-    }
-    if (state.expected === undefined) {
-      outputBody.append(el('p', { class: 'muted', text: 'Loading expected answer…' }));
-      return;
-    }
-    if (state.expected === null) {
-      outputBody.append(el('p', { class: 'muted', text: `No expected answer stored for ${problem.id}. Run "npm run build:expected".` }));
-      return;
-    }
-    outputBody.append(note);
-    outputBody.append(resultTable(state.expected.cases?.[state.caseIndex] ?? null, `No expected answer stored for test case ${state.caseIndex + 1}.`));
   }
 
   function setVerdict(kind, message, comparison = null, statuses = null) {
@@ -254,31 +242,32 @@ export async function openProblem(panel, problemId, context) {
     buttons.submit.textContent = busy ? 'Checking…' : 'Submit';
   }
 
-  /** Reload schema + example input for the selected test case. */
+  /** Load schema + seed preview for the selected test case. */
   async function loadCaseState() {
     dbStatusLine.textContent = 'starting Postgres…';
     try {
       const db = await prepareProblem(problem, state.caseIndex);
-      dbStatusLine.textContent = 'Postgres ready (PGlite)';
+      dbStatusLine.textContent = `Postgres ready (PGlite) · test case ${state.caseIndex + 1} of ${testCases.length}`;
       let schema = [];
       try {
         schema = await describeSchema(db);
-        clear(tableBody);
-        tableBody.append(el('h3', { class: 'sr-only', text: 'Schema' }), ...schema.map(schemaTable));
+        clear(schemaBlock);
+        schemaBlock.append(el('h3', { text: 'Schema' }), schemaPanel(schema));
       } catch (error) {
-        clear(tableBody);
-        tableBody.append(el('p', { class: 'muted', text: `could not describe schema: ${error.message}` }));
+        clear(schemaBlock);
+        schemaBlock.append(el('h3', { text: 'Schema' }), el('p', { class: 'muted', text: `could not describe schema: ${error.message}` }));
       }
-      clear(inputBody);
-      if (schema.length === 0) inputBody.append(el('p', { class: 'muted', text: 'No tables found for this question.' }));
+      const seedBody = seedBlock.querySelector('.seed-body');
+      clear(seedBody);
+      if (schema.length === 0) seedBody.append(el('p', { class: 'muted', text: 'No tables found for this question.' }));
       for (const { table } of schema) {
         try {
-          inputBody.append(el('div', { class: 'example-table' }, [
+          seedBody.append(el('div', { class: 'seed-table' }, [
             el('h4', { text: table }),
             resultTable(await previewTable(db, table, 10), 'no rows'),
           ]));
         } catch (error) {
-          inputBody.append(el('div', { class: 'example-table' }, [
+          seedBody.append(el('div', { class: 'seed-table' }, [
             el('h4', { text: table }),
             el('p', { class: 'muted', text: `could not preview rows: ${error.message}` }),
           ]));
@@ -286,10 +275,11 @@ export async function openProblem(panel, problemId, context) {
       }
     } catch (error) {
       dbStatusLine.textContent = 'Postgres unavailable';
-      clear(tableBody);
-      tableBody.append(el('p', { class: 'muted', text: error.message }));
-      clear(inputBody);
-      inputBody.append(el('p', { class: 'muted', text: 'Example data needs the Postgres engine.' }));
+      clear(schemaBlock);
+      schemaBlock.append(el('h3', { text: 'Schema' }), el('p', { class: 'muted', text: error.message }));
+      const seedBody = seedBlock.querySelector('.seed-body');
+      clear(seedBody);
+      seedBody.append(el('p', { class: 'muted', text: 'Seed preview needs the Postgres engine.' }));
     }
   }
 
@@ -298,10 +288,9 @@ export async function openProblem(panel, problemId, context) {
     caseSelect.value = String(state.caseIndex);
     state.got = null;
     state.error = null;
-    state.ranCase = null;
+    state.tab = 'result';
     clear(verdictHost);
-    renderResult();
-    renderExpected();
+    renderTabs();
     await loadCaseState();
   }
 
@@ -318,19 +307,20 @@ export async function openProblem(panel, problemId, context) {
       const { result } = await runUserQuery(problem, sql, state.caseIndex);
       state.got = result;
       state.error = null;
-      state.ranCase = state.caseIndex;
+      state.tab = 'result';
       if (result) {
-        setVerdict('info', `Query ran on test case ${state.caseIndex + 1} (${testCases[state.caseIndex].note}) — ${result.rows.length} row${result.rows.length === 1 ? '' : 's'}. Submit to grade all ${testCases.length} cases.`);
+        setVerdict('info', `Query ran on test case ${state.caseIndex + 1} — ${result.rows.length} row${result.rows.length === 1 ? '' : 's'}. Submit to grade all ${testCases.length} cases.`);
       } else {
         setVerdict('warn', 'Query ran but returned no result set.');
       }
     } catch (error) {
       state.got = null;
       state.error = error.message;
+      state.tab = 'result';
       setVerdict('error', `Postgres error on test case ${state.caseIndex + 1}`);
     } finally {
       setBusy(false);
-      renderResult();
+      renderTabs();
       updateProblem(context.progress, problem.id, { lastQuery: sql });
       context.onProgressChange();
     }
@@ -362,27 +352,27 @@ export async function openProblem(panel, problemId, context) {
         caseSelect.value = String(failed.index);
         state.got = failed.got;
         state.error = failed.error;
-        state.ranCase = failed.index;
+        state.tab = 'result';
         if (failed.error) {
-          setVerdict('error', `✗ Failed on test case ${failed.index + 1} of ${testCases.length} (${failed.note}) — ${failed.error}`, null, statuses);
+          setVerdict('error', `✗ Failed on test case ${failed.index + 1} of ${testCases.length} — ${failed.error}`, null, statuses);
         } else {
           setVerdict(
             'fail',
-            `✗ Failed on test case ${failed.index + 1} of ${testCases.length} (${failed.note}) — ${failed.comparison.reason}`,
+            `✗ Failed on test case ${failed.index + 1} of ${testCases.length} — ${failed.comparison.reason}`,
             { ...failed.comparison, columns: expected.cases?.[failed.index]?.columns ?? [] },
             statuses,
           );
         }
         await loadCaseState();
-        renderExpected();
       }
     } catch (error) {
       state.got = null;
       state.error = error.message;
+      state.tab = 'result';
       setVerdict('error', error.message);
     } finally {
       setBusy(false);
-      renderResult();
+      renderTabs();
       context.onProgressChange();
     }
   }
@@ -390,39 +380,42 @@ export async function openProblem(panel, problemId, context) {
   buttons.run = el('button', { id: 'run-query', class: 'btn btn-primary', type: 'button', text: 'Run', onclick: run });
   buttons.submit = el('button', { id: 'submit-query', class: 'btn', type: 'button', text: 'Submit', onclick: submit });
 
-  rail.append(el('section', { class: 'card editor-card' }, [
-    el('h2', { class: 'section-title-inline', text: 'Your query' }),
+  const workbench = el('section', { class: 'card workbench' }, [
+    el('div', { class: 'workbench-head' }, [el('h3', { text: 'Your query' }), dbStatusLine]),
+    caseBar,
     textarea,
-    el('div', { class: 'actions' }, [buttons.run, buttons.submit]),
-    el('p', { class: 'muted hint', text: `Ctrl/Cmd+Enter runs one case · Ctrl/Cmd+Shift+Enter grades all ${testCases.length}` }),
+    el('div', { class: 'actions' }, [
+      buttons.run,
+      buttons.submit,
+      el('span', { class: 'muted hint', text: `Ctrl/Cmd+Enter runs test case ${state.caseIndex + 1} · Ctrl/Cmd+Shift+Enter grades all ${testCases.length}` }),
+    ]),
     verdictHost,
-  ]));
-
-  const page = el('article', { class: 'question-page' }, [
-    header,
-    questionSection,
-    tableSection,
-    inputSection,
-    outputSection,
-    rail,
-    resultsCard,
-    solutionSection,
   ]);
-  panel.append(el('a', { class: 'back-link', href: '#/', text: '← All questions' }), page);
+
+  const results = el('section', { class: 'card results' }, [
+    el('div', { class: 'tabs' }, tabButtons),
+    tabBody,
+  ]);
+
+  panel.append(
+    el('a', { class: 'back-link', href: '#/', text: '← All questions' }),
+    header,
+    description,
+    workbench,
+    results,
+  );
   attachEditor();
 
   const storedQuery = entry.lastQuery && entry.lastQuery.trim()
     ? entry.lastQuery
     : `-- Write your query for "${problem.title}" here.`;
   editor.setValue(storedQuery);
-  renderResult();
-  renderSolution();
-  renderExpected();
+  renderTabs();
   await loadCaseState();
 
   expectedFor(problem)
-    .then((expected) => { state.expected = expected ?? null; renderExpected(); })
-    .catch((error) => { state.expectedError = error.message; renderExpected(); });
+    .then((expected) => { state.expected = expected ?? null; if (state.tab === 'expected') renderTabs(); })
+    .catch((error) => { state.expectedError = error.message; if (state.tab === 'expected') renderTabs(); });
 
   editor.focus();
 }

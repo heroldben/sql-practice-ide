@@ -320,11 +320,10 @@ input::placeholder { color: var(--muted); }
   padding: 12px 20px;
   white-space: nowrap;
 }
-.question-table th:nth-child(1) { width: 118px; }
+.question-table th:nth-child(1) { width: 130px; }
 .question-table th:nth-child(2) { width: auto; }
-.question-table th:nth-child(3) { width: 29%; }
-.question-table th:nth-child(4) { width: 104px; }
-.question-table th:nth-child(5) { width: 74px; }
+.question-table th:nth-child(3) { width: 108px; }
+.question-table th:nth-child(4) { width: 78px; }
 .question-table tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; transition: background .12s ease; }
 .question-table tbody tr:nth-child(even) { background: var(--bg-zebra); }
 .question-table tbody tr:hover { background: var(--bg-muted); }
@@ -336,17 +335,6 @@ input::placeholder { color: var(--muted); }
 .title-wrap .title-link { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .title-link { color: var(--link); font-weight: 500; text-decoration: none; }
 .title-link:hover { text-decoration: underline; color: var(--link-hover); }
-.cell-topics { line-height: 1.9; }
-.topic-link {
-  background: none;
-  border: none;
-  padding: 0;
-  font: inherit;
-  font-size: .78rem;
-  color: var(--link);
-  cursor: pointer;
-}
-.topic-link:hover { color: var(--link); text-decoration: underline; }
 .cell-status { text-align: center; }
 
 .source-pill {
@@ -440,51 +428,14 @@ input::placeholder { color: var(--muted); }
 .sync-status.sync-local { color: var(--medium); }
 .sync-status.sync-checking { color: var(--muted); }
 
-/* -------------------------------------------------------- question template --- */
-/* Modelled on DataLemur's question page: labelled sections in a wide content
-   column (The question · Table · Example input · Example output · Solution) with a
-   sticky editor rail, laid out for BOTH orientations — two columns in landscape,
-   one column in portrait/narrow windows (see the media queries at the end). */
+/* ------------------------------------------------------------ detail view --- */
 
-.detail-view { display: block; }
-.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--link); text-decoration: none; font-size: .88rem; font-weight: 600; margin-bottom: 14px; }
+.detail-view { display: grid; gap: 16px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--link); text-decoration: none; font-size: .88rem; font-weight: 600; }
 .back-link:hover { text-decoration: underline; }
-
-.question-page {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: minmax(0, 1fr) 420px;
-  align-items: start;
-}
-.question-header { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; }
-.question-headline { min-width: 0; }
-.question-headline h1 { font-size: 1.55rem; color: var(--text-strong); }
-.question-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 8px 0 0; color: var(--muted); font-size: .85rem; }
-.question-meta .meta-sep { color: var(--border-strong); }
-
-.question-section { grid-column: 1; min-width: 0; }
-.question-rail { grid-column: 2; grid-row: 2 / span 4; position: sticky; top: 84px; display: grid; gap: 12px; align-content: start; }
-.question-wide { grid-column: 1 / -1; }
-
-.section-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-family: var(--font-heading);
-  font-size: .74rem;
-  font-weight: 700;
-  letter-spacing: .09em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0 0 10px;
-}
-.section-title-inline { font-family: var(--font-heading); font-size: .95rem; color: var(--text-strong); margin: 0; }
-.section-extra { display: flex; align-items: center; gap: 8px; text-transform: none; letter-spacing: 0; font-weight: 500; }
-.section-extra select { min-width: 230px; font-size: .82rem; padding: 5px 8px; min-height: 30px; }
-.question-text { white-space: pre-wrap; color: var(--text); max-width: 84ch; line-height: 1.65; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-
+.problem-head { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; }
+.problem-headline h1 { font-size: 1.5rem; color: var(--text-strong); }
+.chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
 .chip {
   display: inline-block;
   border-radius: 999px;
@@ -501,31 +452,28 @@ input::placeholder { color: var(--muted); }
 .chip-source { color: var(--subtle); }
 .chip-premium { color: var(--premium); border-color: var(--warn-border); background: var(--warn-bg); }
 .chip-solved { color: var(--easy); border-color: var(--pass-border); background: var(--pass-bg); }
-.chip-cases { color: var(--link); border-color: var(--info-border); background: var(--info-bg); }
-.chip-topic { font-family: var(--font-mono); font-size: .7rem; }
-.problem-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.problem-actions { display: flex; align-items: center; gap: 8px; }
 .star-btn.is-starred { border-color: var(--star); color: var(--star); }
-.topic-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 
-.schema-tables { display: grid; gap: 16px; }
-.schema-table { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
-.schema-name { font-family: var(--font-mono); font-size: .85rem; color: var(--text-strong); margin: 0 0 8px; }
+.description-text { white-space: pre-wrap; max-width: 860px; color: var(--text); }
+.schema-block { margin-top: 18px; }
+.schema-block h3, .workbench h3, .results h3 { font-size: .9rem; color: var(--text-strong); }
+.schema-tables { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin-top: 8px; }
+.schema-table { background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+.schema-table h4 { margin: 0 0 6px; font-family: var(--font-mono); font-size: .82rem; color: var(--text-strong); }
 .schema-cols { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: .78rem; }
-.schema-cols th { text-align: left; color: var(--muted); font-weight: 600; padding: 3px 8px 3px 0; border-bottom: 1px solid var(--border); }
-.schema-cols td { padding: 3px 8px 3px 0; border-bottom: 1px solid var(--border); }
-.schema-column { color: var(--text-strong); }
+.schema-cols th { text-align: left; color: var(--muted); font-weight: 500; padding: 2px 4px; border-bottom: 1px solid var(--border); }
+.schema-cols td { padding: 2px 4px; border-bottom: 1px solid var(--border); }
+.seed-block { margin-top: 18px; }
+.seed-block summary { cursor: pointer; color: var(--link); font-weight: 600; font-size: .88rem; }
+.seed-body { display: grid; gap: 14px; margin-top: 12px; }
+.seed-table h4 { font-family: var(--font-mono); font-size: .82rem; color: var(--text-strong); }
 
-.example-body { display: grid; gap: 16px; min-width: 0; }
-.example-table { min-width: 0; }
-.example-table h4 { font-family: var(--font-mono); font-size: .82rem; color: var(--text-strong); margin: 0 0 6px; text-transform: none; letter-spacing: 0; }
-
-/* ----------------------------------------------------------------- editor --- */
-
-.editor-card { display: grid; gap: 8px; }
-.editor-card .actions { margin-top: 2px; }
-.editor-card .hint { margin: 0; font-size: .74rem; }
+.workbench-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.db-status { font-size: .78rem; }
 #sql-editor, .plain-editor {
   width: 100%;
+  margin-top: 10px;
   padding: 10px;
   font-family: var(--font-mono);
   font-size: .85rem;
@@ -534,11 +482,14 @@ input::placeholder { color: var(--muted); }
   border: 1px solid var(--border-strong);
   border-radius: 6px;
 }
-.plain-editor { min-height: 180px; resize: vertical; }
-.actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.plain-editor { min-height: 200px; resize: vertical; }
+.actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+
+/* ---------------------------------------------------- editor (CodeMirror) --- */
 
 .CodeMirror {
-  height: 230px;
+  height: 250px;
+  margin-top: 10px;
   border: 1px solid var(--border-strong);
   border-radius: 6px;
   background: var(--editor-bg);
@@ -560,30 +511,45 @@ input::placeholder { color: var(--muted); }
 .CodeMirror-hints { background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); border-radius: 6px; box-shadow: var(--shadow-base); font-family: var(--font-mono); font-size: .82rem; }
 .CodeMirror-hint-active { background: var(--info-bg); color: var(--text-strong); }
 
-/* ------------------------------------------------------- verdict / results --- */
+/* ----------------------------------------------------------- results/verdict --- */
 
 .verdict-host:empty { display: none; }
-.verdict { margin-top: 10px; border-radius: 6px; border: 1px solid var(--border); padding: 10px 12px; font-size: .86rem; }
+.verdict {
+  margin-top: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  font-size: .88rem;
+}
 .verdict p { margin: 0; }
 .verdict-pass { background: var(--pass-bg); border-color: var(--pass-border); color: var(--easy); }
 .verdict-fail, .verdict-error { background: var(--fail-bg); border-color: var(--fail-border); color: var(--hard); }
 .verdict-warn { background: var(--warn-bg); border-color: var(--warn-border); color: var(--medium); }
 .verdict-info { background: var(--info-bg); border-color: var(--info-border); color: var(--link); }
-.verdict-message { font-weight: 600; line-height: 1.45; }
-.case-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-.case-badge { font-family: var(--font-mono); font-size: .74rem; border-radius: 999px; padding: 1px 8px; border: 1px solid var(--border); background: var(--bg-subtle); color: var(--muted); }
-.case-badge.case-pass { color: var(--easy); border-color: var(--pass-border); background: var(--pass-bg); }
-.case-badge.case-fail { color: var(--hard); border-color: var(--fail-border); background: var(--fail-bg); }
+.verdict-message { font-weight: 600; }
 .diff { margin-top: 8px; }
 .diff summary { cursor: pointer; font-weight: 600; }
 .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px; }
-.diff-grid h4 { font-family: var(--font-heading); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.diff-grid h4 { font-family: var(--font-heading); font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 
-.results-card { display: grid; gap: 10px; }
-.result-block { display: grid; gap: 8px; min-width: 0; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+.tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+.tab:hover { color: var(--link); }
+.tab.active { color: var(--link); border-bottom-color: var(--primary); }
+
+.result-block { display: grid; gap: 8px; }
 .row-count { margin: 0; font-size: .78rem; color: var(--muted); }
-.results-card .table-wrap, .example-body .table-wrap, .diff-grid .table-wrap { overflow: auto; max-height: 420px; border: 1px solid var(--border); border-radius: 6px; }
-.example-body .table-wrap { max-height: 260px; }
+.results .table-wrap { overflow: auto; max-height: 420px; border: 1px solid var(--border); border-radius: 6px; }
 .result-table { border-collapse: collapse; min-width: 100%; font-family: var(--font-mono); font-size: .8rem; }
 .result-table th, .result-table td { text-align: left; padding: 6px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
 .result-table thead th { position: sticky; top: 0; background: var(--bg-subtle); color: var(--subtle); font-weight: 700; }
@@ -603,54 +569,66 @@ input::placeholder { color: var(--muted); }
 }
 .error-box { background: var(--fail-bg); border: 1px solid var(--fail-border); color: var(--hard); }
 .code { background: var(--code-bg); border: 1px solid var(--border); color: var(--text); }
-.solution-body { min-width: 0; }
 .solution-block, .spoiler { display: grid; gap: 10px; justify-items: start; }
 
-/* --------------------------------------------------------- orientation --- */
-
-/* Landscape / wide: keep the editor beside the question and let the page use the room. */
-@media (min-width: 1181px) {
-  .page { max-width: 1460px; }
+@media (max-width: 1080px) {
+  .question-grid { grid-template-columns: minmax(0, 1fr); }
+  .diff-grid { grid-template-columns: 1fr; }
+  .site-nav-note { display: none; }
+}
+@media (max-width: 720px) {
+  .site-header-inner { gap: 12px; }
+  .page { padding: 20px 16px 56px; }
 }
 
-/* Portrait / narrow windows: one column, editor right after the question,
-   sticky rail disabled, and the example tables scroll sideways instead of
-   squashing. `.question-page` children are ordered explicitly so the editor
-   stays reachable without scrolling past every example dataset. */
-@media (max-width: 1180px) {
-  .question-page { grid-template-columns: minmax(0, 1fr); }
-  .question-section, .question-rail, .question-wide { grid-column: 1; }
-  .question-rail { grid-row: auto; position: static; }
-  .question-description { order: 1; }
-  .question-rail { order: 2; }
-  .question-section:not(.question-description):not(.question-solution) { order: 3; }
-  .question-wide:not(.question-solution) { order: 4; }
-  .question-solution { order: 5; }
-  .question-header { order: 0; }
+/* ------------------------------------------------------- test cases / sync --- */
 
-  /* Question index: one column with the progress card first, like the wide layout's rail. */
+.chip-cases { color: var(--link); border-color: var(--info-border); background: var(--info-bg); }
+.case-bar { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+.field-case { display: grid; gap: 4px; }
+.field-case > span {
+  font-family: var(--font-heading);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.field-case select { min-width: 200px; font-size: .85rem; }
+.case-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.case-badge { font-family: var(--font-mono); font-size: .74rem; border-radius: 999px; padding: 1px 8px; border: 1px solid var(--border); background: var(--bg-subtle); color: var(--muted); }
+.case-badge.case-pass { color: var(--easy); border-color: var(--pass-border); background: var(--pass-bg); }
+.case-badge.case-fail { color: var(--hard); border-color: var(--fail-border); background: var(--fail-bg); }
+
+/* ------------------------------------------------------------ orientation --- */
+/* The card stack below is vertical-first, so it already works in portrait; these
+   rules cover landscape (wider question table, larger editor) and small screens. */
+
+@media (min-width: 1181px) {
+  .page { max-width: 1320px; }
+  .CodeMirror { height: 260px; }
+}
+
+@media (max-width: 1180px) {
   .question-grid { grid-template-columns: minmax(0, 1fr); }
   .side-col { order: -1; }
+  .diff-grid { grid-template-columns: 1fr; }
+  .site-nav-note { display: none; }
 }
 
 @media (max-width: 720px) {
-  .cell-topics, .question-table thead th:nth-child(3) { display: none; }
   .site-header-inner { gap: 12px; flex-wrap: wrap; padding: 8px 16px; }
   .site-header-actions { flex-wrap: wrap; gap: 8px; }
-  .site-nav-note, .transfer-status { display: none; }
+  .transfer-status { display: none; }
   .page { padding: 20px 14px 56px; }
   .page-head h1 { font-size: 1.5rem; }
-  .question-headline h1 { font-size: 1.3rem; }
-  .question-header { flex-direction: column; }
-  .question-meta { font-size: .8rem; }
-  .section-title { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .section-extra { width: 100%; }
-  .section-extra select { min-width: 0; width: 100%; }
-  .diff-grid { grid-template-columns: 1fr; }
-  .field-search { min-width: 0; }
+  .problem-headline h1 { font-size: 1.3rem; }
+  .problem-head { flex-direction: column; }
+  .case-bar { flex-direction: column; align-items: stretch; }
+  .field-case select { min-width: 0; width: 100%; }
   .filter-bar { gap: 10px; }
   .filter-bar .field { flex: 1 1 45%; }
+  .field-search { min-width: 0; }
   .CodeMirror { height: 200px; }
   .question-table td, .question-table thead th { padding-left: 14px; padding-right: 14px; }
 }
-

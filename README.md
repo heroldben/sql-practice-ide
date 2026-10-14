@@ -37,30 +37,35 @@ npm run validate       # 200 problems, counts, SQL execution and expected.json f
 
 ## What the app does
 
-The interface follows DataLemur's templates — question index and question page (Kumbh Sans headings,
-zebra question table, uppercase section labels, blue links, per-difficulty colours) — and works in
-**both orientations**: a two-column layout (question + sticky editor rail) in landscape, and a single
-column in portrait/narrow windows where the editor moves directly under the question. Light and dark
-themes throughout.
+The interface follows DataLemur's look (Kumbh Sans headings, zebra question table, uppercase labels,
+blue links, per-difficulty colours) and works in **both orientations**: the question page is a
+vertical card stack that fills the window, so it reads well in landscape and in portrait/narrow
+windows (the index table, filters and header also reflow for small widths). Light and dark themes
+throughout.
 
 - **Question index** — filter bar (category, difficulty, status, sort, title search, *Clear filters*),
-  a table of all 200 questions with `Source`, `Title`, `Topics`, `Difficulty` and `Status` columns,
-  a **Your Progress** card (progress bar, solved total, per-difficulty counts, starred count) and a
-  clickable **Tags** cloud that filters by topic (the topic cells in the table do the same).
-  The status cell is a button: `✓` solved, `★` starred, `–` untouched (click toggles the star).
-  `P` marks questions whose source catalog is paywalled.
-- **Question page** — DataLemur-style labelled sections: **The question**, **Table** (every table with
-  its columns, types and nullability), **Example input** (the rows of the selected test case) and
-  **Example output** (the expected answer for that test case), plus **Your query** in a sticky editor
-  rail (CodeMirror, PostgreSQL mode, `Run` = the selected case, `Submit` = grade all cases) and a
-  full-width **Your result** table. The reference answer sits in a **Solution** section behind a
-  confirm click, marked as a spoiler.
+  a table of all 200 questions with `Source`, `Title`, `Difficulty` and `Status` columns, a **Your
+  Progress** card (progress bar, solved total, per-difficulty counts, starred count) and the **Tags**
+  card, which is a topic *filter* (click a tag to narrow the list; the active topic shows as a
+  removable chip). The status cell is a button: `✓` solved, `★` starred, `–` untouched (click toggles
+  the star). `P` marks questions whose source catalog is paywalled.
+- **No approach hints.** Topics are never shown per question — neither as chips on the question page
+  nor as a column in the index — because naming the technique (self join, deduplication, window
+  functions, …) spoils the exercise. Test-case labels are likewise neutral (`Test case 1/2/3`); the
+  descriptive case notes stay in the data files for contributors but are not rendered.
+- **Question page** — description, rendered schema (table/column names, types, primary keys), a
+  collapsible seed-data preview (`SELECT * LIMIT 10` per table for the selected test case), a
+  CodeMirror editor in PostgreSQL mode with a **test case** selector, and **Run** (execute the
+  selected case) / **Submit** (grade all cases). Result tabs: *Your Result* | *Expected Answer*
+  (for the selected test case) | *Solution* (reference answer behind a confirm click, marked as a
+  spoiler).
 - **Test cases** — every question ships **3 datasets** (the default `seedSQL` plus two extra
   `testCases`); Submit grades the query against all of them and reports `✓ Passed — all 3 test cases`
-  or the exact case that failed (`✗ Failed on test case 2 of 3 (…): …`, with a row diff and
-  per-case `1 ✓ 2 ✗ 3 ·` badges). Hardcoded answers now fail on case 2 — the datasets are built to
+  or the exact case that failed (`✗ Failed on test case 2 of 3: …`, with a row diff and per-case
+  `1 ✓ 2 ✗ 3 ·` badges). Hardcoded answers now fail on case 2 — the datasets are built to
   break `NOT IN`-with-NULLs, `RANK` vs `DENSE_RANK`, boundary and tie mistakes. Use the *test case*
-  selector to inspect or run any single dataset.
+  selector to inspect or run any single dataset (labels are neutral, so the case itself is not a
+  hint).
 - **Theme** — starts light; the header **Theme** button switches light/dark and remembers the choice
   in `localStorage` (`sql-practice-ide/theme/v1`, applied before first paint so there is no flash).
 - **Progress is shared by every browser on the machine.** The local server owns a small database

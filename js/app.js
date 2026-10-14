@@ -137,24 +137,6 @@ function statusIcon(entry) {
   return { text: '–', className: 'status-icon', title: 'Not solved — click to star' };
 }
 
-function topicCell(problem) {
-  return el('span', {}, problem.topics.flatMap((topic, index) => [
-    index > 0 ? el('span', { class: 'muted', text: ', ' }) : null,
-    el('button', {
-      class: 'topic-link',
-      type: 'button',
-      text: topic.replaceAll('-', ' '),
-      onclick: (event) => {
-        event.stopPropagation();
-        state.topic = state.topic === topic ? '' : topic;
-        renderTags();
-        renderTopicChip();
-        renderList();
-      },
-    }),
-  ]));
-}
-
 function renderList() {
   const rows = visibleProblems();
   const currentId = location.hash.startsWith('#problem/') ? decodeURIComponent(location.hash.slice('#problem/'.length)) : null;
@@ -192,7 +174,6 @@ function renderList() {
           }),
         ]),
       ]),
-      el('td', { class: 'cell-topics' }, [topicCell(problem)]),
       el('td', {}, [el('span', { class: `diff diff-${problem.difficulty}`, text: problem.difficulty[0].toUpperCase() + problem.difficulty.slice(1) })]),
       el('td', { class: 'cell-status' }, [statusButton]),
     ]));
