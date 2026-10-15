@@ -18,10 +18,10 @@ import {
   validateRecord,
 } from './lib/pg.mjs';
 
-const EXPECTED_TOTAL = 200;
-const EXPECTED_BY_SOURCE = { leetcode: 70, datalemur: 65, stratascratch: 65 };
-const EXPECTED_BY_DIFFICULTY = { easy: 40, medium: 120, hard: 40 };
-const MIN_PREMIUM = 50;
+const EXPECTED_TOTAL = 220;
+const EXPECTED_BY_SOURCE = { leetcode: 70, datalemur: 65, stratascratch: 85 };
+const EXPECTED_BY_DIFFICULTY = { easy: 44, medium: 131, hard: 45 };
+const MIN_PREMIUM = 70;
 
 const errors = [];
 const warnings = [];

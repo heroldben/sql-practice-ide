@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SQL Practice IDE — 200 PostgreSQL problems</title>
+<title>SQL Practice IDE — 220 PostgreSQL problems</title>
 <script>
   // Applied before first paint so the page never flashes the wrong theme.
   // First visit is light (the DataLemur-style look); the header button persists the choice.
@@ -30,7 +30,7 @@
 
     <nav class="site-nav">
       <a class="site-nav-link is-active" href="#/">Problems</a>
-      <span class="site-nav-note">200 curated interview questions</span>
+      <span class="site-nav-note">220 curated interview questions</span>
     </nav>
 
     <div class="site-header-actions">
@@ -61,7 +61,7 @@
     <div class="page-head">
       <h1>SQL &amp; Data Interview Questions</h1>
       <p class="page-sub">
-        Practice <strong>200</strong> curated PostgreSQL problems from LeetCode, DataLemur and StrataScratch.
+        Practice <strong>220</strong> curated PostgreSQL problems from LeetCode, DataLemur and StrataScratch — 70 of them from paywalled/premium catalogs.
         Queries run against real PostgreSQL (PGlite) in your browser — no server, no account.
       </p>
     </div>
@@ -83,6 +83,14 @@
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
           <option value="hard">Hard</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Access</span>
+        <select id="filter-access">
+          <option value="">All questions</option>
+          <option value="premium">Premium only</option>
+          <option value="free">Free only</option>
         </select>
       </label>
       <label class="field">

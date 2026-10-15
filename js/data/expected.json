@@ -13363,5 +13363,1685 @@
         ]
       }
     ]
+  },
+  "ss-10277-find-all-inspections-which-are-part-of-an-inactive-program": {
+    "cases": [
+      {
+        "columns": [
+          "inspection_id",
+          "facility_id",
+          "facility_name",
+          "activity_date"
+        ],
+        "rows": [
+          [
+            502,
+            91,
+            "Harbor Grill",
+            "2022-07-19"
+          ],
+          [
+            503,
+            92,
+            "Noodle Yard",
+            "2022-08-02"
+          ],
+          [
+            505,
+            94,
+            "Sunrise Deli",
+            "2022-10-01"
+          ],
+          [
+            507,
+            96,
+            "Lakeview Cafe",
+            "2022-11-23"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "inspection_id",
+          "facility_id",
+          "facility_name",
+          "activity_date"
+        ],
+        "rows": [
+          [
+            603,
+            203,
+            "Dock Street Bakery",
+            "2023-03-01"
+          ],
+          [
+            604,
+            204,
+            "Hilltop Grill",
+            "2023-03-09"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "inspection_id",
+          "facility_id",
+          "facility_name",
+          "activity_date"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10308-salaries-differences": {
+    "cases": [
+      {
+        "columns": [
+          "salary_difference"
+        ],
+        "rows": [
+          [
+            3000
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "salary_difference"
+        ],
+        "rows": [
+          [
+            16000
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "salary_difference"
+        ],
+        "rows": [
+          [
+            2500
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-2081-recommendation-system": {
+    "cases": [
+      {
+        "columns": [
+          "user_id",
+          "suggested_user_id",
+          "mutual_friends"
+        ],
+        "rows": [
+          [
+            1,
+            4,
+            "1"
+          ],
+          [
+            1,
+            5,
+            "1"
+          ],
+          [
+            2,
+            5,
+            "2"
+          ],
+          [
+            2,
+            6,
+            "1"
+          ],
+          [
+            3,
+            4,
+            "2"
+          ],
+          [
+            3,
+            6,
+            "1"
+          ],
+          [
+            4,
+            1,
+            "1"
+          ],
+          [
+            4,
+            3,
+            "2"
+          ],
+          [
+            5,
+            1,
+            "1"
+          ],
+          [
+            5,
+            2,
+            "2"
+          ],
+          [
+            6,
+            2,
+            "1"
+          ],
+          [
+            6,
+            3,
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "suggested_user_id",
+          "mutual_friends"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "user_id",
+          "suggested_user_id",
+          "mutual_friends"
+        ],
+        "rows": [
+          [
+            21,
+            25,
+            "3"
+          ],
+          [
+            22,
+            23,
+            "2"
+          ],
+          [
+            22,
+            24,
+            "2"
+          ],
+          [
+            23,
+            22,
+            "2"
+          ],
+          [
+            23,
+            24,
+            "2"
+          ],
+          [
+            24,
+            22,
+            "2"
+          ],
+          [
+            24,
+            23,
+            "2"
+          ],
+          [
+            25,
+            21,
+            "3"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10300-premium-vs-freemium": {
+    "cases": [
+      {
+        "columns": [
+          "date",
+          "non_paying",
+          "paying"
+        ],
+        "rows": [
+          [
+            "2020-07-01",
+            "8",
+            "4"
+          ],
+          [
+            "2020-07-03",
+            "6",
+            "2"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "date",
+          "non_paying",
+          "paying"
+        ],
+        "rows": [
+          [
+            "2021-01-06",
+            "4",
+            "0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "date",
+          "non_paying",
+          "paying"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10773-free-to-paid-conversion-within-14-days": {
+    "cases": [
+      {
+        "columns": [
+          "converted_users",
+          "total_users",
+          "conversion_rate_pct"
+        ],
+        "rows": [
+          [
+            "3",
+            "5",
+            "60.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "converted_users",
+          "total_users",
+          "conversion_rate_pct"
+        ],
+        "rows": [
+          [
+            "2",
+            "4",
+            "50.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "converted_users",
+          "total_users",
+          "conversion_rate_pct"
+        ],
+        "rows": [
+          [
+            "1",
+            "3",
+            "33.33"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10771-messages-per-user-in-an-ab-test": {
+    "cases": [
+      {
+        "columns": [
+          "variant",
+          "users",
+          "total_messages",
+          "avg_messages_per_user"
+        ],
+        "rows": [
+          [
+            "control",
+            "3",
+            "3",
+            "1.00"
+          ],
+          [
+            "treatment",
+            "3",
+            "4",
+            "1.33"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "variant",
+          "users",
+          "total_messages",
+          "avg_messages_per_user"
+        ],
+        "rows": [
+          [
+            "control",
+            "4",
+            "2",
+            "0.50"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "variant",
+          "users",
+          "total_messages",
+          "avg_messages_per_user"
+        ],
+        "rows": [
+          [
+            "treatment",
+            "2",
+            "2",
+            "1.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10770-rolling-7-day-message-volume": {
+    "cases": [
+      {
+        "columns": [
+          "message_date",
+          "daily_messages",
+          "rolling_7_day_messages"
+        ],
+        "rows": [
+          [
+            "2024-06-01",
+            "3",
+            "3"
+          ],
+          [
+            "2024-06-02",
+            "1",
+            "4"
+          ],
+          [
+            "2024-06-04",
+            "2",
+            "6"
+          ],
+          [
+            "2024-06-05",
+            "1",
+            "7"
+          ],
+          [
+            "2024-06-07",
+            "1",
+            "8"
+          ],
+          [
+            "2024-06-08",
+            "2",
+            "7"
+          ],
+          [
+            "2024-06-10",
+            "1",
+            "7"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "message_date",
+          "daily_messages",
+          "rolling_7_day_messages"
+        ],
+        "rows": [
+          [
+            "2024-07-01",
+            "2",
+            "2"
+          ],
+          [
+            "2024-07-10",
+            "3",
+            "3"
+          ],
+          [
+            "2024-07-11",
+            "1",
+            "4"
+          ],
+          [
+            "2024-07-25",
+            "4",
+            "4"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "message_date",
+          "daily_messages",
+          "rolling_7_day_messages"
+        ],
+        "rows": [
+          [
+            "2024-08-01",
+            "5",
+            "5"
+          ],
+          [
+            "2024-08-08",
+            "2",
+            "2"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10769-week-2-retention-of-new-api-developers": {
+    "cases": [
+      {
+        "columns": [
+          "cohort_week",
+          "cohort_size",
+          "retained_developers",
+          "retention_rate_pct"
+        ],
+        "rows": [
+          [
+            "2024-01-01",
+            "2",
+            "2",
+            "100.00"
+          ],
+          [
+            "2024-01-08",
+            "2",
+            "0",
+            "0.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "cohort_week",
+          "cohort_size",
+          "retained_developers",
+          "retention_rate_pct"
+        ],
+        "rows": [
+          [
+            "2024-02-05",
+            "2",
+            "2",
+            "100.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "cohort_week",
+          "cohort_size",
+          "retained_developers",
+          "retention_rate_pct"
+        ],
+        "rows": [
+          [
+            "2024-02-26",
+            "2",
+            "1",
+            "50.00"
+          ],
+          [
+            "2024-03-04",
+            "1",
+            "1",
+            "100.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10314-revenue-over-time": {
+    "cases": [
+      {
+        "columns": [
+          "month",
+          "revenue",
+          "rolling_3_month_avg"
+        ],
+        "rows": [
+          [
+            "2021-01-01",
+            "200.00",
+            "200.00"
+          ],
+          [
+            "2021-02-01",
+            "50.00",
+            "125.00"
+          ],
+          [
+            "2021-03-01",
+            "300.00",
+            "183.33"
+          ],
+          [
+            "2021-04-01",
+            "0.00",
+            "116.67"
+          ],
+          [
+            "2021-05-01",
+            "60.00",
+            "120.00"
+          ],
+          [
+            "2021-06-01",
+            "0.00",
+            "20.00"
+          ],
+          [
+            "2021-07-01",
+            "300.00",
+            "120.00"
+          ],
+          [
+            "2021-08-01",
+            "0.00",
+            "100.00"
+          ],
+          [
+            "2021-09-01",
+            "0.00",
+            "100.00"
+          ],
+          [
+            "2021-10-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-11-01",
+            "45.25",
+            "15.08"
+          ],
+          [
+            "2021-12-01",
+            "0.00",
+            "15.08"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "month",
+          "revenue",
+          "rolling_3_month_avg"
+        ],
+        "rows": [
+          [
+            "2021-01-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-02-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-03-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-04-01",
+            "180.00",
+            "60.00"
+          ],
+          [
+            "2021-05-01",
+            "0.00",
+            "60.00"
+          ],
+          [
+            "2021-06-01",
+            "20.00",
+            "66.67"
+          ],
+          [
+            "2021-07-01",
+            "0.00",
+            "6.67"
+          ],
+          [
+            "2021-08-01",
+            "0.00",
+            "6.67"
+          ],
+          [
+            "2021-09-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-10-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-11-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-12-01",
+            "0.00",
+            "0.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "month",
+          "revenue",
+          "rolling_3_month_avg"
+        ],
+        "rows": [
+          [
+            "2021-01-01",
+            "10.00",
+            "10.00"
+          ],
+          [
+            "2021-02-01",
+            "20.00",
+            "15.00"
+          ],
+          [
+            "2021-03-01",
+            "0.00",
+            "10.00"
+          ],
+          [
+            "2021-04-01",
+            "0.00",
+            "6.67"
+          ],
+          [
+            "2021-05-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-06-01",
+            "30.00",
+            "10.00"
+          ],
+          [
+            "2021-07-01",
+            "0.00",
+            "10.00"
+          ],
+          [
+            "2021-08-01",
+            "0.00",
+            "10.00"
+          ],
+          [
+            "2021-09-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-10-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-11-01",
+            "0.00",
+            "0.00"
+          ],
+          [
+            "2021-12-01",
+            "40.00",
+            "13.33"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10547-actor-rating-difference-analysis": {
+    "cases": [
+      {
+        "columns": [
+          "actor_id",
+          "actor_name",
+          "highest_rating",
+          "lowest_rating",
+          "rating_gap"
+        ],
+        "rows": [
+          [
+            102,
+            "Ben Okafor",
+            "9.1",
+            "6.2",
+            "2.9"
+          ],
+          [
+            101,
+            "Ava Moreno",
+            "8.5",
+            "5.9",
+            "2.6"
+          ],
+          [
+            104,
+            "Dev Rao",
+            "9.1",
+            "8.5",
+            "0.6"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "actor_id",
+          "actor_name",
+          "highest_rating",
+          "lowest_rating",
+          "rating_gap"
+        ],
+        "rows": [
+          [
+            201,
+            "Gwen Alvarez",
+            "8.0",
+            "6.0",
+            "2.0"
+          ],
+          [
+            202,
+            "Hiro Tanaka",
+            "9.0",
+            "7.0",
+            "2.0"
+          ],
+          [
+            203,
+            "Ines Costa",
+            "7.0",
+            "5.0",
+            "2.0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "actor_id",
+          "actor_name",
+          "highest_rating",
+          "lowest_rating",
+          "rating_gap"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10128-count-the-number-of-movies-that-abigail-breslin-nominated-for-oscar": {
+    "cases": [
+      {
+        "columns": [
+          "movie_count"
+        ],
+        "rows": [
+          [
+            3
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "movie_count"
+        ],
+        "rows": [
+          [
+            2
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "movie_count"
+        ],
+        "rows": [
+          [
+            0
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-2004-number-of-comments-per-user-in-past-30-days": {
+    "cases": [
+      {
+        "columns": [
+          "user_id",
+          "comment_count"
+        ],
+        "rows": [
+          [
+            11,
+            2
+          ],
+          [
+            12,
+            3
+          ],
+          [
+            13,
+            1
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "comment_count"
+        ],
+        "rows": [
+          [
+            21,
+            2
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "comment_count"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10599-users-on-both-chat-and-api": {
+    "cases": [
+      {
+        "columns": [
+          "user_id"
+        ],
+        "rows": [
+          [
+            501
+          ],
+          [
+            502
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id"
+        ],
+        "rows": [
+          [
+            603
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10595-top-5-users-by-messages-sent": {
+    "cases": [
+      {
+        "columns": [
+          "user_id",
+          "username",
+          "message_count"
+        ],
+        "rows": [
+          [
+            1,
+            "ada_k",
+            4
+          ],
+          [
+            2,
+            "bo_lin",
+            3
+          ],
+          [
+            3,
+            "cy_rus",
+            2
+          ],
+          [
+            4,
+            "dee_m",
+            2
+          ],
+          [
+            5,
+            "eli_n",
+            1
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "username",
+          "message_count"
+        ],
+        "rows": [
+          [
+            1,
+            "gia_p",
+            3
+          ],
+          [
+            2,
+            "hal_q",
+            3
+          ],
+          [
+            3,
+            "ivo_r",
+            2
+          ],
+          [
+            4,
+            "jun_s",
+            2
+          ],
+          [
+            5,
+            "kai_t",
+            2
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "username",
+          "message_count"
+        ],
+        "rows": [
+          [
+            1,
+            "mo_v",
+            2
+          ],
+          [
+            2,
+            "ned_w",
+            1
+          ],
+          [
+            3,
+            "ola_x",
+            1
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10593-pickup-wait-time-by-neighborhood": {
+    "cases": [
+      {
+        "columns": [
+          "neighborhood",
+          "avg_wait_minutes"
+        ],
+        "rows": [
+          [
+            "Cedar Heights",
+            "22.00"
+          ],
+          [
+            "Old Town",
+            "20.50"
+          ],
+          [
+            "Harbor Point",
+            "9.67"
+          ],
+          [
+            "Mill Quarter",
+            "5.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "neighborhood",
+          "avg_wait_minutes"
+        ],
+        "rows": [
+          [
+            "Mill Quarter",
+            "15.00"
+          ],
+          [
+            "Cedar Heights",
+            "0.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "neighborhood",
+          "avg_wait_minutes"
+        ],
+        "rows": [
+          [
+            "Old Town",
+            "8.00"
+          ],
+          [
+            "Mill Quarter",
+            "4.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10592-miles-between-interventions-by-month": {
+    "cases": [
+      {
+        "columns": [
+          "month",
+          "avg_miles_between_interventions"
+        ],
+        "rows": [
+          [
+            "2024-01-01",
+            "220.50"
+          ],
+          [
+            "2024-02-01",
+            "277.40"
+          ],
+          [
+            "2024-03-01",
+            "2.50"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "month",
+          "avg_miles_between_interventions"
+        ],
+        "rows": [
+          [
+            "2024-07-01",
+            "25.50"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "month",
+          "avg_miles_between_interventions"
+        ],
+        "rows": [
+          [
+            "2024-09-01",
+            "63.33"
+          ],
+          [
+            "2024-10-01",
+            "10.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10591-fleet-utilization-by-hour-of-day": {
+    "cases": [
+      {
+        "columns": [
+          "hour_of_day",
+          "utilization"
+        ],
+        "rows": [
+          [
+            0,
+            "0.0417"
+          ],
+          [
+            1,
+            "0.0000"
+          ],
+          [
+            2,
+            "0.0000"
+          ],
+          [
+            3,
+            "0.0000"
+          ],
+          [
+            4,
+            "0.0000"
+          ],
+          [
+            5,
+            "0.0000"
+          ],
+          [
+            6,
+            "0.0000"
+          ],
+          [
+            7,
+            "0.0010"
+          ],
+          [
+            8,
+            "0.2292"
+          ],
+          [
+            9,
+            "0.0625"
+          ],
+          [
+            10,
+            "0.0000"
+          ],
+          [
+            11,
+            "0.0000"
+          ],
+          [
+            12,
+            "0.0625"
+          ],
+          [
+            13,
+            "0.0000"
+          ],
+          [
+            14,
+            "0.0000"
+          ],
+          [
+            15,
+            "0.0000"
+          ],
+          [
+            16,
+            "0.0000"
+          ],
+          [
+            17,
+            "0.0313"
+          ],
+          [
+            18,
+            "0.0208"
+          ],
+          [
+            19,
+            "0.0000"
+          ],
+          [
+            20,
+            "0.0000"
+          ],
+          [
+            21,
+            "0.0000"
+          ],
+          [
+            22,
+            "0.0000"
+          ],
+          [
+            23,
+            "0.0396"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "hour_of_day",
+          "utilization"
+        ],
+        "rows": [
+          [
+            0,
+            "0.0000"
+          ],
+          [
+            1,
+            "0.0000"
+          ],
+          [
+            2,
+            "0.0000"
+          ],
+          [
+            3,
+            "0.0000"
+          ],
+          [
+            4,
+            "0.0000"
+          ],
+          [
+            5,
+            "0.0000"
+          ],
+          [
+            6,
+            "0.0000"
+          ],
+          [
+            7,
+            "0.0000"
+          ],
+          [
+            8,
+            "0.0000"
+          ],
+          [
+            9,
+            "0.0000"
+          ],
+          [
+            10,
+            "0.3000"
+          ],
+          [
+            11,
+            "0.0500"
+          ],
+          [
+            12,
+            "0.0000"
+          ],
+          [
+            13,
+            "0.0000"
+          ],
+          [
+            14,
+            "0.0000"
+          ],
+          [
+            15,
+            "0.0000"
+          ],
+          [
+            16,
+            "0.0000"
+          ],
+          [
+            17,
+            "0.0000"
+          ],
+          [
+            18,
+            "0.0000"
+          ],
+          [
+            19,
+            "0.0000"
+          ],
+          [
+            20,
+            "0.0000"
+          ],
+          [
+            21,
+            "0.0000"
+          ],
+          [
+            22,
+            "0.2000"
+          ],
+          [
+            23,
+            "0.0000"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "hour_of_day",
+          "utilization"
+        ],
+        "rows": [
+          [
+            0,
+            "0.0000"
+          ],
+          [
+            1,
+            "0.0000"
+          ],
+          [
+            2,
+            "0.0000"
+          ],
+          [
+            3,
+            "0.0000"
+          ],
+          [
+            4,
+            "0.0000"
+          ],
+          [
+            5,
+            "0.0000"
+          ],
+          [
+            6,
+            "0.0000"
+          ],
+          [
+            7,
+            "0.0000"
+          ],
+          [
+            8,
+            "0.0000"
+          ],
+          [
+            9,
+            "0.1667"
+          ],
+          [
+            10,
+            "0.0278"
+          ],
+          [
+            11,
+            "0.0000"
+          ],
+          [
+            12,
+            "0.0000"
+          ],
+          [
+            13,
+            "0.0000"
+          ],
+          [
+            14,
+            "0.0000"
+          ],
+          [
+            15,
+            "0.0000"
+          ],
+          [
+            16,
+            "0.0000"
+          ],
+          [
+            17,
+            "0.0000"
+          ],
+          [
+            18,
+            "0.0000"
+          ],
+          [
+            19,
+            "0.0000"
+          ],
+          [
+            20,
+            "0.0000"
+          ],
+          [
+            21,
+            "0.1250"
+          ],
+          [
+            22,
+            "0.0000"
+          ],
+          [
+            23,
+            "0.0000"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10171-find-the-genre-of-the-person-with-the-most-number-of-oscar-winnings": {
+    "cases": [
+      {
+        "columns": [
+          "full_name",
+          "wins",
+          "genre"
+        ],
+        "rows": [
+          [
+            "Nadia Fournier",
+            3,
+            "Drama"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "full_name",
+          "wins",
+          "genre"
+        ],
+        "rows": [
+          [
+            "Ivo Marsh",
+            1,
+            null
+          ],
+          [
+            "Rosa Klein",
+            1,
+            "Drama"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "full_name",
+          "wins",
+          "genre"
+        ],
+        "rows": [
+          [
+            "Ada Vance",
+            2,
+            "Sci-Fi"
+          ],
+          [
+            "Ben Orlov",
+            2,
+            "Fantasy"
+          ],
+          [
+            "Ben Orlov",
+            2,
+            "Sci-Fi"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10548-top-actor-ratings-by-genre": {
+    "cases": [
+      {
+        "columns": [
+          "genre",
+          "actor",
+          "avg_rating",
+          "movies_count"
+        ],
+        "rows": [
+          [
+            "Crime",
+            "Dov Reyes",
+            "7.70",
+            2
+          ],
+          [
+            "Fantasy",
+            "Cleo Sato",
+            "7.60",
+            2
+          ],
+          [
+            "Sci-Fi",
+            "Ada Vance",
+            "8.00",
+            2
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "genre",
+          "actor",
+          "avg_rating",
+          "movies_count"
+        ],
+        "rows": [
+          [
+            "Sci-Fi",
+            "Ada Vance",
+            "8.00",
+            2
+          ],
+          [
+            "Sci-Fi",
+            "Ben Orlov",
+            "8.00",
+            2
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "genre",
+          "actor",
+          "avg_rating",
+          "movies_count"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-2136-customer-tracking": {
+    "cases": [
+      {
+        "columns": [
+          "customer_id",
+          "name",
+          "longest_streak"
+        ],
+        "rows": [
+          [
+            1,
+            "Ada Vance",
+            3
+          ],
+          [
+            4,
+            "Dov Reyes",
+            3
+          ],
+          [
+            2,
+            "Ben Orlov",
+            1
+          ],
+          [
+            3,
+            "Cleo Sato",
+            1
+          ],
+          [
+            5,
+            "Eve Marsh",
+            0
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "customer_id",
+          "name",
+          "longest_streak"
+        ],
+        "rows": [
+          [
+            2,
+            "Ben Orlov",
+            3
+          ],
+          [
+            1,
+            "Ada Vance",
+            1
+          ],
+          [
+            3,
+            "Cleo Sato",
+            1
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "customer_id",
+          "name",
+          "longest_streak"
+        ],
+        "rows": [
+          [
+            1,
+            "Ada Vance",
+            3
+          ],
+          [
+            3,
+            "Cleo Sato",
+            1
+          ],
+          [
+            4,
+            "Dov Reyes",
+            1
+          ],
+          [
+            2,
+            "Ben Orlov",
+            0
+          ]
+        ]
+      }
+    ]
   }
 }

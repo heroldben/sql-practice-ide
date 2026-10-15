@@ -10,6 +10,7 @@ const state = {
   search: '',
   source: '',
   difficulty: '',
+  access: '',
   status: '',
   topic: '',
   sort: 'difficulty',
@@ -26,6 +27,7 @@ const dom = {
   search: document.getElementById('search'),
   source: document.getElementById('filter-source'),
   difficulty: document.getElementById('filter-difficulty'),
+  access: document.getElementById('filter-access'),
   status: document.getElementById('filter-status'),
   sort: document.getElementById('sort'),
   clearFilters: document.getElementById('clear-filters'),
@@ -50,6 +52,8 @@ function visibleProblems() {
   const rows = problems.filter((problem) => {
     if (state.source && problem.source !== state.source) return false;
     if (state.difficulty && problem.difficulty !== state.difficulty) return false;
+    if (state.access === 'premium' && !problem.premium) return false;
+    if (state.access === 'free' && problem.premium) return false;
     if (state.topic && !problem.topics.includes(state.topic)) return false;
     if (state.status) {
       const entry = getEntry(state.progress, problem.id);
@@ -184,7 +188,7 @@ function renderList() {
   }
 }
 
-const BASE_TITLE = 'SQL Practice IDE — 200 PostgreSQL problems';
+const BASE_TITLE = 'SQL Practice IDE — 220 PostgreSQL problems';
 
 function route() {
   const match = location.hash.match(/^#problem\/(.+)$/);
@@ -213,12 +217,14 @@ function clearFilters() {
   state.search = '';
   state.source = '';
   state.difficulty = '';
+  state.access = '';
   state.status = '';
   state.topic = '';
   state.sort = 'difficulty';
   dom.search.value = '';
   dom.source.value = '';
   dom.difficulty.value = '';
+  dom.access.value = '';
   dom.status.value = '';
   dom.sort.value = 'difficulty';
   renderTags();
@@ -227,7 +233,7 @@ function clearFilters() {
 }
 
 dom.search.addEventListener('input', () => { state.search = dom.search.value; renderList(); });
-for (const [key, node] of [['source', dom.source], ['difficulty', dom.difficulty], ['status', dom.status], ['sort', dom.sort]]) {
+for (const [key, node] of [['source', dom.source], ['difficulty', dom.difficulty], ['access', dom.access], ['status', dom.status], ['sort', dom.sort]]) {
   node.addEventListener('change', () => { state[key] = node.value; renderList(); });
 }
 dom.clearFilters.addEventListener('click', clearFilters);
@@ -276,7 +282,7 @@ async function refreshFromServer() {
 
 dom.resetButton.addEventListener('click', async () => {
   const confirmed = window.confirm(
-    'Reset ALL progress in every browser?\n\nThis deletes solved/starred flags and saved queries for all 200 questions and cannot be undone. Export first if you want a backup.',
+    'Reset ALL progress in every browser?\n\nThis deletes solved/starred flags and saved queries for all 220 questions and cannot be undone. Export first if you want a backup.',
   );
   if (!confirmed) return;
   const remoteReset = await resetProgressEverywhere(state.progress);

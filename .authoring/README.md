@@ -14,8 +14,12 @@ Ten slices, 200 problems total, aggregated by `js/data/index.js`.
 | ss-1 | `js/data/problems-ss-1.js` | 22 | stratascratch | 0 | 15 | 7 |
 | ss-2 | `js/data/problems-ss-2.js` | 22 | stratascratch | 0 | 14 | 8 |
 | ss-3 | `js/data/problems-ss-3.js` | 21 | stratascratch | 0 | 14 | 7 |
+| ss-premium-1 | `js/data/problems-ss-premium-1.js` | 10 | stratascratch | 2 | 6 | 2 |
+| ss-premium-2 | `js/data/problems-ss-premium-2.js` | 10 | stratascratch | 2 | 5 | 3 |
 
-Totals: 200 problems, 70 leetcode / 65 datalemur / 65 stratascratch, 40 easy / 120 medium / 40 hard, 50 premium.
+Totals: 220 problems, 70 leetcode / 65 datalemur / 85 stratascratch, 44 easy / 131 medium / 45 hard, 70 premium,
+660 test cases. The `ss-premium-*` slices are the **premium (PRO) StrataScratch questions** — every record there
+has `premium: true`, verified from the platform's `PRO` badge.
 The slice lists (`.authoring/lc-*.md`, `.authoring/dl-*.md`, `.authoring/ss-*.md`) fix the id, title,
 difficulty and premium flag of every record — author exactly those rows, in the given order.
 

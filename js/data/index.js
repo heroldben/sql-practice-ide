@@ -12,8 +12,15 @@ import { problems as dl3 } from './problems-dl-3.js';
 import { problems as ss1 } from './problems-ss-1.js';
 import { problems as ss2 } from './problems-ss-2.js';
 import { problems as ss3 } from './problems-ss-3.js';
+import { problems as ssPremium1 } from './problems-ss-premium-1.js';
+import { problems as ssPremium2 } from './problems-ss-premium-2.js';
 
-export const problems = [...lc1, ...lc2, ...lc3, ...lc4, ...dl1, ...dl2, ...dl3, ...ss1, ...ss2, ...ss3];
+export const problems = [
+  ...lc1, ...lc2, ...lc3, ...lc4,
+  ...dl1, ...dl2, ...dl3,
+  ...ss1, ...ss2, ...ss3,
+  ...ssPremium1, ...ssPremium2,
+];
 
 export const problemById = new Map(problems.map((problem) => [problem.id, problem]));
 

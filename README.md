@@ -1,6 +1,6 @@
 # SQL Practice IDE
 
-A local, LeetCode-style SQL practice IDE: **200 curated PostgreSQL interview problems** (LeetCode,
+A local, LeetCode-style SQL practice IDE: **220 curated PostgreSQL interview problems** (LeetCode,
 DataLemur, StrataScratch) with their own schema, seed data, expected output and reference solution.
 Queries run against **real PostgreSQL** — PGlite (Postgres compiled to WebAssembly) — entirely in the
 browser: no accounts, no database server, and nothing to install to use it.
@@ -32,7 +32,7 @@ you use the app and close it (or press Ctrl+C) to stop the server — the URL is
 ```bash
 npm install            # devDependencies: @electric-sql/pglite — only for the scripts below
 npm run build:expected # regenerate js/data/expected.json from schema + seed + solution
-npm run validate       # 200 problems, counts, SQL execution and expected.json freshness
+npm run validate       # 220 problems, counts, SQL execution and expected.json freshness
 ```
 
 ## What the app does
@@ -43,12 +43,14 @@ vertical card stack that fills the window, so it reads well in landscape and in 
 windows (the index table, filters and header also reflow for small widths). Light and dark themes
 throughout.
 
-- **Question index** — filter bar (category, difficulty, status, sort, title search, *Clear filters*),
-  a table of all 200 questions with `Source`, `Title`, `Difficulty` and `Status` columns, a **Your
-  Progress** card (progress bar, solved total, per-difficulty counts, starred count) and the **Tags**
-  card, which is a topic *filter* (click a tag to narrow the list; the active topic shows as a
-  removable chip). The status cell is a button: `✓` solved, `★` starred, `–` untouched (click toggles
-  the star). `P` marks questions whose source catalog is paywalled.
+- **Question index** — filter bar (category, difficulty, **access**, status, sort, title search,
+  *Clear filters*), a table of all questions with `Source`, `Title`, `Difficulty` and `Status`
+  columns, a **Your Progress** card (progress bar, solved total, per-difficulty counts, starred
+  count) and the **Tags** card, which is a topic *filter* (click a tag to narrow the list; the active
+  topic shows as a removable chip). The **Access** selector switches between *All questions*,
+  *Premium only* and *Free only*, so you can decide whether to work through the paywalled catalogs,
+  the free ones, or everything. The status cell is a button: `✓` solved, `★` starred, `–` untouched
+  (click toggles the star). `P` marks premium questions.
 - **No approach hints.** Topics are never shown per question — neither as chips on the question page
   nor as a column in the index — because naming the technique (self join, deduplication, window
   functions, …) spoils the exercise. Test-case labels are likewise neutral (`Test case 1/2/3`); the
@@ -121,7 +123,7 @@ js/storage.js         progress: localStorage cache + /api/progress sync + export
 js/theme.js           light/dark theme state, toggle wiring and persistence
 js/dom.js             small DOM/result-table helpers
 js/data/index.js      aggregates the ten problems-*.js slices into one registry
-js/data/problems-*.js the 200 problems (10 slices of 20-22), each with 3 test cases
+js/data/problems-*.js the 220 questions (12 slices: 4 LeetCode, 3 DataLemur, 3 StrataScratch, 2 premium StrataScratch)
 js/data/expected.json generated: { [id]: { cases: [{ columns, rows }, …] } } (committed, no build needed)
 scripts/build-expected.mjs  regenerate expected.json for all test cases
 scripts/validate.mjs        full-catalog validation (counts, cases, execution, freshness)
@@ -142,15 +144,16 @@ network access available.
 | source | problems | notes |
 | ------ | -------- | ----- |
 | LeetCode | 70 | 50 from the paywalled **Advanced SQL 50** catalog (`premium: true`) + 20 from the free SQL 50 |
-| DataLemur | 65 | SQL interview questions |
-| StrataScratch | 65 | medium/hard analytical questions |
+| DataLemur | 65 | SQL interview questions (all free to attempt — DataLemur paywalls hints/solutions, not the questions) |
+| StrataScratch | 85 | 65 free + **20 premium (`PRO`) questions** (`premium: true`) |
 
-Difficulty mix: 40 easy / 120 medium / 40 hard; at least 50 problems carry `premium: true`.
-Each question has **3 test cases** (600 datasets in total), each with its own generated expected
+Difficulty mix: 44 easy / 131 medium / 45 hard; **70 questions are premium**.
+Each question has **3 test cases** (660 datasets in total), each with its own generated expected
 output, and the extra cases deliberately target the classic wrong answers for the task.
-Titles, source platform and difficulty come from the public catalogs (and public mirrors for
-paywalled lists); **every description, schema, seed set and solution in this repo is original** —
-no problem text, sample data or examples are copied from LeetCode, DataLemur or StrataScratch.
+Titles, source platform, difficulty and the premium flag come from the public catalogs — the LeetCode
+Advanced SQL 50 premium plan, and StrataScratch's `PRO` badge (verified on the platform's question
+list); **every description, schema, seed set and solution in this repo is original** — no problem
+text, sample data or examples are copied from LeetCode, DataLemur or StrataScratch.
 `ordered: true` is set only where the task genuinely requires a row order, and no problem uses
 volatile functions (`now()`, `CURRENT_DATE`, `random()`), so expected output is reproducible.
 
