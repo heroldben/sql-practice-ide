@@ -1,6 +1,6 @@
 /**
  * Problem registry: aggregates every js/data/problems-*.js slice into one list
- * plus lookups used by the list view and the problem view.
+ * plus lookups used by the index view and the question view.
  */
 import { problems as lc1 } from './problems-lc-1.js';
 import { problems as lc2 } from './problems-lc-2.js';

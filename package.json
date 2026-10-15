@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "LeetCode-style SQL practice IDE with 200 curated PostgreSQL problems running on PGlite (in-browser Postgres). Runs with zero install; the devDependencies are only needed to regenerate catalog data.",
+  "description": "LeetCode-style SQL practice IDE with 220 curated PostgreSQL problems running on PGlite (in-browser Postgres). Runs with zero install; the devDependencies are only needed to regenerate catalog data.",
   "scripts": {
     "start": "node serve.mjs --open",
     "dev": "node serve.mjs",

@@ -5,20 +5,46 @@ DataLemur, StrataScratch) with their own schema, seed data, expected output and 
 Queries run against **real PostgreSQL** — PGlite (Postgres compiled to WebAssembly) — entirely in the
 browser: no accounts, no database server, and nothing to install to use it.
 
+## Live demo
+
+**<https://heroldben.github.io/sql-practice-ide/>** — the same app served as static files (GitHub
+Pages). Nothing to install, works on a phone. Because a static host has no progress database, the
+header shows `this browser only` and solved/starred state lives in that browser's `localStorage`;
+use **Export**/**Import** to move it between devices.
+
+Every other feature works unchanged on a static host, because the database itself runs in the page:
+`Postgres ready (PGlite)`, all three test cases per question, submission history, the Access filter
+and the theme toggle. The **Stop server** button is simply disabled there (there is no server).
+
 ## Quick start (plug and play)
 
 The app is fully self-contained: CodeMirror, the Kumbh Sans webfont and the PostgreSQL engine
-(PGlite, WebAssembly) all live in `vendor/`, and the 200 expected answers are committed in
-`js/data/expected.json`. **No install, no build step and no internet connection are required** —
-everything runs locally.
+(PGlite, WebAssembly) all live in `vendor/`, and the expected answers for all 660 test cases are
+committed in `js/data/expected.json`. **No install, no build step and no internet connection are
+required** — everything runs locally.
 
 - **Windows**: double-click **`start.cmd`**
 - **macOS / Linux**: `./start.sh`
-- **Any terminal**: `node serve.mjs` (add `--open` to launch the browser; `--port=9000` and
-  `--host=0.0.0.0` are also accepted; it binds to loopback by default)
+- **Any terminal**: `node serve.mjs` (add `--open` to launch the browser; `--port=9000`,
+  `--host=0.0.0.0` and `--data-dir=PATH` are also accepted; it binds to loopback by default)
 
 Then open <http://localhost:8080>. Node 18+ is needed only to serve the folder over HTTP (browsers
-refuse to load ES modules from `file://`); the page itself needs no Node.
+refuse to load ES modules from `file://`); the page itself needs no Node. Running it locally is what
+gives you the shared progress database (`.local/progress.db`), so the same solved/starred state and
+submission history appears in every browser on the machine, plus the per-question and global resets,
+`Stop server`, and export/import.
+
+## Host it yourself (free)
+
+Any static host works — no backend, no build step: upload/clone the repo and publish the root
+folder. GitHub Pages for this repo:
+
+```bash
+gh api -X POST repos/<owner>/<repo>/pages -f 'source[branch]=main' -f 'source[path]=/'
+```
+
+Other zero-cost options: Netlify/Cloudflare Pages (drag the folder), or `python -m http.server`.
+Progress falls back to per-browser `localStorage`, which the app detects and says so in the header.
 
 **Stopping and restarting.** Any of these stops the server — nothing is lost, because progress, stars,
 saved queries and submission history live in `.local/progress.db`:
@@ -132,6 +158,8 @@ precision loss.
 ## Repository layout
 
 ```
+LICENSE               MIT — reuse and fork freely
+.nojekyll             tells GitHub Pages to publish files as-is (no Jekyll)
 start.cmd / start.sh  one-click launchers (serve the folder + open the browser)
 stop.cmd / stop.sh    one-click stop (asks the running server to exit)
 serve.mjs             zero-dependency static server (node:http; loopback by default) + progress/shutdown API
@@ -151,7 +179,7 @@ js/storage.js         progress: localStorage cache + /api/progress sync + export
 js/progress-model.js  shared entry shape, sanitiser, merge rules and submission history (browser + server)
 js/theme.js           light/dark theme state, toggle wiring and persistence
 js/dom.js             small DOM/result-table helpers
-js/data/index.js      aggregates the ten problems-*.js slices into one registry
+js/data/index.js      aggregates the twelve problems-*.js slices into one registry
 js/data/problems-*.js the 220 questions (12 slices: 4 LeetCode, 3 DataLemur, 3 StrataScratch, 2 premium StrataScratch)
 js/data/expected.json generated: { [id]: { cases: [{ columns, rows }, …] } } (committed, no build needed)
 scripts/build-expected.mjs  regenerate expected.json for all test cases
@@ -196,5 +224,13 @@ volatile functions (`now()`, `CURRENT_DATE`, `random()`), so expected output is 
 2. `npm run check:file -- js/data/problems-lc-1.js` — shape, header, unique ids, at least 3 test
    cases per problem, and execution of `schemaSQL + every case's seed + solutionSQL` in a fresh
    PGlite instance.
-3. `npm run build:expected` (expected outputs for all 600 test cases are always generated, never
+3. `npm run build:expected` (expected outputs for all 660 test cases are always generated, never
    hand-written), then `npm run validate` to confirm the whole catalog is self-consistent.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Reuse, fork and adapt freely.
+
+Titles, source platform, difficulty and the premium flag come from the public catalogs named above;
+all descriptions, schemas, seed data and solutions in this repository are original. If you redistribute
+it, a link back to <https://github.com/heroldben/sql-practice-ide> is appreciated but not required.
