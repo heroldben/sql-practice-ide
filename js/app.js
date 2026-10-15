@@ -36,6 +36,7 @@ const dom = {
   importInput: document.getElementById('import-progress'),
   transferStatus: document.getElementById('transfer-status'),
   resetButton: document.getElementById('reset-progress'),
+  stopButton: document.getElementById('stop-server'),
   syncStatus: document.getElementById('sync-status'),
   themeToggle: document.getElementById('theme-toggle'),
 };
@@ -261,6 +262,32 @@ dom.importInput.addEventListener('change', async () => {
 
 window.addEventListener('hashchange', route);
 
+function showServerStopped() {
+  dom.stopButton.disabled = true;
+  dom.syncStatus.textContent = 'server stopped';
+  dom.syncStatus.className = 'sync-status sync-local';
+  dom.syncStatus.title = 'The local server is not running; progress is kept in this browser until you start it again.';
+  if (document.getElementById('server-stopped-banner')) return;
+  document.querySelector('.page')?.prepend(el('div', { id: 'server-stopped-banner', class: 'server-stopped' }, [
+    el('strong', { text: 'Server stopped.' }),
+    el('span', { text: 'Your progress is saved in .local/progress.db. Start it again (double-click start.cmd, or run npm run dev / node serve.mjs) and reload this page.' }),
+  ]));
+  window.scrollTo({ top: 0 });
+}
+
+dom.stopButton.addEventListener('click', async () => {
+  const confirmed = window.confirm('Stop the local server?\n\nYour progress, stars and submission history stay in .local/progress.db. Start it again with start.cmd (or npm run dev) and reload this page.');
+  if (!confirmed) return;
+  try {
+    const response = await fetch('/api/shutdown', { method: 'POST' });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(body.error ?? `HTTP ${response.status}`);
+    showServerStopped();
+  } catch (error) {
+    dom.transferStatus.textContent = `could not stop the server: ${error.message}`;
+  }
+});
+
 function renderSyncStatus() {
   const sync = getSyncState();
   let text = sync.mode === 'server' ? `synced · ${sync.backend ?? 'local db'}` : sync.mode === 'checking' ? 'checking local db…' : 'this browser only';
@@ -270,6 +297,10 @@ function renderSyncStatus() {
   dom.syncStatus.title = sync.mode === 'server'
     ? `Progress is stored in the shared local database (${sync.backend}) — every browser on this machine sees the same state.`
     : `Shared store unavailable${sync.error ? ` (${sync.error})` : ''} — progress is kept in this browser only. Use Export/Import to move it.`;
+  dom.stopButton.disabled = sync.mode !== 'server';
+  dom.stopButton.title = sync.mode === 'server'
+    ? 'Stop the local server (your progress stays in .local/progress.db)'
+    : 'Needs the local server — start it with start.cmd or npm run dev';
 }
 
 async function refreshFromServer() {

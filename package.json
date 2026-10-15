@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node serve.mjs --open",
     "dev": "node serve.mjs",
+    "stop": "node stop.mjs",
+    "restart": "node stop.mjs && node serve.mjs",
     "build:expected": "node scripts/build-expected.mjs",
     "validate": "node scripts/validate.mjs",
     "check:file": "node scripts/check-file.mjs"

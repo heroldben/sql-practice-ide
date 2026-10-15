@@ -422,6 +422,19 @@ input::placeholder { color: var(--muted); }
 
 .btn-danger { background: transparent; border-color: var(--fail-border); color: var(--hard); }
 .btn-danger:hover { background: var(--fail-bg); }
+.server-stopped {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--warn-border);
+  background: var(--warn-bg);
+  color: var(--medium);
+  border-radius: 8px;
+  font-size: .9rem;
+}
 .sync-status { font-size: .74rem; color: var(--muted); white-space: nowrap; border-left: 1px solid var(--border); padding-left: 10px; }
 .sync-status:empty { border-left: 0; padding-left: 0; }
 .sync-status.sync-server { color: var(--easy); }

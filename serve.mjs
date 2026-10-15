@@ -115,6 +115,38 @@ async function readJsonBody(req) {
   return text ? JSON.parse(text) : {};
 }
 
+/** Set once the server is listening, so /api/shutdown can close it. */
+let activeServer = null;
+let shuttingDown = false;
+
+function isLoopbackRequest(req) {
+  const address = req.socket?.remoteAddress ?? '';
+  return address === '127.0.0.1' || address === '::1' || address === '::ffff:127.0.0.1';
+}
+
+/**
+ * POST /api/shutdown — stop the server (used by the app's "Stop server" button and
+ * `npm run stop`). Only accepted from this machine, so exposing the app on the LAN
+ * does not let others stop it.
+ */
+function handleShutdown(req, res) {
+  if ((req.method || 'GET') !== 'POST') return sendJson(res, 405, { ok: false, error: 'POST required' });
+  if (!isLoopbackRequest(req)) return sendJson(res, 403, { ok: false, error: 'stopping the server is only allowed from this machine' });
+  if (shuttingDown) return sendJson(res, 200, { ok: true, message: 'already stopping' });
+  shuttingDown = true;
+  sendJson(res, 200, { ok: true, message: 'stopping' });
+  console.log('shutdown requested — stopping the server');
+  setTimeout(() => {
+    const done = () => process.exit(0);
+    if (activeServer) {
+      activeServer.close(done);
+      setTimeout(done, 750).unref();
+    } else {
+      done();
+    }
+  }, 150);
+}
+
 /** GET/PUT/DELETE /api/progress — the shared store behind cross-browser progress. */
 async function handleProgressApi(req, res) {
   const method = req.method || 'GET';
@@ -141,6 +173,7 @@ async function handleProgressApi(req, res) {
 async function handle(req, res) {
   const urlPath = (req.url || '/').split('?')[0];
   if (urlPath === '/api/progress') return handleProgressApi(req, res);
+  if (urlPath === '/api/shutdown') return handleShutdown(req, res);
   if (urlPath.startsWith('/api/')) return sendJson(res, 404, { ok: false, error: `unknown endpoint: ${urlPath}` });
   if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, 'Method not allowed');
   if (urlPath !== '/' && urlPath.endsWith('/')) {
@@ -174,6 +207,7 @@ async function isThisAppRunning(port) {
 
 function startServer(port, attempt = 0) {
   const server = createServer(handle);
+  activeServer = server;
   server.once('error', (error) => {
     if (error.code === 'EADDRINUSE' && attempt < MAX_PORT_ATTEMPTS) {
       startServer(port + 1, attempt + 1);

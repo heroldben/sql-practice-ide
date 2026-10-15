@@ -20,17 +20,29 @@ everything runs locally.
 Then open <http://localhost:8080>. Node 18+ is needed only to serve the folder over HTTP (browsers
 refuse to load ES modules from `file://`); the page itself needs no Node.
 
+**Stopping and restarting.** Any of these stops the server — nothing is lost, because progress, stars,
+saved queries and submission history live in `.local/progress.db`:
+
+- the header **Stop server** button in the app (asks the running server to exit; only accepted from
+  this machine, so exposing the app on the LAN cannot let others stop it),
+- **`stop.cmd`** (Windows) / **`stop.sh`** (macOS/Linux) — double-click, no terminal typing,
+- `npm run stop` (also works when the app page is closed), `npm run restart` to stop and start again,
+- `Ctrl+C` in the console window that prints the server URL, or simply closing that window.
+
+Start it again with `start.cmd` / `start.sh` / `npm run dev` (`npm start` also opens the browser) and
+reload the page.
+
 **Repeated launches never duplicate anything.** `serve.mjs` first probes the requested port: if the
 IDE is already being served there it prints `SQL Practice IDE is already running → …`, exits with
 code 3 and starts no second server, so `start.cmd`/`start.sh` cannot stack up extra instances or
-extra browser tabs. One launch opens the browser at most once. Keep the console window open while
-you use the app and close it (or press Ctrl+C) to stop the server — the URL is always
-<http://localhost:8080>.
+extra browser tabs. One launch opens the browser at most once — the URL is always
+<http://localhost:8080>. `--port=`, `--host=` and `--data-dir=` are accepted if you need a different
+port, LAN exposure or a different progress database.
 
 App HTML/CSS/JS changes are picked up on reload, but **`serve.mjs`, `progress-store.mjs` and
-`js/progress-model.js` are loaded once by the server process**: restart it (Ctrl+C, then
-`npm run dev` / `start.cmd`) after editing those, otherwise a new field (e.g. the submission query
-text) can be silently stripped when progress is written.
+`js/progress-model.js` are loaded once by the server process**: restart it (`npm run restart`) after
+editing those, otherwise a new field (e.g. the submission query text) can be silently stripped when
+progress is written.
 
 ### Regenerating catalog data (optional, needs Node packages)
 
@@ -121,7 +133,9 @@ precision loss.
 
 ```
 start.cmd / start.sh  one-click launchers (serve the folder + open the browser)
-serve.mjs             zero-dependency static server (node:http; loopback by default) + progress API
+stop.cmd / stop.sh    one-click stop (asks the running server to exit)
+serve.mjs             zero-dependency static server (node:http; loopback by default) + progress/shutdown API
+stop.mjs              cross-platform stop helper (`npm run stop`, `npm run restart`)
 progress-store.mjs    shared progress store: SQLite (node:sqlite) with a JSON-file fallback
 index.html            app shell (module entry)
 css/styles.css        light/dark theme, DataLemur-style index + question template, both orientations
