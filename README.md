@@ -92,7 +92,10 @@ throughout.
   count) and the **Tags** card, which is a topic *filter* (click a tag to narrow the list; the active
   topic shows as a removable chip). The **Access** selector switches between *All questions*,
   *Premium only* and *Free only*, so you can decide whether to work through the paywalled catalogs,
-  the free ones, or everything. The status cell is a button: `✓` solved, `★` starred, `–` untouched
+  the free ones, or everything. **Random question** picks one from whatever the filters currently
+  show — combine it with *Access: Premium*, *Difficulty: Hard* and *Status: Not solved* to be handed
+  a random unsolved premium hard question, and it never picks the question you are already on. The
+  status cell is a button: `✓` solved, `★` starred, `–` untouched
   (click toggles the star). `P` marks premium questions.
 - **No approach hints.** Topics are never shown per question — neither as chips on the question page
   nor as a column in the index — because naming the technique (self join, deduplication, window
@@ -101,9 +104,10 @@ throughout.
 - **Question page** — description, rendered schema (table/column names, types, primary keys), a
   collapsible seed-data preview (`SELECT * LIMIT 10` per table for the selected test case), a
   CodeMirror editor in PostgreSQL mode with a **test case** selector, and **Run** (execute the
-  selected case) / **Submit** (grade all cases). Result tabs: *Your Result* | *Expected Answer*
-  (for the selected test case) | **Submissions** | *Solution* (reference answer behind a confirm
-  click, marked as a spoiler).
+  selected case) / **Submit** (grade all cases). The header also has **Random question** to jump
+  straight into another one, next to *Star* and *Reset question*. Result tabs: *Your Result* |
+  *Expected Answer* (for the selected test case) | **Submissions** | *Solution* (reference answer
+  behind a confirm click, marked as a spoiler).
 - **Submission history** — every Submit is recorded per question with its timestamp, a **✓** or **✗**
   verdict, how many test cases passed, the failing case and reason for failures, **and the query you
   submitted** (collapsed behind *Show submitted query*, with a **Load into editor** button to reuse an

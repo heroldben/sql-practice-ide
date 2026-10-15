@@ -31,6 +31,7 @@ const dom = {
   status: document.getElementById('filter-status'),
   sort: document.getElementById('sort'),
   clearFilters: document.getElementById('clear-filters'),
+  randomButton: document.getElementById('random-question'),
   topicFilter: document.getElementById('topic-filter'),
   exportButton: document.getElementById('export-progress'),
   importInput: document.getElementById('import-progress'),
@@ -73,6 +74,20 @@ function visibleProblems() {
     return DIFFICULTY_ORDER[a.difficulty] - DIFFICULTY_ORDER[b.difficulty] || a.title.localeCompare(b.title);
   });
   return rows;
+}
+
+/** Navigate to a random question from the currently filtered list. */
+function openRandomQuestion() {
+  const rows = visibleProblems();
+  if (rows.length === 0) {
+    dom.transferStatus.textContent = 'no question matches the current filters';
+    return null;
+  }
+  const currentId = location.hash.startsWith('#problem/') ? decodeURIComponent(location.hash.slice('#problem/'.length)) : null;
+  const pool = currentId && rows.length > 1 ? rows.filter((problem) => problem.id !== currentId) : rows;
+  const choice = pool[Math.floor(Math.random() * pool.length)];
+  location.hash = `#problem/${encodeURIComponent(choice.id)}`;
+  return choice;
 }
 
 function renderStats() {
@@ -184,6 +199,10 @@ function renderList() {
     ]));
   }
   dom.listCount.textContent = `${rows.length} of ${problems.length} questions shown`;
+  dom.randomButton.disabled = rows.length === 0;
+  dom.randomButton.title = rows.length === 0
+    ? 'No question matches the current filters — clear some filters first'
+    : `Pick a random question from the ${rows.length} shown${rows.some((problem) => !getEntry(state.progress, problem.id).solved) ? '' : ' (all already solved)'}`;
   if (rows.length === 0) {
     dom.list.append(el('tr', {}, [el('td', { class: 'empty', colspan: '5', text: 'No question matches the current filters.' })]));
   }
@@ -208,6 +227,7 @@ function route() {
   openProblem(dom.panel, problemId, {
     progress: state.progress,
     onProgressChange: () => renderStats(),
+    randomQuestion: openRandomQuestion,
   }).catch((error) => {
     clear(dom.panel);
     dom.panel.append(el('pre', { class: 'error-box', text: `Could not open question: ${error.stack || error.message}` }));
@@ -238,6 +258,7 @@ for (const [key, node] of [['source', dom.source], ['difficulty', dom.difficulty
   node.addEventListener('change', () => { state[key] = node.value; renderList(); });
 }
 dom.clearFilters.addEventListener('click', clearFilters);
+dom.randomButton.addEventListener('click', () => { openRandomQuestion(); });
 
 dom.exportButton.addEventListener('click', () => {
   const filename = exportProgress(state.progress);

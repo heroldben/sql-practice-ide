@@ -117,6 +117,16 @@ export async function openProblem(panel, problemId, context) {
     text: 'Reset question',
     title: 'Clear this question’s solved/starred state, saved query and submission history (every browser)',
   });
+  const randomButton = el('button', {
+    id: 'random-question-next',
+    class: 'btn',
+    type: 'button',
+    text: 'Random question',
+    title: 'Jump to a random question from the current filters',
+    onclick: () => {
+      if (typeof context.randomQuestion === 'function') context.randomQuestion();
+    },
+  });
   resetButton.addEventListener('click', async () => {
     const confirmed = window.confirm(`Reset "${problem.title}"?\n\nThis clears its solved/starred state, the saved query and the submission history — in every browser on this machine.`);
     if (!confirmed) return;
@@ -144,7 +154,7 @@ export async function openProblem(panel, problemId, context) {
         solvedBadge,
       ]),
     ]),
-    el('div', { class: 'problem-actions' }, [starButton, resetButton]),
+    el('div', { class: 'problem-actions' }, [randomButton, starButton, resetButton]),
   ]);
 
   const schemaBlock = el('div', { class: 'schema-block' }, [
