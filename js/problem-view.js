@@ -4,7 +4,7 @@ import { SOURCE_LABELS, loadExpected, problemById } from './data/index.js';
 import { createEditor } from './editor.js';
 import { checkAllCases, describeSchema, prepareProblem, previewTable, runUserQuery } from './checker.js';
 import { testCasesOf } from './pg-config.js';
-import { getEntry, updateProblem } from './storage.js';
+import { addSubmission, getEntry, recentSubmissions, resetProblem, updateProblem } from './storage.js';
 
 let expectedCache = null;
 
@@ -14,6 +14,13 @@ async function expectedFor(problem) {
 }
 
 const SIDE_BY_SIDE_LIMIT = 5;
+
+/** Local, unambiguous timestamp for a submission record. */
+function formatTimestamp(iso) {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleString(undefined, { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
 
 /** `1 ✓ 2 ✗ 3 ·` chips telling the user which test case passed or failed. */
 function caseBadges(statuses) {
@@ -103,6 +110,29 @@ export async function openProblem(panel, problemId, context) {
     context.onProgressChange();
   });
 
+  const resetButton = el('button', {
+    id: 'reset-question',
+    class: 'btn btn-reset',
+    type: 'button',
+    text: 'Reset question',
+    title: 'Clear this question’s solved/starred state, saved query and submission history (every browser)',
+  });
+  resetButton.addEventListener('click', async () => {
+    const confirmed = window.confirm(`Reset "${problem.title}"?\n\nThis clears its solved/starred state, the saved query and the submission history — in every browser on this machine.`);
+    if (!confirmed) return;
+    resetProblem(context.progress, problem.id);
+    solvedBadge.hidden = true;
+    state.statuses = new Array(testCases.length).fill('pending');
+    state.got = null;
+    state.error = null;
+    state.tab = 'result';
+    editor.setValue(`-- Write your query for "${problem.title}" here.`);
+    await loadCaseState();
+    renderTabs();
+    setVerdict('info', 'Question reset — solved, star, saved query and submission history cleared.');
+    context.onProgressChange();
+  });
+
   const header = el('header', { class: 'card problem-head' }, [
     el('div', { class: 'problem-headline' }, [
       el('h1', { text: problem.title }),
@@ -114,7 +144,7 @@ export async function openProblem(panel, problemId, context) {
         solvedBadge,
       ]),
     ]),
-    el('div', { class: 'problem-actions' }, [starButton]),
+    el('div', { class: 'problem-actions' }, [starButton, resetButton]),
   ]);
 
   const schemaBlock = el('div', { class: 'schema-block' }, [
@@ -164,6 +194,7 @@ export async function openProblem(panel, problemId, context) {
   const tabs = [
     { id: 'result', label: 'Your Result' },
     { id: 'expected', label: 'Expected Answer' },
+    { id: 'submissions', label: 'Submissions' },
     { id: 'solution', label: 'Solution' },
   ];
   const tabButtons = tabs.map((tab) => el('button', {
@@ -200,6 +231,36 @@ export async function openProblem(panel, problemId, context) {
       }
       tabBody.append(el('p', { class: 'muted', text: `Test case ${state.caseIndex + 1} of ${testCases.length}` }));
       tabBody.append(resultTable(state.expected.cases?.[state.caseIndex] ?? null, `No expected answer stored for test case ${state.caseIndex + 1}.`));
+      return;
+    }
+    if (state.tab === 'submissions') {
+      const entry = getEntry(context.progress, problem.id);
+      const list = recentSubmissions(entry, 20);
+      if (list.length === 0) {
+        tabBody.append(el('p', { class: 'muted', text: 'No submissions yet — press Submit to record one.' }));
+        return;
+      }
+      const passed = list.filter((submission) => submission.passed).length;
+      tabBody.append(el('p', { class: 'muted', text: `${list.length} submission(s) recorded · ${passed} accepted · stored with the shared progress database` }));
+      tabBody.append(el('ul', { class: 'submissions' }, list.map((submission) => el('li', { class: `submission ${submission.passed ? 'is-pass' : 'is-fail'}` }, [
+        el('span', { class: 'submission-verdict', text: submission.passed ? '✓' : '✗', title: submission.passed ? 'accepted' : 'wrong answer' }),
+        el('span', { class: 'submission-time', text: formatTimestamp(submission.at) }),
+        el('span', { class: 'submission-detail muted', text: submission.passed
+          ? `all ${submission.casesTotal} test cases passed`
+          : `${submission.casesPassed}/${submission.casesTotal} test cases passed${submission.detail ? ` · ${submission.detail}` : ''}` }),
+        submission.sql
+          ? el('details', { class: 'submission-query' }, [
+            el('summary', { text: 'Show submitted query' }),
+            el('pre', { class: 'code', text: submission.sql }),
+            el('button', {
+              class: 'btn',
+              type: 'button',
+              text: 'Load into editor',
+              onclick: () => editor.setValue(submission.sql),
+            }),
+          ])
+          : el('span', { class: 'submission-query muted', text: 'query not recorded (submitted before query logging was added)' }),
+      ]))));
       return;
     }
     if (!state.revealed) {
@@ -342,6 +403,14 @@ export async function openProblem(panel, problemId, context) {
       state.statuses = statuses;
 
       const failed = results.find((result) => result.error || !result.comparison?.pass);
+      addSubmission(context.progress, problem.id, {
+        at: new Date().toISOString(),
+        passed: !failed,
+        casesPassed: statuses.filter((status) => status === 'pass').length,
+        casesTotal: testCases.length,
+        detail: failed ? (failed.error ? `test case ${failed.index + 1}: ${failed.error}` : `test case ${failed.index + 1}: ${failed.comparison?.reason ?? 'wrong answer'}`) : '',
+        sql,
+      });
       if (!failed) {
         updateProblem(context.progress, problem.id, { solved: true, lastQuery: sql });
         solvedBadge.hidden = false;

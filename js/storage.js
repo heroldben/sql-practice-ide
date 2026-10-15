@@ -8,9 +8,18 @@
  *    browser on this machine. When the API is unreachable (e.g. the app is served
  *    from a static host) everything still works browser-locally.
  *
- * Entry shape: { solved: boolean, starred: boolean, lastQuery: string, updatedAt: ISO string }
- * A missing entry means "not solved, not starred".
+ * Entry shape (see js/progress-model.js):
+ *   { solved, starred, lastQuery, updatedAt, resetAt, submissions: [{ at, passed, casesPassed, casesTotal, detail }] }
+ * A missing entry means "not solved, not starred, no history".
  */
+import {
+  clearedEntry as modelClearedEntry,
+  emptyEntry as modelEmptyEntry,
+  mergeEntries as modelMergeEntries,
+  recentSubmissions as modelRecentSubmissions,
+  sanitizeSubmissions as modelSanitizeSubmissions,
+} from './progress-model.js';
+
 const STORAGE_KEY = 'sql-practice-ide/progress/v1';
 const API_URL = '/api/progress';
 const PUSH_DEBOUNCE_MS = 400;
@@ -42,7 +51,7 @@ function setSyncState(patch) {
 }
 
 export function emptyEntry() {
-  return { solved: false, starred: false, lastQuery: '', updatedAt: null };
+  return { ...modelEmptyEntry() };
 }
 
 export function loadProgress() {
@@ -84,30 +93,37 @@ export function updateProblem(progress, problemId, patch) {
   return next;
 }
 
-/**
- * Merge two progress maps per question (same rule as the server):
- * `solved` is sticky, `starred`/`lastQuery` come from the newer `updatedAt`.
- */
+/** Append one submission (timestamped verdict) to a question's history. */
+export function addSubmission(progress, problemId, submission) {
+  const current = getEntry(progress, problemId);
+  const next = {
+    ...current,
+    submissions: modelSanitizeSubmissions([...(current.submissions ?? []), submission]),
+    updatedAt: new Date().toISOString(),
+  };
+  progress[problemId] = next;
+  saveProgress(progress);
+  schedulePush({ [problemId]: next });
+  return next;
+}
+
+/** Forget everything about one question: solved, star, saved query and history. */
+export function resetProblem(progress, problemId) {
+  const cleared = modelClearedEntry();
+  progress[problemId] = cleared;
+  saveProgress(progress);
+  schedulePush({ [problemId]: cleared });
+  return cleared;
+}
+
+/** Submissions of a question, newest first. */
+export function recentSubmissions(entry, limit = 20) {
+  return modelRecentSubmissions(entry, limit);
+}
+
+/** Merge two progress maps per question (same rules as the server). */
 export function mergeEntryMaps(base, incoming) {
-  const merged = { ...base };
-  for (const [problemId, entry] of Object.entries(incoming)) {
-    const current = merged[problemId];
-    if (!current) {
-      merged[problemId] = entry;
-      continue;
-    }
-    const currentTime = current.updatedAt ? Date.parse(current.updatedAt) : 0;
-    const incomingTime = entry.updatedAt ? Date.parse(entry.updatedAt) : 0;
-    const newer = incomingTime >= currentTime ? entry : current;
-    const older = newer === entry ? current : entry;
-    merged[problemId] = {
-      solved: Boolean(current.solved || entry.solved),
-      starred: Boolean(newer.starred),
-      lastQuery: newer.lastQuery || older.lastQuery,
-      updatedAt: new Date(Math.max(currentTime, incomingTime) || Date.now()).toISOString(),
-    };
-  }
-  return merged;
+  return modelMergeEntries(base, incoming);
 }
 
 /** Replace the contents of `target` (keeps the object identity other modules hold). */

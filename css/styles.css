@@ -600,6 +600,34 @@ input::placeholder { color: var(--muted); }
 .case-badge.case-pass { color: var(--easy); border-color: var(--pass-border); background: var(--pass-bg); }
 .case-badge.case-fail { color: var(--hard); border-color: var(--fail-border); background: var(--fail-bg); }
 
+.btn-reset { background: transparent; border-color: var(--fail-border); color: var(--hard); }
+.btn-reset:hover { background: var(--fail-bg); }
+
+.submissions { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 6px; }
+.submission {
+  display: grid;
+  grid-template-columns: 1.1rem minmax(11rem, auto) 1fr;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-subtle);
+  font-size: .84rem;
+}
+.submission.is-pass { border-color: var(--pass-border); background: var(--pass-bg); }
+.submission.is-fail { border-color: var(--fail-border); background: var(--fail-bg); }
+.submission-verdict { font-weight: 700; text-align: center; }
+.submission.is-pass .submission-verdict { color: var(--easy); }
+.submission.is-fail .submission-verdict { color: var(--hard); }
+.submission-time { font-family: var(--font-mono); font-size: .78rem; color: var(--text-strong); white-space: nowrap; }
+.submission-detail { font-size: .8rem; min-width: 0; }
+.submission-query { grid-column: 2 / -1; margin-top: 2px; font-size: .8rem; }
+.submission-query > summary { cursor: pointer; color: var(--link); font-weight: 600; }
+.submission-query > summary:hover { text-decoration: underline; }
+.submission-query .code { margin: 8px 0; max-height: 220px; overflow: auto; }
+.submission-query .btn { margin-bottom: 2px; }
+
 /* ------------------------------------------------------------ orientation --- */
 /* The card stack below is vertical-first, so it already works in portrait; these
    rules cover landscape (wider question table, larger editor) and small screens. */
@@ -630,5 +658,7 @@ input::placeholder { color: var(--muted); }
   .filter-bar .field { flex: 1 1 45%; }
   .field-search { min-width: 0; }
   .CodeMirror { height: 200px; }
+  .submission { grid-template-columns: 1.1rem 1fr; }
+  .submission-detail { grid-column: 1 / -1; }
   .question-table td, .question-table thead th { padding-left: 14px; padding-right: 14px; }
 }

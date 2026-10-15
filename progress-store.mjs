@@ -2,10 +2,9 @@
  * Progress store for the local server.
  *
  * Browsers on the same machine all read/write this one store (via /api/progress),
- * so solving a question in Firefox shows up in Chrome and vice versa. Entries use
- * the same shape as the browser's localStorage cache:
- *
- *   { solved: boolean, starred: boolean, lastQuery: string, updatedAt: ISO string }
+ * so solving a question in Firefox shows up in Chrome and vice versa — including
+ * the submission history. Entry shape and merge rules live in js/progress-model.js
+ * (shared with the browser).
  *
  * Backend: Node's built-in SQLite (`node:sqlite`, Node >= 22.5) with an atomic
  * JSON-file fallback for older runtimes. Either way the file lives in `.local/`
@@ -14,54 +13,9 @@
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
+import { mergeEntries, sanitizeEntries } from './js/progress-model.js';
 
-const ID_PATTERN = /^(lc|dl|ss)-[a-z0-9-]+$/;
-const MAX_QUERY_LENGTH = 20000;
-
-/** Keep only well-formed entries with the expected types/lengths. */
-export function sanitizeEntries(raw) {
-  const out = {};
-  if (!raw || typeof raw !== 'object') return out;
-  for (const [id, entry] of Object.entries(raw)) {
-    if (!ID_PATTERN.test(id)) continue;
-    if (!entry || typeof entry !== 'object') continue;
-    out[id] = {
-      solved: Boolean(entry.solved),
-      starred: Boolean(entry.starred),
-      lastQuery: typeof entry.lastQuery === 'string' ? entry.lastQuery.slice(0, MAX_QUERY_LENGTH) : '',
-      updatedAt: typeof entry.updatedAt === 'string' ? entry.updatedAt : null,
-    };
-  }
-  return out;
-}
-
-/**
- * Merge two progress maps per question:
- * - `solved` is sticky (a solve is never lost, only a full reset removes it);
- * - `starred` and `lastQuery` come from the newer `updatedAt`;
- * - `updatedAt` becomes the maximum of both.
- */
-export function mergeEntries(base, incoming) {
-  const merged = { ...base };
-  for (const [id, entry] of Object.entries(incoming)) {
-    const current = merged[id];
-    if (!current) {
-      merged[id] = entry;
-      continue;
-    }
-    const currentTime = current.updatedAt ? Date.parse(current.updatedAt) : 0;
-    const incomingTime = entry.updatedAt ? Date.parse(entry.updatedAt) : 0;
-    const newer = incomingTime >= currentTime ? entry : current;
-    const older = newer === entry ? current : entry;
-    merged[id] = {
-      solved: Boolean(current.solved || entry.solved),
-      starred: Boolean(newer.starred),
-      lastQuery: newer.lastQuery || older.lastQuery,
-      updatedAt: new Date(Math.max(currentTime, incomingTime) || Date.now()).toISOString(),
-    };
-  }
-  return merged;
-}
+export { sanitizeEntries };
 
 /** node:sqlite prints an experimental warning on every start; hide just that one. */
 function silenceSqliteWarning() {
@@ -70,6 +24,32 @@ function silenceSqliteWarning() {
     if (name === 'warning' && data && data.name === 'ExperimentalWarning' && /SQLite/i.test(String(data.message))) return false;
     return originalEmit.call(process, name, data, ...rest);
   };
+}
+
+const CREATE_TABLE = `CREATE TABLE IF NOT EXISTS progress (
+  problem_id TEXT PRIMARY KEY,
+  solved INTEGER NOT NULL DEFAULT 0,
+  starred INTEGER NOT NULL DEFAULT 0,
+  last_query TEXT NOT NULL DEFAULT '',
+  updated_at TEXT,
+  reset_at TEXT,
+  submissions TEXT NOT NULL DEFAULT '[]'
+)`;
+
+/** Add columns introduced after the first release (existing DBs keep working). */
+function migrate(db) {
+  const columns = new Set(db.prepare('PRAGMA table_info(progress)').all().map((row) => row.name));
+  if (!columns.has('reset_at')) db.exec('ALTER TABLE progress ADD COLUMN reset_at TEXT');
+  if (!columns.has('submissions')) db.exec("ALTER TABLE progress ADD COLUMN submissions TEXT NOT NULL DEFAULT '[]'");
+}
+
+function parseSubmissions(raw) {
+  try {
+    const parsed = JSON.parse(raw ?? '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
 /**
@@ -84,19 +64,15 @@ export function createProgressStore({ dir }) {
     const { DatabaseSync } = createRequire(import.meta.url)('node:sqlite');
     const file = path.join(dir, 'progress.db');
     const db = new DatabaseSync(file);
-    db.exec(`CREATE TABLE IF NOT EXISTS progress (
-      problem_id TEXT PRIMARY KEY,
-      solved INTEGER NOT NULL DEFAULT 0,
-      starred INTEGER NOT NULL DEFAULT 0,
-      last_query TEXT NOT NULL DEFAULT '',
-      updated_at TEXT
-    )`);
-    const selectAll = db.prepare('SELECT problem_id, solved, starred, last_query, updated_at FROM progress');
-    const upsert = db.prepare(`INSERT INTO progress (problem_id, solved, starred, last_query, updated_at)
-      VALUES (?, ?, ?, ?, ?)
+    db.exec(CREATE_TABLE);
+    migrate(db);
+
+    const selectAll = db.prepare('SELECT problem_id, solved, starred, last_query, updated_at, reset_at, submissions FROM progress');
+    const upsert = db.prepare(`INSERT INTO progress (problem_id, solved, starred, last_query, updated_at, reset_at, submissions)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(problem_id) DO UPDATE SET
-        solved = excluded.solved, starred = excluded.starred,
-        last_query = excluded.last_query, updated_at = excluded.updated_at`);
+        solved = excluded.solved, starred = excluded.starred, last_query = excluded.last_query,
+        updated_at = excluded.updated_at, reset_at = excluded.reset_at, submissions = excluded.submissions`);
     const read = () => {
       const out = {};
       for (const row of selectAll.all()) {
@@ -105,6 +81,8 @@ export function createProgressStore({ dir }) {
           starred: Boolean(row.starred),
           lastQuery: row.last_query ?? '',
           updatedAt: row.updated_at ?? null,
+          resetAt: row.reset_at ?? null,
+          submissions: parseSubmissions(row.submissions),
         };
       }
       return out;
@@ -112,7 +90,15 @@ export function createProgressStore({ dir }) {
     const write = (entries) => {
       const merged = mergeEntries(read(), sanitizeEntries(entries));
       for (const [id, entry] of Object.entries(merged)) {
-        upsert.run(id, entry.solved ? 1 : 0, entry.starred ? 1 : 0, entry.lastQuery, entry.updatedAt);
+        upsert.run(
+          id,
+          entry.solved ? 1 : 0,
+          entry.starred ? 1 : 0,
+          entry.lastQuery ?? '',
+          entry.updatedAt ?? null,
+          entry.resetAt ?? null,
+          JSON.stringify(entry.submissions ?? []),
+        );
       }
       return read();
     };

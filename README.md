@@ -27,6 +27,11 @@ extra browser tabs. One launch opens the browser at most once. Keep the console 
 you use the app and close it (or press Ctrl+C) to stop the server — the URL is always
 <http://localhost:8080>.
 
+App HTML/CSS/JS changes are picked up on reload, but **`serve.mjs`, `progress-store.mjs` and
+`js/progress-model.js` are loaded once by the server process**: restart it (Ctrl+C, then
+`npm run dev` / `start.cmd`) after editing those, otherwise a new field (e.g. the submission query
+text) can be silently stripped when progress is written.
+
 ### Regenerating catalog data (optional, needs Node packages)
 
 ```bash
@@ -59,8 +64,17 @@ throughout.
   collapsible seed-data preview (`SELECT * LIMIT 10` per table for the selected test case), a
   CodeMirror editor in PostgreSQL mode with a **test case** selector, and **Run** (execute the
   selected case) / **Submit** (grade all cases). Result tabs: *Your Result* | *Expected Answer*
-  (for the selected test case) | *Solution* (reference answer behind a confirm click, marked as a
-  spoiler).
+  (for the selected test case) | **Submissions** | *Solution* (reference answer behind a confirm
+  click, marked as a spoiler).
+- **Submission history** — every Submit is recorded per question with its timestamp, a **✓** or **✗**
+  verdict, how many test cases passed, the failing case and reason for failures, **and the query you
+  submitted** (collapsed behind *Show submitted query*, with a **Load into editor** button to reuse an
+  earlier attempt). The *Submissions* tab lists the newest 20; the history lives in the shared
+  database, so it is the same in every browser on the machine (last 50 kept per question).
+- **Reset question** — a button on the question page forgets everything about that question (solved,
+  star, saved query, submission history) locally *and* in the shared database. A reset timestamp is
+  stored so a stale browser cannot resurrect the old state; the global **Reset progress** button in
+  the header still wipes everything.
 - **Test cases** — every question ships **3 datasets** (the default `seedSQL` plus two extra
   `testCases`); Submit grades the query against all of them and reports `✓ Passed — all 3 test cases`
   or the exact case that failed (`✗ Failed on test case 2 of 3: …`, with a row diff and per-case
@@ -72,12 +86,12 @@ throughout.
   in `localStorage` (`sql-practice-ide/theme/v1`, applied before first paint so there is no flash).
 - **Progress is shared by every browser on the machine.** The local server owns a small database
   (`.local/progress.db`, SQLite via `node:sqlite`; JSON file fallback on older Node) exposed as
-  `/api/progress`. The browser keeps a `localStorage` cache, merges with the server on load/focus
-  (`solved` is sticky, otherwise the newest `updatedAt` wins) and pushes changes back — solve a
-  question in Firefox and it is solved in Chrome too. The header shows `synced · sqlite`, or
-  `this browser only` when the API is unreachable (e.g. the app served from a static host).
-  **Reset progress** wipes solved/starred flags and saved queries in the database *and* the browser
-  (behind a confirm), and **Export**/**Import** still move progress as a JSON file.
+  `/api/progress`. Each entry holds `solved`, `starred`, `lastQuery`, the submission history and a
+  `resetAt` timestamp. The browser keeps a `localStorage` cache, merges with the server on
+  load/focus (`solved` is sticky, otherwise the newest `updatedAt` wins, a newer `resetAt` clears the
+  entry) and pushes changes back — solve a question in Firefox and it is solved in Chrome too. The
+  header shows `synced · sqlite`, or `this browser only` when the API is unreachable (e.g. the app
+  served from a static host). **Export**/**Import** still move progress (including history) as JSON.
 
 Keyboard: `Ctrl/Cmd+Enter` runs the selected case, `Ctrl/Cmd+Shift+Enter` grades all cases,
 `Ctrl+Space` autocompletes.
@@ -120,6 +134,7 @@ js/editor.js          CodeMirror 5 (text/x-pgsql) wiring + textarea fallback
 js/checker.js         PGlite instance, per-case state reset, schema/seed introspection, grading
 js/pg-config.js       shared result rules: parsers, canonicalisation, comparison, testCasesOf
 js/storage.js         progress: localStorage cache + /api/progress sync + export/import/reset
+js/progress-model.js  shared entry shape, sanitiser, merge rules and submission history (browser + server)
 js/theme.js           light/dark theme state, toggle wiring and persistence
 js/dom.js             small DOM/result-table helpers
 js/data/index.js      aggregates the ten problems-*.js slices into one registry
