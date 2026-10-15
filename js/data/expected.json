@@ -4399,6 +4399,486 @@
       }
     ]
   },
+  "dl-click-through-rate": {
+    "cases": [
+      {
+        "columns": [
+          "app_id",
+          "ctr"
+        ],
+        "rows": [
+          [
+            101,
+            "33.33"
+          ],
+          [
+            102,
+            "50.00"
+          ],
+          [
+            103,
+            "0.00"
+          ],
+          [
+            104,
+            "100.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "app_id",
+          "ctr"
+        ],
+        "rows": [
+          [
+            201,
+            "25.00"
+          ],
+          [
+            202,
+            "80.00"
+          ],
+          [
+            203,
+            "66.67"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "app_id",
+          "ctr"
+        ],
+        "rows": [
+          [
+            301,
+            "0.00"
+          ],
+          [
+            302,
+            "100.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "dl-second-day-confirmation": {
+    "cases": [
+      {
+        "columns": [
+          "user_id",
+          "signup_date"
+        ],
+        "rows": [
+          [
+            101,
+            "2023-03-01"
+          ],
+          [
+            104,
+            "2023-03-10"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "signup_date"
+        ],
+        "rows": [
+          [
+            201,
+            "2023-01-31"
+          ],
+          [
+            203,
+            "2023-02-28"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "signup_date"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "dl-sql-ibm-db2-product-analytics": {
+    "cases": [
+      {
+        "columns": [
+          "query_count",
+          "number_of_employees"
+        ],
+        "rows": [
+          [
+            "0",
+            "1"
+          ],
+          [
+            "1",
+            "2"
+          ],
+          [
+            "2",
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "query_count",
+          "number_of_employees"
+        ],
+        "rows": [
+          [
+            "1",
+            "1"
+          ],
+          [
+            "2",
+            "2"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "query_count",
+          "number_of_employees"
+        ],
+        "rows": [
+          [
+            "0",
+            "3"
+          ]
+        ]
+      }
+    ]
+  },
+  "dl-cards-issued-difference": {
+    "cases": [
+      {
+        "columns": [
+          "card_name",
+          "difference"
+        ],
+        "rows": [
+          [
+            "Cobalt Travel",
+            8000
+          ],
+          [
+            "Aurora Rewards",
+            6000
+          ],
+          [
+            "Delta Miles",
+            500
+          ],
+          [
+            "Blue Cashback",
+            0
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "card_name",
+          "difference"
+        ],
+        "rows": [
+          [
+            "Hotel Card",
+            6000
+          ],
+          [
+            "Echo Card",
+            0
+          ],
+          [
+            "Foxtrot Card",
+            0
+          ],
+          [
+            "Golf Card",
+            0
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "card_name",
+          "difference"
+        ],
+        "rows": [
+          [
+            "Kilo Card",
+            300
+          ]
+        ]
+      }
+    ]
+  },
+  "dl-alibaba-compressed-mean": {
+    "cases": [
+      {
+        "columns": [
+          "mean"
+        ],
+        "rows": [
+          [
+            "2.6"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "mean"
+        ],
+        "rows": [
+          [
+            "1.8"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "mean"
+        ],
+        "rows": [
+          [
+            "1.2"
+          ]
+        ]
+      }
+    ]
+  },
+  "dl-top-profitable-drugs": {
+    "cases": [
+      {
+        "columns": [
+          "drug",
+          "total_profit"
+        ],
+        "rows": [
+          [
+            "Atorvastatin",
+            "1500.00"
+          ],
+          [
+            "Lisinopril",
+            "1400.00"
+          ],
+          [
+            "Amoxicillin",
+            "1000.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "drug",
+          "total_profit"
+        ],
+        "rows": [
+          [
+            "Ceftriaxone",
+            "4100.00"
+          ],
+          [
+            "Cetirizine",
+            "3600.00"
+          ],
+          [
+            "Ciprofloxacin",
+            "2600.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "drug",
+          "total_profit"
+        ],
+        "rows": [
+          [
+            "Gabapentin",
+            "-100.00"
+          ],
+          [
+            "Furosemide",
+            "-300.00"
+          ],
+          [
+            "Ibuprofen",
+            "-700.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "dl-non-profitable-drugs": {
+    "cases": [
+      {
+        "columns": [
+          "drug"
+        ],
+        "rows": [
+          [
+            "Naproxen"
+          ],
+          [
+            "Omeprazole"
+          ],
+          [
+            "Prednisone"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "drug"
+        ],
+        "rows": [
+          [
+            "Simvastatin"
+          ],
+          [
+            "Spironolactone"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "drug"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "dl-total-drugs-sales": {
+    "cases": [
+      {
+        "columns": [
+          "manufacturer",
+          "total_sales",
+          "total_units"
+        ],
+        "rows": [
+          [
+            "Apex Labs",
+            "4000",
+            "160"
+          ],
+          [
+            "Bright Pharma",
+            "1151",
+            "50"
+          ],
+          [
+            "Coral Therapeutics",
+            "1100",
+            "40"
+          ],
+          [
+            "Dune Biotech",
+            "0",
+            "0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "manufacturer",
+          "total_sales",
+          "total_units"
+        ],
+        "rows": [
+          [
+            "Ember Pharma",
+            "251",
+            "30"
+          ],
+          [
+            "Gale Bio",
+            "0",
+            "3"
+          ],
+          [
+            "Halo Meds",
+            "0",
+            "0"
+          ],
+          [
+            "Fjord Labs",
+            "-180",
+            "10"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "manufacturer",
+          "total_sales",
+          "total_units"
+        ],
+        "rows": [
+          [
+            "Ion Labs",
+            "300",
+            "20"
+          ],
+          [
+            "Juno Pharma",
+            "300",
+            "10"
+          ],
+          [
+            "Kappa Health",
+            "-150",
+            "4"
+          ]
+        ]
+      }
+    ]
+  },
+  "dl-frequent-callers": {
+    "cases": [
+      {
+        "columns": [
+          "policy_holder_count"
+        ],
+        "rows": [
+          [
+            "2"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "policy_holder_count"
+        ],
+        "rows": [
+          [
+            "3"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "policy_holder_count"
+        ],
+        "rows": [
+          [
+            "0"
+          ]
+        ]
+      }
+    ]
+  },
   "lc-1821-find-customers-with-positive-revenue-this-year": {
     "cases": [
       {
@@ -8787,6 +9267,1970 @@
             "Support",
             "Hal",
             80
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-595-big-countries": {
+    "cases": [
+      {
+        "columns": [
+          "name",
+          "population",
+          "area"
+        ],
+        "rows": [
+          [
+            "Afghanistan",
+            25500100,
+            652230
+          ],
+          [
+            "Algeria",
+            37100000,
+            2381741
+          ],
+          [
+            "Brazil",
+            202794000,
+            8515767
+          ],
+          [
+            "India",
+            1252000000,
+            3287263
+          ],
+          [
+            "Panama",
+            25000000,
+            75417
+          ],
+          [
+            "Uganda",
+            45741000,
+            241038
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "name",
+          "population",
+          "area"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "name",
+          "population",
+          "area"
+        ],
+        "rows": [
+          [
+            "Egypt",
+            102334404,
+            1002450
+          ],
+          [
+            "Norway",
+            5381364,
+            3000000
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1148-article-views-i": {
+    "cases": [
+      {
+        "columns": [
+          "id"
+        ],
+        "rows": [
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "rows": [
+          [
+            2
+          ],
+          [
+            7
+          ],
+          [
+            9
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1683-invalid-tweets": {
+    "cases": [
+      {
+        "columns": [
+          "tweet_id"
+        ],
+        "rows": [
+          [
+            2
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "tweet_id"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "tweet_id"
+        ],
+        "rows": [
+          [
+            23
+          ],
+          [
+            26
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1378-replace-employee-id-with-the-unique-identifier": {
+    "cases": [
+      {
+        "columns": [
+          "id",
+          "unique_id",
+          "name"
+        ],
+        "rows": [
+          [
+            1,
+            101,
+            "Alice"
+          ],
+          [
+            2,
+            102,
+            "Bob"
+          ],
+          [
+            3,
+            103,
+            "Cara"
+          ],
+          [
+            4,
+            null,
+            "Dan"
+          ],
+          [
+            5,
+            null,
+            "Erin"
+          ],
+          [
+            6,
+            null,
+            "Fred"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "id",
+          "unique_id",
+          "name"
+        ],
+        "rows": [
+          [
+            11,
+            null,
+            "Gina"
+          ],
+          [
+            12,
+            null,
+            "Hugo"
+          ],
+          [
+            13,
+            null,
+            "Ivy"
+          ],
+          [
+            14,
+            null,
+            "Jon"
+          ],
+          [
+            15,
+            null,
+            "Kim"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "id",
+          "unique_id",
+          "name"
+        ],
+        "rows": [
+          [
+            21,
+            500,
+            "Lee"
+          ],
+          [
+            22,
+            500,
+            "Mia"
+          ],
+          [
+            23,
+            501,
+            "Ned"
+          ],
+          [
+            24,
+            null,
+            "Ola"
+          ],
+          [
+            25,
+            null,
+            "Pia"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1068-product-sales-analysis-i": {
+    "cases": [
+      {
+        "columns": [
+          "product_name",
+          "year",
+          "price"
+        ],
+        "rows": [
+          [
+            "Laptop",
+            2019,
+            1200
+          ],
+          [
+            "Laptop",
+            2019,
+            1200
+          ],
+          [
+            "Keyboard",
+            2020,
+            40
+          ],
+          [
+            "Monitor",
+            2021,
+            220
+          ],
+          [
+            "Mouse",
+            2017,
+            15
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "product_name",
+          "year",
+          "price"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "product_name",
+          "year",
+          "price"
+        ],
+        "rows": [
+          [
+            "Tablet",
+            2022,
+            400
+          ],
+          [
+            "Phone",
+            2022,
+            900
+          ],
+          [
+            "Tablet",
+            2023,
+            380
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1581-customer-who-visited-but-did-not-make-any-transactions": {
+    "cases": [
+      {
+        "columns": [
+          "customer_id",
+          "count_no_trans"
+        ],
+        "rows": [
+          [
+            30,
+            "1"
+          ],
+          [
+            54,
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "customer_id",
+          "count_no_trans"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "customer_id",
+          "count_no_trans"
+        ],
+        "rows": [
+          [
+            11,
+            "2"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-197-rising-temperature": {
+    "cases": [
+      {
+        "columns": [
+          "id"
+        ],
+        "rows": [
+          [
+            2
+          ],
+          [
+            4
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "rows": [
+          [
+            24
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1661-average-time-of-process-per-machine": {
+    "cases": [
+      {
+        "columns": [
+          "machine_id",
+          "processing_time"
+        ],
+        "rows": [
+          [
+            0,
+            "0.894"
+          ],
+          [
+            1,
+            "0.995"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "machine_id",
+          "processing_time"
+        ],
+        "rows": [
+          [
+            3,
+            "2.500"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "machine_id",
+          "processing_time"
+        ],
+        "rows": [
+          [
+            5,
+            "1.117"
+          ],
+          [
+            6,
+            "2.000"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-577-employee-bonus": {
+    "cases": [
+      {
+        "columns": [
+          "name",
+          "bonus"
+        ],
+        "rows": [
+          [
+            "Amy",
+            200
+          ],
+          [
+            "Bea",
+            null
+          ],
+          [
+            "Brad",
+            null
+          ],
+          [
+            "John",
+            500
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "name",
+          "bonus"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "name",
+          "bonus"
+        ],
+        "rows": [
+          [
+            "Mia",
+            null
+          ],
+          [
+            "Nate",
+            999
+          ],
+          [
+            "Pia",
+            null
+          ],
+          [
+            "Quinn",
+            null
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1280-students-and-examinations": {
+    "cases": [
+      {
+        "columns": [
+          "student_id",
+          "student_name",
+          "subject_name",
+          "attended_exams"
+        ],
+        "rows": [
+          [
+            1,
+            "Alice",
+            "Math",
+            "2"
+          ],
+          [
+            1,
+            "Alice",
+            "Physics",
+            "1"
+          ],
+          [
+            1,
+            "Alice",
+            "Programming",
+            "0"
+          ],
+          [
+            2,
+            "Bob",
+            "Math",
+            "0"
+          ],
+          [
+            2,
+            "Bob",
+            "Physics",
+            "0"
+          ],
+          [
+            2,
+            "Bob",
+            "Programming",
+            "1"
+          ],
+          [
+            6,
+            "Alex",
+            "Math",
+            "1"
+          ],
+          [
+            6,
+            "Alex",
+            "Physics",
+            "0"
+          ],
+          [
+            6,
+            "Alex",
+            "Programming",
+            "0"
+          ],
+          [
+            13,
+            "John",
+            "Math",
+            "0"
+          ],
+          [
+            13,
+            "John",
+            "Physics",
+            "0"
+          ],
+          [
+            13,
+            "John",
+            "Programming",
+            "0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "student_id",
+          "student_name",
+          "subject_name",
+          "attended_exams"
+        ],
+        "rows": [
+          [
+            1,
+            "Alice",
+            "Chemistry",
+            "0"
+          ],
+          [
+            1,
+            "Alice",
+            "Math",
+            "3"
+          ],
+          [
+            1,
+            "Alice",
+            "Physics",
+            "0"
+          ],
+          [
+            2,
+            "Bob",
+            "Chemistry",
+            "0"
+          ],
+          [
+            2,
+            "Bob",
+            "Math",
+            "0"
+          ],
+          [
+            2,
+            "Bob",
+            "Physics",
+            "1"
+          ],
+          [
+            3,
+            "Cara",
+            "Chemistry",
+            "0"
+          ],
+          [
+            3,
+            "Cara",
+            "Math",
+            "0"
+          ],
+          [
+            3,
+            "Cara",
+            "Physics",
+            "0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "student_id",
+          "student_name",
+          "subject_name",
+          "attended_exams"
+        ],
+        "rows": [
+          [
+            7,
+            "Dora",
+            "Biology",
+            "1"
+          ],
+          [
+            7,
+            "Dora",
+            "Math",
+            "1"
+          ],
+          [
+            8,
+            "Evan",
+            "Biology",
+            "0"
+          ],
+          [
+            8,
+            "Evan",
+            "Math",
+            "0"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-620-not-boring-movies": {
+    "cases": [
+      {
+        "columns": [
+          "id",
+          "movie",
+          "description",
+          "rating"
+        ],
+        "rows": [
+          [
+            5,
+            "House card",
+            "Interesting",
+            "9.1"
+          ],
+          [
+            1,
+            "War",
+            "great 3D",
+            "8.9"
+          ],
+          [
+            7,
+            "Drama",
+            "Boring",
+            "8.2"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "id",
+          "movie",
+          "description",
+          "rating"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "id",
+          "movie",
+          "description",
+          "rating"
+        ],
+        "rows": [
+          [
+            13,
+            "Beta",
+            "quiet",
+            "9.0"
+          ],
+          [
+            11,
+            "Alpha",
+            "thrilling",
+            "9.0"
+          ],
+          [
+            19,
+            "Zeta",
+            "funny",
+            "6.5"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1251-average-selling-price": {
+    "cases": [
+      {
+        "columns": [
+          "product_id",
+          "average_price"
+        ],
+        "rows": [
+          [
+            1,
+            "6.88"
+          ],
+          [
+            2,
+            "16.96"
+          ],
+          [
+            3,
+            "0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "product_id",
+          "average_price"
+        ],
+        "rows": [
+          [
+            1,
+            "12.50"
+          ],
+          [
+            2,
+            "0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "product_id",
+          "average_price"
+        ],
+        "rows": [
+          [
+            5,
+            "10.00"
+          ],
+          [
+            6,
+            "4.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1075-project-employees-i": {
+    "cases": [
+      {
+        "columns": [
+          "project_id",
+          "average_years"
+        ],
+        "rows": [
+          [
+            1,
+            "2.00"
+          ],
+          [
+            2,
+            "2.50"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "project_id",
+          "average_years"
+        ],
+        "rows": [
+          [
+            7,
+            "4.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "project_id",
+          "average_years"
+        ],
+        "rows": [
+          [
+            8,
+            null
+          ],
+          [
+            9,
+            "5.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1633-percentage-of-users-attended-a-contest": {
+    "cases": [
+      {
+        "columns": [
+          "contest_id",
+          "percentage"
+        ],
+        "rows": [
+          [
+            208,
+            "40.00"
+          ],
+          [
+            210,
+            "40.00"
+          ],
+          [
+            207,
+            "20.00"
+          ],
+          [
+            209,
+            "20.00"
+          ],
+          [
+            215,
+            "20.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "contest_id",
+          "percentage"
+        ],
+        "rows": [
+          [
+            300,
+            "100.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "contest_id",
+          "percentage"
+        ],
+        "rows": [
+          [
+            302,
+            "50.00"
+          ],
+          [
+            301,
+            "16.67"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1211-queries-quality-and-percentage": {
+    "cases": [
+      {
+        "columns": [
+          "query_name",
+          "quality",
+          "poor_query_percentage"
+        ],
+        "rows": [
+          [
+            "Cat",
+            "0.70",
+            "50.00"
+          ],
+          [
+            "Dog",
+            "2.50",
+            "33.33"
+          ],
+          [
+            "Tiger",
+            "3.25",
+            "0.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "query_name",
+          "quality",
+          "poor_query_percentage"
+        ],
+        "rows": [
+          [
+            "Math",
+            "2.00",
+            "66.67"
+          ],
+          [
+            "Science",
+            "4.50",
+            "0.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "query_name",
+          "quality",
+          "poor_query_percentage"
+        ],
+        "rows": [
+          [
+            "Alpha",
+            "1.67",
+            "0.00"
+          ],
+          [
+            "Beta",
+            "0.31",
+            "100.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-2356-number-of-unique-subjects-taught-by-each-teacher": {
+    "cases": [
+      {
+        "columns": [
+          "teacher_id",
+          "cnt"
+        ],
+        "rows": [
+          [
+            1,
+            "2"
+          ],
+          [
+            2,
+            "3"
+          ],
+          [
+            3,
+            "3"
+          ],
+          [
+            4,
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "teacher_id",
+          "cnt"
+        ],
+        "rows": [
+          [
+            5,
+            "1"
+          ],
+          [
+            6,
+            "1"
+          ],
+          [
+            7,
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "teacher_id",
+          "cnt"
+        ],
+        "rows": [
+          [
+            8,
+            "2"
+          ],
+          [
+            9,
+            "1"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1141-user-activity-for-the-past-30-days-i": {
+    "cases": [
+      {
+        "columns": [
+          "day",
+          "active_users"
+        ],
+        "rows": [
+          [
+            "2019-06-28",
+            "1"
+          ],
+          [
+            "2019-06-29",
+            "2"
+          ],
+          [
+            "2019-06-30",
+            "1"
+          ],
+          [
+            "2019-07-27",
+            "2"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "day",
+          "active_users"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "day",
+          "active_users"
+        ],
+        "rows": [
+          [
+            "2019-06-28",
+            "1"
+          ],
+          [
+            "2019-07-27",
+            "1"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1729-find-followers-count": {
+    "cases": [
+      {
+        "columns": [
+          "user_id",
+          "followers_count"
+        ],
+        "rows": [
+          [
+            1,
+            "4"
+          ],
+          [
+            2,
+            "1"
+          ],
+          [
+            3,
+            "2"
+          ],
+          [
+            4,
+            "1"
+          ],
+          [
+            5,
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "followers_count"
+        ],
+        "rows": [
+          [
+            1,
+            "5"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "followers_count"
+        ],
+        "rows": [
+          [
+            2,
+            "1"
+          ],
+          [
+            3,
+            "1"
+          ],
+          [
+            4,
+            "1"
+          ],
+          [
+            5,
+            "1"
+          ],
+          [
+            6,
+            "1"
+          ],
+          [
+            7,
+            "1"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-619-biggest-single-number": {
+    "cases": [
+      {
+        "columns": [
+          "num"
+        ],
+        "rows": [
+          [
+            5
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "num"
+        ],
+        "rows": [
+          [
+            null
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "num"
+        ],
+        "rows": [
+          [
+            3
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1731-the-number-of-employees-which-report-to-each-employee": {
+    "cases": [
+      {
+        "columns": [
+          "employee_id",
+          "name",
+          "reports_count",
+          "average_age"
+        ],
+        "rows": [
+          [
+            2,
+            "Winston",
+            "2",
+            "31"
+          ],
+          [
+            4,
+            "Daniel",
+            "1",
+            "29"
+          ],
+          [
+            6,
+            "Bob",
+            "2",
+            "34"
+          ],
+          [
+            9,
+            "Alice",
+            "2",
+            "33"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "employee_id",
+          "name",
+          "reports_count",
+          "average_age"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "employee_id",
+          "name",
+          "reports_count",
+          "average_age"
+        ],
+        "rows": [
+          [
+            21,
+            "Fay",
+            "3",
+            "30"
+          ],
+          [
+            22,
+            "Gil",
+            "1",
+            "25"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1789-primary-department-for-each-employee": {
+    "cases": [
+      {
+        "columns": [
+          "employee_id",
+          "department_id"
+        ],
+        "rows": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            4,
+            2
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            6
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "employee_id",
+          "department_id"
+        ],
+        "rows": [
+          [
+            11,
+            1
+          ],
+          [
+            12,
+            2
+          ],
+          [
+            13,
+            3
+          ],
+          [
+            14,
+            1
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "employee_id",
+          "department_id"
+        ],
+        "rows": [
+          [
+            31,
+            3
+          ],
+          [
+            31,
+            2
+          ],
+          [
+            31,
+            1
+          ],
+          [
+            32,
+            5
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-610-triangle-judgement": {
+    "cases": [
+      {
+        "columns": [
+          "x",
+          "y",
+          "z",
+          "triangle"
+        ],
+        "rows": [
+          [
+            13,
+            15,
+            30,
+            "No"
+          ],
+          [
+            10,
+            20,
+            15,
+            "Yes"
+          ],
+          [
+            4,
+            4,
+            4,
+            "Yes"
+          ],
+          [
+            5,
+            5,
+            10,
+            "No"
+          ],
+          [
+            2,
+            3,
+            4,
+            "Yes"
+          ],
+          [
+            1,
+            1,
+            1,
+            "Yes"
+          ],
+          [
+            0,
+            5,
+            5,
+            "No"
+          ],
+          [
+            3,
+            4,
+            7,
+            "No"
+          ],
+          [
+            7,
+            7,
+            7,
+            "Yes"
+          ],
+          [
+            2,
+            2,
+            5,
+            "No"
+          ],
+          [
+            null,
+            5,
+            5,
+            "No"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "x",
+          "y",
+          "z",
+          "triangle"
+        ],
+        "rows": [
+          [
+            1,
+            2,
+            3,
+            "No"
+          ],
+          [
+            2,
+            3,
+            5,
+            "No"
+          ],
+          [
+            0,
+            0,
+            0,
+            "No"
+          ],
+          [
+            5,
+            5,
+            10,
+            "No"
+          ],
+          [
+            1,
+            1,
+            3,
+            "No"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "x",
+          "y",
+          "z",
+          "triangle"
+        ],
+        "rows": [
+          [
+            2,
+            2,
+            4,
+            "No"
+          ],
+          [
+            2,
+            2,
+            3,
+            "Yes"
+          ],
+          [
+            1000000,
+            1000000,
+            1,
+            "Yes"
+          ],
+          [
+            3,
+            5,
+            8,
+            "No"
+          ],
+          [
+            1,
+            1,
+            1,
+            "Yes"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1978-employees-whose-manager-left-the-company": {
+    "cases": [
+      {
+        "columns": [
+          "employee_id"
+        ],
+        "rows": [
+          [
+            7
+          ],
+          [
+            10
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "employee_id"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "employee_id"
+        ],
+        "rows": [
+          [
+            24
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1667-fix-names-in-a-table": {
+    "cases": [
+      {
+        "columns": [
+          "user_id",
+          "name"
+        ],
+        "rows": [
+          [
+            1,
+            "Alice"
+          ],
+          [
+            2,
+            "Bob"
+          ],
+          [
+            3,
+            "John"
+          ],
+          [
+            4,
+            "Mike jones"
+          ],
+          [
+            5,
+            "A"
+          ],
+          [
+            6,
+            "Zoe-ann"
+          ],
+          [
+            7,
+            "K"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "name"
+        ],
+        "rows": [
+          [
+            11,
+            "Alice"
+          ],
+          [
+            12,
+            "Bob"
+          ],
+          [
+            13,
+            "Cara"
+          ],
+          [
+            14,
+            "Dan"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "name"
+        ],
+        "rows": [
+          [
+            21,
+            "Max"
+          ],
+          [
+            22,
+            "John doe"
+          ],
+          [
+            23,
+            "Q"
+          ],
+          [
+            24,
+            "123abc"
+          ],
+          [
+            25,
+            "Zzzz"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1527-patients-with-a-condition": {
+    "cases": [
+      {
+        "columns": [
+          "patient_id",
+          "patient_name",
+          "conditions"
+        ],
+        "rows": [
+          [
+            3,
+            "Bob",
+            "DIAB100 MYOP"
+          ],
+          [
+            4,
+            "George",
+            "ACNE DIAB100"
+          ],
+          [
+            7,
+            "Leo",
+            "DIAB1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "patient_id",
+          "patient_name",
+          "conditions"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "patient_id",
+          "patient_name",
+          "conditions"
+        ],
+        "rows": [
+          [
+            22,
+            "Tom",
+            "DIAB10 X"
+          ],
+          [
+            23,
+            "Uma",
+            "MYOP DIAB1 ACNE"
+          ],
+          [
+            24,
+            "Vic",
+            "X DIAB12"
+          ],
+          [
+            25,
+            "Wes",
+            " DIAB1 X"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-196-delete-duplicate-emails": {
+    "cases": [
+      {
+        "columns": [
+          "id",
+          "email"
+        ],
+        "rows": [
+          [
+            3,
+            "a@b.com"
+          ],
+          [
+            4,
+            "a@b.com"
+          ],
+          [
+            8,
+            "c@d.com"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "id",
+          "email"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "id",
+          "email"
+        ],
+        "rows": [
+          [
+            22,
+            "x@y.com"
+          ],
+          [
+            23,
+            "x@y.com"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1484-group-sold-products-by-the-date": {
+    "cases": [
+      {
+        "columns": [
+          "sell_date",
+          "num_sold",
+          "products"
+        ],
+        "rows": [
+          [
+            "2020-05-30",
+            "2",
+            "Basketball,Headphone"
+          ],
+          [
+            "2020-06-01",
+            "2",
+            "Bible,Pencil"
+          ],
+          [
+            "2020-06-02",
+            "1",
+            "Mask"
+          ],
+          [
+            "2020-06-03",
+            "1",
+            "Book"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "sell_date",
+          "num_sold",
+          "products"
+        ],
+        "rows": [
+          [
+            "2021-01-01",
+            "1",
+            "Apple"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "sell_date",
+          "num_sold",
+          "products"
+        ],
+        "rows": [
+          [
+            "2022-07-04",
+            "3",
+            "Apple,banana,zebra"
+          ],
+          [
+            "2022-07-05",
+            "1",
+            "Kiwi"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1327-list-the-products-ordered-in-a-period": {
+    "cases": [
+      {
+        "columns": [
+          "product_name",
+          "unit"
+        ],
+        "rows": [
+          [
+            "Notebook",
+            "100"
+          ],
+          [
+            "SQL Solutions",
+            "120"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "product_name",
+          "unit"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "product_name",
+          "unit"
+        ],
+        "rows": [
+          [
+            "Bike",
+            "100"
+          ],
+          [
+            "Pen",
+            "100"
+          ]
+        ]
+      }
+    ]
+  },
+  "lc-1517-find-users-with-valid-e-mails": {
+    "cases": [
+      {
+        "columns": [
+          "user_id",
+          "name",
+          "mail"
+        ],
+        "rows": [
+          [
+            1,
+            "Winston",
+            "winston@example.com"
+          ],
+          [
+            2,
+            "Jonathan",
+            "jonathan_is_cool@example.com"
+          ],
+          [
+            3,
+            "Ann",
+            "ann-99@example.com"
+          ],
+          [
+            4,
+            "Bob",
+            "bob.smith@example.com"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "user_id",
+          "name",
+          "mail"
+        ],
+        "rows": []
+      },
+      {
+        "columns": [
+          "user_id",
+          "name",
+          "mail"
+        ],
+        "rows": [
+          [
+            21,
+            "Lia",
+            "l@example.com"
+          ],
+          [
+            22,
+            "Moe",
+            "moe..@example.com"
+          ],
+          [
+            24,
+            "Oli",
+            "oli_99@example.com"
+          ],
+          [
+            25,
+            "Pam",
+            "PAM@example.com"
           ]
         ]
       }
@@ -13359,6 +15803,1151 @@
             "Theta",
             "0",
             "no"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10087-find-all-posts-which-were-reacted-to-with-a-heart": {
+    "cases": [
+      {
+        "columns": [
+          "post_id",
+          "poster",
+          "post_text",
+          "post_keywords",
+          "post_date"
+        ],
+        "rows": [
+          [
+            101,
+            12,
+            "Morning run along the river",
+            "#fitness #running",
+            "2023-06-01 07:15:00"
+          ],
+          [
+            102,
+            19,
+            "New recipe: lemon tart",
+            "#baking",
+            "2023-06-02 18:40:00"
+          ],
+          [
+            104,
+            25,
+            "Weekend camping photos",
+            "#travel #outdoors",
+            "2023-06-04 20:30:00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "post_id",
+          "poster",
+          "post_text",
+          "post_keywords",
+          "post_date"
+        ],
+        "rows": [
+          [
+            201,
+            31,
+            "Sunset over the bay",
+            "#travel",
+            "2023-07-01 19:20:00"
+          ],
+          [
+            203,
+            31,
+            "Coffee and code",
+            "#dev",
+            "2023-07-03 08:45:00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "post_id",
+          "poster",
+          "post_text",
+          "post_keywords",
+          "post_date"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10299-finding-updated-records": {
+    "cases": [
+      {
+        "columns": [
+          "record_id",
+          "employee_id",
+          "first_name",
+          "last_name",
+          "department",
+          "salary"
+        ],
+        "rows": [
+          [
+            6,
+            401,
+            "Ava",
+            "Lindqvist",
+            "Customer Success",
+            65000
+          ],
+          [
+            5,
+            402,
+            "Bruno",
+            "Pereira",
+            "Support",
+            45500
+          ],
+          [
+            4,
+            403,
+            "Chiara",
+            "Bianchi",
+            "Analytics",
+            71000
+          ],
+          [
+            7,
+            404,
+            "Dmitri",
+            "Volkov",
+            "Analytics",
+            69000
+          ],
+          [
+            8,
+            405,
+            "Elena",
+            "Novak",
+            "Support",
+            52000
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "record_id",
+          "employee_id",
+          "first_name",
+          "last_name",
+          "department",
+          "salary"
+        ],
+        "rows": [
+          [
+            12,
+            501,
+            "Sofia",
+            "Marino",
+            "Sales",
+            59000
+          ],
+          [
+            15,
+            502,
+            "Sofia",
+            "Marino",
+            "Support",
+            49500
+          ],
+          [
+            14,
+            503,
+            "Tomas",
+            "Olsen",
+            "Support",
+            44000
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "record_id",
+          "employee_id",
+          "first_name",
+          "last_name",
+          "department",
+          "salary"
+        ],
+        "rows": [
+          [
+            21,
+            601,
+            "Uma",
+            "Sethi",
+            "Analytics",
+            73000
+          ],
+          [
+            22,
+            602,
+            "Viktor",
+            "Halvorsen",
+            "Sales",
+            51000
+          ],
+          [
+            23,
+            603,
+            "Wanda",
+            "Duarte",
+            "Finance",
+            68000
+          ],
+          [
+            24,
+            604,
+            "Xu",
+            "Mei",
+            "Analytics",
+            81000
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10183-total-cost-of-orders": {
+    "cases": [
+      {
+        "columns": [
+          "first_name",
+          "total_cost"
+        ],
+        "rows": [
+          [
+            "Eva",
+            "260.75"
+          ],
+          [
+            "Eva",
+            "200.50"
+          ],
+          [
+            "Noah",
+            "60.25"
+          ],
+          [
+            "Priya",
+            "0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "first_name",
+          "total_cost"
+        ],
+        "rows": [
+          [
+            "Eva",
+            "40.00"
+          ],
+          [
+            "Eva",
+            "25.00"
+          ],
+          [
+            "Jill",
+            "0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "first_name",
+          "total_cost"
+        ],
+        "rows": [
+          [
+            "Marta",
+            "500.00"
+          ],
+          [
+            "Zoe",
+            "75.50"
+          ],
+          [
+            "Igor",
+            "0"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-9917-average-salaries": {
+    "cases": [
+      {
+        "columns": [
+          "department",
+          "average_salary"
+        ],
+        "rows": [
+          [
+            "Finance",
+            "95500.00"
+          ],
+          [
+            "Engineering",
+            "88500.00"
+          ],
+          [
+            "Support",
+            "61000.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "department",
+          "average_salary"
+        ],
+        "rows": [
+          [
+            "Audit",
+            "115000.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "department",
+          "average_salary"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10127-calculate-samanthas-and-lisas-total-sales-revenue": {
+    "cases": [
+      {
+        "columns": [
+          "total_revenue"
+        ],
+        "rows": [
+          [
+            "662.75"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "total_revenue"
+        ],
+        "rows": [
+          [
+            "1150.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "total_revenue"
+        ],
+        "rows": [
+          [
+            "0"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-9972-find-the-base-pay-for-police-captains": {
+    "cases": [
+      {
+        "columns": [
+          "employee_name",
+          "base_pay"
+        ],
+        "rows": [
+          [
+            "June Park",
+            "151200.00"
+          ],
+          [
+            "Rosa Delgado",
+            "142500.00"
+          ],
+          [
+            "Ivan Kovic",
+            "137800.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "employee_name",
+          "base_pay"
+        ],
+        "rows": [
+          [
+            "Sara Bloom",
+            "144000.00"
+          ],
+          [
+            "Priya Nair",
+            "130000.00"
+          ],
+          [
+            "Quentin Ash",
+            "130000.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "employee_name",
+          "base_pay"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-2002-submission-types": {
+    "cases": [
+      {
+        "columns": [
+          "submission_type",
+          "submission_count"
+        ],
+        "rows": [
+          [
+            "application",
+            "2"
+          ],
+          [
+            "supporting",
+            "2"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "submission_type",
+          "submission_count"
+        ],
+        "rows": [
+          [
+            "verification",
+            "2"
+          ],
+          [
+            "application",
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "submission_type",
+          "submission_count"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-9924-find-libraries-who-havent-provided-the-email-address-in-2016-but-their-notice-preference-definition-is-set-to-email": {
+    "cases": [
+      {
+        "columns": [
+          "patron_name",
+          "home_library"
+        ],
+        "rows": [
+          [
+            "Ada Mensah",
+            "Central"
+          ],
+          [
+            "Dev Patel",
+            "Eastside"
+          ],
+          [
+            "Hadi Nour",
+            "Westside"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "patron_name",
+          "home_library"
+        ],
+        "rows": [
+          [
+            "Iris Bell",
+            "Central"
+          ],
+          [
+            "Noor Haddad",
+            "Central"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "patron_name",
+          "home_library"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10176-bikes-last-used": {
+    "cases": [
+      {
+        "columns": [
+          "bike_number",
+          "last_used"
+        ],
+        "rows": [
+          [
+            "B-1042",
+            "2024-05-05 11:19:00"
+          ],
+          [
+            "B-1103",
+            "2024-05-03 10:40:00"
+          ],
+          [
+            "B-1077",
+            "2024-05-02 12:58:00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "bike_number",
+          "last_used"
+        ],
+        "rows": [
+          [
+            "B-2001",
+            "2024-06-04 09:52:00"
+          ],
+          [
+            "B-2003",
+            "2024-06-03 08:39:00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "bike_number",
+          "last_used"
+        ],
+        "rows": [
+          [
+            "B-3003",
+            "2024-07-02 10:30:00"
+          ],
+          [
+            "B-3001",
+            "2024-07-01 09:00:00"
+          ],
+          [
+            "B-3002",
+            "2024-07-01 09:00:00"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-9891-customer-details": {
+    "cases": [
+      {
+        "columns": [
+          "customer",
+          "city",
+          "order_count",
+          "total_spent"
+        ],
+        "rows": [
+          [
+            "Cleo Marsh",
+            "Denver",
+            "2",
+            "215.75"
+          ],
+          [
+            "Ada Lin",
+            "Boston",
+            "2",
+            "200.50"
+          ],
+          [
+            "Bilal Aziz",
+            "Austin",
+            "1",
+            "45.25"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "customer",
+          "city",
+          "order_count",
+          "total_spent"
+        ],
+        "rows": [
+          [
+            "Eve Park",
+            "Reno",
+            "2",
+            "75.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "customer",
+          "city",
+          "order_count",
+          "total_spent"
+        ],
+        "rows": [
+          [
+            "Hana Ito",
+            "Kyoto",
+            "1",
+            "100.00"
+          ],
+          [
+            "Ilya Born",
+            "Kyoto",
+            "1",
+            "100.00"
+          ],
+          [
+            "Jun Wei",
+            "Sapporo",
+            "1",
+            "100.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-9622-number-of-bathrooms-and-bedrooms": {
+    "cases": [
+      {
+        "columns": [
+          "n_bedrooms",
+          "n_bathrooms",
+          "listings",
+          "avg_price"
+        ],
+        "rows": [
+          [
+            1,
+            1,
+            "2",
+            "70.00"
+          ],
+          [
+            1,
+            null,
+            "1",
+            "55.00"
+          ],
+          [
+            2,
+            1,
+            "1",
+            "95.00"
+          ],
+          [
+            2,
+            2,
+            "2",
+            "150.00"
+          ],
+          [
+            3,
+            2,
+            "1",
+            "210.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "n_bedrooms",
+          "n_bathrooms",
+          "listings",
+          "avg_price"
+        ],
+        "rows": [
+          [
+            1,
+            1,
+            "1",
+            "65.00"
+          ],
+          [
+            2,
+            null,
+            "3",
+            "90.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "n_bedrooms",
+          "n_bathrooms",
+          "listings",
+          "avg_price"
+        ],
+        "rows": [
+          [
+            1,
+            1,
+            "4",
+            "50.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10606-new-users-who-never-sent-a-message": {
+    "cases": [
+      {
+        "columns": [
+          "username"
+        ],
+        "rows": [
+          [
+            "bilal_a"
+          ],
+          [
+            "dara_n"
+          ],
+          [
+            "emil_k"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "username"
+        ],
+        "rows": [
+          [
+            "gita_r"
+          ],
+          [
+            "hugo_s"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "username"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10605-average-output-tokens-by-model": {
+    "cases": [
+      {
+        "columns": [
+          "model",
+          "runs",
+          "avg_output_tokens"
+        ],
+        "rows": [
+          [
+            "Mistral-Large",
+            "2",
+            "1050.00"
+          ],
+          [
+            "Mistral-Small",
+            "1",
+            "300.00"
+          ],
+          [
+            "Mistral-Tiny",
+            "1",
+            "150.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "model",
+          "runs",
+          "avg_output_tokens"
+        ],
+        "rows": [
+          [
+            "Borealis-2",
+            "2",
+            "500.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "model",
+          "runs",
+          "avg_output_tokens"
+        ],
+        "rows": [
+          [
+            "Comet-c",
+            "1",
+            "200.00"
+          ],
+          [
+            "Comet-a",
+            "1",
+            "100.00"
+          ],
+          [
+            "Comet-b",
+            "1",
+            "100.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10604-airport-ride-share-by-city": {
+    "cases": [
+      {
+        "columns": [
+          "city",
+          "total_rides",
+          "airport_share"
+        ],
+        "rows": [
+          [
+            "Austin",
+            "3",
+            "66.67"
+          ],
+          [
+            "Denver",
+            "3",
+            "33.33"
+          ],
+          [
+            "Elko",
+            "2",
+            "0.00"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "city",
+          "total_rides",
+          "airport_share"
+        ],
+        "rows": [
+          [
+            "Gary",
+            "2",
+            "100.00"
+          ],
+          [
+            "Fresno",
+            "3",
+            "33.33"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "city",
+          "total_rides",
+          "airport_share"
+        ],
+        "rows": [
+          [
+            "Hilo",
+            "2",
+            "0.00"
+          ],
+          [
+            "Vail",
+            "1",
+            "0.00"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10603-longest-trip-per-vehicle": {
+    "cases": [
+      {
+        "columns": [
+          "vehicle_id",
+          "plate",
+          "longest_distance"
+        ],
+        "rows": [
+          [
+            1,
+            "AX-101",
+            "30.0"
+          ],
+          [
+            2,
+            "BX-202",
+            "30.0"
+          ],
+          [
+            3,
+            "CX-303",
+            "5.0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "vehicle_id",
+          "plate",
+          "longest_distance"
+        ],
+        "rows": [
+          [
+            1,
+            "EA-11",
+            "8.0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "vehicle_id",
+          "plate",
+          "longest_distance"
+        ],
+        "rows": [
+          [
+            1,
+            "FA-11",
+            "0.0"
+          ],
+          [
+            2,
+            "FB-22",
+            "0.0"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10602-vehicles-with-no-completed-trips": {
+    "cases": [
+      {
+        "columns": [
+          "vehicle_id",
+          "plate",
+          "trip_count"
+        ],
+        "rows": [
+          [
+            2,
+            "BX-22",
+            "1"
+          ],
+          [
+            4,
+            "DX-44",
+            "0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "vehicle_id",
+          "plate",
+          "trip_count"
+        ],
+        "rows": [
+          [
+            1,
+            "EA-11",
+            "2"
+          ],
+          [
+            3,
+            "EC-33",
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "vehicle_id",
+          "plate",
+          "trip_count"
+        ],
+        "rows": []
+      }
+    ]
+  },
+  "ss-10601-average-rider-rating-by-city": {
+    "cases": [
+      {
+        "columns": [
+          "city",
+          "rated_rides",
+          "avg_rating"
+        ],
+        "rows": [
+          [
+            "Boise",
+            "2",
+            "4.5"
+          ],
+          [
+            "Tahoe",
+            "1",
+            "4.0"
+          ],
+          [
+            "Reno",
+            "2",
+            "3.0"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "city",
+          "rated_rides",
+          "avg_rating"
+        ],
+        "rows": [
+          [
+            "Delta",
+            "2",
+            "3.5"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "city",
+          "rated_rides",
+          "avg_rating"
+        ],
+        "rows": [
+          [
+            "Fargo",
+            "3",
+            "4.3"
+          ],
+          [
+            "Gary",
+            "3",
+            "4.3"
+          ]
+        ]
+      }
+    ]
+  },
+  "ss-10600-weekly-rides-per-city": {
+    "cases": [
+      {
+        "columns": [
+          "week_start",
+          "city",
+          "ride_count"
+        ],
+        "rows": [
+          [
+            "2024-03-04",
+            "Austin",
+            "3"
+          ],
+          [
+            "2024-03-04",
+            "Denver",
+            "1"
+          ],
+          [
+            "2024-03-04",
+            "Elko",
+            "1"
+          ],
+          [
+            "2024-03-11",
+            "Austin",
+            "1"
+          ],
+          [
+            "2024-03-11",
+            "Denver",
+            "1"
+          ],
+          [
+            "2024-03-11",
+            "Elko",
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "week_start",
+          "city",
+          "ride_count"
+        ],
+        "rows": [
+          [
+            "2023-12-25",
+            "Boise",
+            "1"
+          ],
+          [
+            "2024-01-01",
+            "Boise",
+            "2"
+          ],
+          [
+            "2024-01-01",
+            "Cody",
+            "1"
+          ],
+          [
+            "2024-01-08",
+            "Cody",
+            "1"
+          ]
+        ]
+      },
+      {
+        "columns": [
+          "week_start",
+          "city",
+          "ride_count"
+        ],
+        "rows": [
+          [
+            "2024-02-05",
+            "Delta",
+            "2"
+          ],
+          [
+            "2024-02-05",
+            "Elko",
+            "1"
           ]
         ]
       }

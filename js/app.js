@@ -208,7 +208,19 @@ function renderList() {
   }
 }
 
-const BASE_TITLE = 'SQL Practice IDE — 220 PostgreSQL problems';
+const BASE_TITLE = `SQL Practice IDE — ${problems.length} PostgreSQL problems`;
+
+/** Headline/nav/intro copy is derived from the catalog, so counts never go stale. */
+function renderCounts() {
+  const premium = problems.filter((problem) => problem.premium).length;
+  const note = document.querySelector('.site-nav-note');
+  if (note) note.textContent = `${problems.length} curated interview questions`;
+  const intro = document.querySelector('.page-sub');
+  if (intro) {
+    intro.textContent = `Practice ${problems.length} curated PostgreSQL problems from LeetCode, DataLemur and StrataScratch — ${premium} of them from paywalled/premium catalogs. Queries run against real PostgreSQL (PGlite) in your browser — no server, no account.`;
+  }
+  document.title = BASE_TITLE;
+}
 
 function route() {
   const match = location.hash.match(/^#problem\/(.+)$/);
@@ -350,6 +362,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 initTheme(dom.themeToggle);
+renderCounts();
 renderStats();
 renderTags();
 renderTopicChip();

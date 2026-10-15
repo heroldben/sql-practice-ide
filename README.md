@@ -1,6 +1,6 @@
 # SQL Practice IDE
 
-A local, LeetCode-style SQL practice IDE: **220 curated PostgreSQL interview problems** (LeetCode,
+A local, LeetCode-style SQL practice IDE: **276 curated PostgreSQL interview problems** (LeetCode,
 DataLemur, StrataScratch) with their own schema, seed data, expected output and reference solution.
 Queries run against **real PostgreSQL** — PGlite (Postgres compiled to WebAssembly) — entirely in the
 browser: no accounts, no database server, and nothing to install to use it.
@@ -19,7 +19,7 @@ and the theme toggle. The **Stop server** button is simply disabled there (there
 ## Quick start (plug and play)
 
 The app is fully self-contained: CodeMirror, the Kumbh Sans webfont and the PostgreSQL engine
-(PGlite, WebAssembly) all live in `vendor/`, and the expected answers for all 660 test cases are
+(PGlite, WebAssembly) all live in `vendor/`, and the expected answers for all 828 test cases are
 committed in `js/data/expected.json`. **No install, no build step and no internet connection are
 required** — everything runs locally.
 
@@ -75,7 +75,7 @@ progress is written.
 ```bash
 npm install            # devDependencies: @electric-sql/pglite — only for the scripts below
 npm run build:expected # regenerate js/data/expected.json from schema + seed + solution
-npm run validate       # 220 problems, counts, SQL execution and expected.json freshness
+npm run validate       # 276 problems, counts, SQL execution and expected.json freshness
 ```
 
 ## What the app does
@@ -184,7 +184,7 @@ js/progress-model.js  shared entry shape, sanitiser, merge rules and submission 
 js/theme.js           light/dark theme state, toggle wiring and persistence
 js/dom.js             small DOM/result-table helpers
 js/data/index.js      aggregates the twelve problems-*.js slices into one registry
-js/data/problems-*.js the 220 questions (12 slices: 4 LeetCode, 3 DataLemur, 3 StrataScratch, 2 premium StrataScratch)
+js/data/problems-*.js the 276 questions (16 slices: 5 LeetCode, 4 DataLemur, 5 StrataScratch, 2 premium StrataScratch)
 js/data/expected.json generated: { [id]: { cases: [{ columns, rows }, …] } } (committed, no build needed)
 scripts/build-expected.mjs  regenerate expected.json for all test cases
 scripts/validate.mjs        full-catalog validation (counts, cases, execution, freshness)
@@ -204,12 +204,12 @@ network access available.
 
 | source | problems | notes |
 | ------ | -------- | ----- |
-| LeetCode | 70 | 50 from the paywalled **Advanced SQL 50** catalog (`premium: true`) + 20 from the free SQL 50 |
-| DataLemur | 65 | SQL interview questions (all free to attempt — DataLemur paywalls hints/solutions, not the questions) |
-| StrataScratch | 85 | 65 free + **20 premium (`PRO`) questions** (`premium: true`) |
+| LeetCode | 99 | 50 from the paywalled **Advanced SQL 50** catalog (`premium: true`) + 49 from the free SQL 50 (29 of them easy) |
+| DataLemur | 74 | SQL interview questions (all free to attempt — DataLemur paywalls hints/solutions, not the questions) |
+| StrataScratch | 103 | 70 free + **33 premium (`PRO`) questions** (`premium: true`) |
 
-Difficulty mix: 44 easy / 131 medium / 45 hard; **70 questions are premium**.
-Each question has **3 test cases** (660 datasets in total), each with its own generated expected
+Difficulty mix: **100 easy** / 131 medium / 45 hard; **83 questions are premium**.
+Each question has **3 test cases** (828 datasets in total), each with its own generated expected
 output, and the extra cases deliberately target the classic wrong answers for the task.
 Titles, source platform, difficulty and the premium flag come from the public catalogs — the LeetCode
 Advanced SQL 50 premium plan, and StrataScratch's `PRO` badge (verified on the platform's question
@@ -228,7 +228,7 @@ volatile functions (`now()`, `CURRENT_DATE`, `random()`), so expected output is 
 2. `npm run check:file -- js/data/problems-lc-1.js` — shape, header, unique ids, at least 3 test
    cases per problem, and execution of `schemaSQL + every case's seed + solutionSQL` in a fresh
    PGlite instance.
-3. `npm run build:expected` (expected outputs for all 660 test cases are always generated, never
+3. `npm run build:expected` (expected outputs for all 828 test cases are always generated, never
    hand-written), then `npm run validate` to confirm the whole catalog is self-consistent.
 
 ## License
