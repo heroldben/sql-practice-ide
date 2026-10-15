@@ -360,7 +360,6 @@ input::placeholder { color: var(--muted); }
   vertical-align: middle;
 }
 .pill-premium { color: var(--premium); border-color: var(--warn-border); background: var(--warn-bg); }
-.pill-solved { color: var(--easy); border-color: var(--pass-border); background: var(--pass-bg); }
 
 .diff { font-weight: 600; font-size: .85rem; }
 .diff-easy { color: var(--easy); }

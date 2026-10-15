@@ -9,7 +9,7 @@ import { pathToFileURL } from 'node:url';
 import { PGlite } from '@electric-sql/pglite';
 import { PG_OPTIONS, SESSION_SETUP_SQL, lastTable, resultToTable, serializeResult, testCasesOf } from '../../js/pg-config.js';
 
-export const ROOT = path.resolve(import.meta.dirname, '..', '..');
+const ROOT = path.resolve(import.meta.dirname, '..', '..');
 export const DATA_DIR = path.join(ROOT, 'js', 'data');
 export const EXPECTED_FILE = path.join(DATA_DIR, 'expected.json');
 
@@ -21,11 +21,11 @@ export const TOPIC_VOCABULARY = [
   'conditional-logic', 'null-handling', 'set-operations', 'pivoting', 'deduplication',
   'top-n', 'percentages', 'cumulative', 'union', 'case-expressions', 'recursion',
 ];
-export const SOURCE_PREFIX = { leetcode: 'lc-', datalemur: 'dl-', stratascratch: 'ss-' };
+const SOURCE_PREFIX = { leetcode: 'lc-', datalemur: 'dl-', stratascratch: 'ss-' };
 
 /** Every problem ships 1 primary seed plus these extra cases (>= 3 datasets total). */
 export const MIN_EXTRA_CASES = 2;
-export const MAX_EXTRA_CASES = 4;
+const MAX_EXTRA_CASES = 4;
 
 const VOLATILE_RE = /\b(now\s*\(\s*\)|current_timestamp|current_date|current_time|localtime|clock_timestamp\s*\(\s*\)|random\s*\(\s*\()/i;
 const STATEMENT_RE = /^\s*(set|begin|commit|rollback|drop|truncate|create\s+(database|extension))\b/im;
@@ -36,7 +36,7 @@ export async function dataFiles() {
   return names.map((name) => path.join(DATA_DIR, name));
 }
 
-export function parseHeader(text, file) {
+function parseHeader(text, file) {
   const firstLine = text.split(/\r?\n/, 1)[0];
   const match = firstLine.match(HEADER_RE);
   if (!match) {
@@ -49,7 +49,7 @@ export function parseHeader(text, file) {
   return { slice, problems: Number(problems), source, easy: Number(easy), medium: Number(medium), hard: Number(hard) };
 }
 
-export async function importProblems(file) {
+async function importProblems(file) {
   const mod = await import(`${pathToFileURL(file).href}?v=${Date.now()}`);
   if (!Array.isArray(mod.problems)) throw new Error(`${path.basename(file)}: must export "problems" as an array`);
   return mod.problems;
@@ -134,13 +134,13 @@ export function validateRecord(problem, seenIds) {
   return errors;
 }
 
-export async function createDb() {
+async function createDb() {
   const db = new PGlite(PG_OPTIONS);
   await db.exec(SESSION_SETUP_SQL);
   return db;
 }
 
-export async function tableNames(db) {
+async function tableNames(db) {
   const result = await db.query(
     `select c.relname as name from pg_class c join pg_namespace n on n.oid = c.relnamespace
      where n.nspname = 'public' and c.relkind = 'r' order by c.relname`,
@@ -148,7 +148,7 @@ export async function tableNames(db) {
   return result.rows.map((row) => row.name);
 }
 
-export async function tableRowCounts(db) {
+async function tableRowCounts(db) {
   const counts = {};
   for (const name of await tableNames(db)) {
     const result = await db.query(`select count(*)::int as n from "${name}"`);
@@ -158,7 +158,7 @@ export async function tableRowCounts(db) {
 }
 
 /** Drop everything the previous test case created, so cases cannot leak into each other. */
-export async function resetPublicSchema(db) {
+async function resetPublicSchema(db) {
   const tables = await db.query(`select tablename from pg_tables where schemaname = 'public'`);
   for (const row of tables.rows) await db.exec(`DROP TABLE IF EXISTS "${row.tablename}" CASCADE`);
   const views = await db.query(`select viewname from pg_views where schemaname = 'public'`);
@@ -172,7 +172,7 @@ export async function resetPublicSchema(db) {
  * reference solution.
  * @returns {Promise<{cases: {columns: string[], rows: any[][], counts: Record<string, number>, seeded: number, note: string}[], counts: Record<string, number>, seeded: number}>}
  */
-export async function executeProblem(db, problem) {
+async function executeProblem(db, problem) {
   const cases = [];
   for (const [index, testCase] of testCasesOf(problem).entries()) {
     await resetPublicSchema(db);
@@ -203,7 +203,7 @@ export async function executeProblemFresh(problem) {
 }
 
 /** `{ columns, rows }` for every test case of a problem, in order. */
-export function serializeProblemCases(executed) {
+function serializeProblemCases(executed) {
   return { cases: executed.cases.map((testCase) => serializeResult(testCase)) };
 }
 
@@ -221,4 +221,4 @@ export function expectedJsonText(expected) {
   return `${JSON.stringify(expected, null, 2)}\n`;
 }
 
-export { serializeResult, testCasesOf, EXPECTED_FILE as expectedFile };
+export { testCasesOf };

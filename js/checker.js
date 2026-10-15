@@ -34,7 +34,7 @@ function describeError(error) {
   return String(error);
 }
 
-export async function getDb() {
+async function getDb() {
   if (!dbPromise) {
     dbStatus = 'loading';
     dbPromise = (async () => {

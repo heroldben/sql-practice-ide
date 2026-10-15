@@ -11,6 +11,11 @@ desktop.ini
 # Local scratch output (progress exports produced by the app)
 progress-*.json
 
+# Packaged/release artifacts (zips, single-file executables) are built, not committed
+*.zip
+*.exe
+dist/
+
 # Shared progress store created by the server (SQLite db or JSON fallback)
 .local/
 .local-*/

@@ -66,7 +66,7 @@ export function loadProgress() {
   }
 }
 
-export function saveProgress(progress) {
+function saveProgress(progress) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   } catch (error) {
@@ -122,12 +122,12 @@ export function recentSubmissions(entry, limit = 20) {
 }
 
 /** Merge two progress maps per question (same rules as the server). */
-export function mergeEntryMaps(base, incoming) {
+function mergeEntryMaps(base, incoming) {
   return modelMergeEntries(base, incoming);
 }
 
 /** Replace the contents of `target` (keeps the object identity other modules hold). */
-export function applyProgress(target, next) {
+function applyProgress(target, next) {
   for (const key of Object.keys(target)) delete target[key];
   Object.assign(target, next);
   saveProgress(target);

@@ -14,10 +14,10 @@
  *   }
  */
 
-export const ID_PATTERN = /^(lc|dl|ss)-[a-z0-9-]+$/;
-export const MAX_QUERY_LENGTH = 20000;
-export const MAX_SUBMISSIONS = 50;
-export const MAX_DETAIL_LENGTH = 240;
+const ID_PATTERN = /^(lc|dl|ss)-[a-z0-9-]+$/;
+const MAX_QUERY_LENGTH = 20000;
+const MAX_SUBMISSIONS = 50;
+const MAX_DETAIL_LENGTH = 240;
 
 export function emptyEntry() {
   return { solved: false, starred: false, lastQuery: '', updatedAt: null, resetAt: null, submissions: [] };
@@ -88,7 +88,7 @@ export function sanitizeEntries(raw, pattern = ID_PATTERN) {
  * - otherwise `solved` is sticky, `starred`/`lastQuery` follow the newer `updatedAt`;
  * - submissions are unioned, dropping anything older than the winning reset.
  */
-export function mergeEntry(a, b) {
+function mergeEntry(a, b) {
   const left = a ?? emptyEntry();
   const right = b ?? emptyEntry();
   const aReset = timestamp(left.resetAt);

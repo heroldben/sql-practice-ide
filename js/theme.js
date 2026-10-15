@@ -8,7 +8,7 @@
  */
 const STORAGE_KEY = 'sql-practice-ide/theme/v1';
 
-export function currentTheme() {
+function currentTheme() {
   return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 }
 
@@ -19,7 +19,7 @@ function updateToggle(button) {
   button.setAttribute('aria-label', button.title);
 }
 
-export function applyTheme(theme, button = document.getElementById('theme-toggle')) {
+function applyTheme(theme, button = document.getElementById('theme-toggle')) {
   document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
   try {
     localStorage.setItem(STORAGE_KEY, document.documentElement.dataset.theme);
@@ -29,7 +29,7 @@ export function applyTheme(theme, button = document.getElementById('theme-toggle
   if (button) updateToggle(button);
 }
 
-export function toggleTheme(button = document.getElementById('theme-toggle')) {
+function toggleTheme(button = document.getElementById('theme-toggle')) {
   applyTheme(currentTheme() === 'dark' ? 'light' : 'dark', button);
 }
 
