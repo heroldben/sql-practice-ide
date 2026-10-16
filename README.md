@@ -30,7 +30,7 @@ required** — everything runs locally.
 
 Then open <http://localhost:8080>. Node 18+ is needed only to serve the folder over HTTP (browsers
 refuse to load ES modules from `file://`); the page itself needs no Node. Running it locally is what
-gives you the shared progress database (`.local/progress.db`), so the same solved/starred state and
+gives you the shared progress database (`progress/progress.db`), so the same solved/starred state and
 submission history appears in every browser on the machine, plus the per-question and global resets,
 `Stop server`, and export/import.
 
@@ -47,7 +47,7 @@ Other zero-cost options: Netlify/Cloudflare Pages (drag the folder), or `python 
 Progress falls back to per-browser `localStorage`, which the app detects and says so in the header.
 
 **Stopping and restarting.** Any of these stops the server — nothing is lost, because progress, stars,
-saved queries and submission history live in `.local/progress.db`:
+saved queries and submission history live in `progress/progress.db`:
 
 - the header **Stop server** button in the app (asks the running server to exit; only accepted from
   this machine, so exposing the app on the LAN cannot let others stop it),
@@ -94,9 +94,11 @@ throughout.
   *Premium only* and *Free only*, so you can decide whether to work through the paywalled catalogs,
   the free ones, or everything. **Random question** picks one from whatever the filters currently
   show — combine it with *Access: Premium*, *Difficulty: Hard* and *Status: Not solved* to be handed
-  a random unsolved premium hard question, and it never picks the question you are already on. The
-  status cell is a button: `✓` solved, `★` starred, `–` untouched
-  (click toggles the star). `P` marks premium questions.
+  a random unsolved premium hard question, and it never picks the question you are already on.
+  **★ Starred (N)** is a one-click view of everything you starred: star with `☆ Star` on a question
+  page or by clicking the status cell in the table (where `✓` = solved, `★` = starred and `–` =
+  untouched); the count in the **Your Progress** card is a link to the same view. `P` marks premium
+  questions.
 - **No approach hints.** Topics are never shown per question — neither as chips on the question page
   nor as a column in the index — because naming the technique (self join, deduplication, window
   functions, …) spoils the exercise. Test-case labels are likewise neutral (`Test case 1/2/3`); the
@@ -127,7 +129,7 @@ throughout.
 - **Theme** — starts light; the header **Theme** button switches light/dark and remembers the choice
   in `localStorage` (`sql-practice-ide/theme/v1`, applied before first paint so there is no flash).
 - **Progress is shared by every browser on the machine.** The local server owns a small database
-  (`.local/progress.db`, SQLite via `node:sqlite`; JSON file fallback on older Node) exposed as
+  (`progress/progress.db`, SQLite via `node:sqlite`; JSON file fallback on older Node) exposed as
   `/api/progress`. Each entry holds `solved`, `starred`, `lastQuery`, the submission history and a
   `resetAt` timestamp. The browser keeps a `localStorage` cache, merges with the server on
   load/focus (`solved` is sticky, otherwise the newest `updatedAt` wins, a newer `resetAt` clears the
@@ -190,7 +192,7 @@ scripts/build-expected.mjs  regenerate expected.json for all test cases
 scripts/validate.mjs        full-catalog validation (counts, cases, execution, freshness)
 scripts/check-file.mjs      single-slice validation (executes every test case)
 scripts/lib/pg.mjs          Node-side PGlite helpers + record-shape validation
-.local/                     generated at runtime: progress.db (git-ignored, shared by all browsers)
+progress/                   generated at runtime: progress.db (git-ignored, shared by all browsers)
 .authoring/README.md        authoring contract (record format, test cases, slice headers, verification)
 .authoring/<slice>.md       catalog provenance: which public catalog title/difficulty each id maps to
 ```

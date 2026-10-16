@@ -17,6 +17,9 @@ progress-*.json
 dist/
 
 # Shared progress store created by the server (SQLite db or JSON fallback)
+progress/
+
+# legacy store location (older versions wrote here)
 .local/
 .local-*/
 

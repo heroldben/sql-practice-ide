@@ -614,6 +614,10 @@ input::placeholder { color: var(--muted); }
 
 .btn-reset { background: transparent; border-color: var(--fail-border); color: var(--hard); }
 .btn-reset:hover { background: var(--fail-bg); }
+.btn-star { color: var(--star); }
+.btn-star.is-active { border-color: var(--star); background: var(--warn-bg); }
+.stat-link { background: none; border: none; padding: 0; font: inherit; color: var(--star); text-align: left; cursor: pointer; }
+.stat-link:hover { text-decoration: underline; }
 
 .submissions { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 6px; }
 .submission {

@@ -39,7 +39,7 @@
       <button id="export-progress" class="btn btn-ghost" type="button">Export</button>
       <label class="btn btn-ghost" for="import-progress">Import</label>
       <input id="import-progress" type="file" accept="application/json,.json" hidden />
-      <button id="stop-server" class="btn btn-ghost" type="button" title="Stop the local server (your progress stays in .local/progress.db)">Stop server</button>
+      <button id="stop-server" class="btn btn-ghost" type="button" title="Stop the local server (your progress stays in progress/progress.db)">Stop server</button>
       <button id="reset-progress" class="btn btn-danger" type="button" title="Delete all solved/starred progress and saved queries">Reset progress</button>
       <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">
         <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
@@ -116,6 +116,7 @@
         <input id="search" type="search" placeholder="Search questions by title…" autocomplete="off" />
       </label>
       <button id="random-question" class="btn" type="button" title="Pick a random question from the ones currently shown">Random question</button>
+      <button id="filter-starred" class="btn btn-star" type="button">★ Starred (0)</button>
       <button id="clear-filters" class="link-btn" type="button">Clear filters</button>
       <span class="filter-chip" id="topic-filter" hidden></span>
     </div>

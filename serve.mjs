@@ -6,7 +6,7 @@
  *   node serve.mjs --port=9000
  *   node serve.mjs --open     # also open the default browser (once)
  *   node serve.mjs --host=0.0.0.0   # expose on the LAN (loopback by default)
- *   node serve.mjs --data-dir=D:\\progress   # where the shared progress DB lives (.local by default)
+ *   node serve.mjs --data-dir=D:\\elsewhere   # where the saved progress lives (progress/ by default)
  *
  * If this app is already being served on the requested port, this exits with
  * code 3 without starting a second server or opening another browser tab, so
@@ -17,7 +17,7 @@
  * or internet connection is required.
  */
 import { createServer } from 'node:http';
-import { createReadStream } from 'node:fs';
+import { createReadStream, existsSync, mkdirSync, renameSync } from 'node:fs';
 import { stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -50,8 +50,32 @@ const preferredPort = Number(portArg ? portArg.split('=')[1] : (process.env.PORT
 const hostArg = args.find((arg) => arg.startsWith('--host='));
 const host = hostArg ? hostArg.split('=')[1] : '127.0.0.1';
 const dataDirArg = args.find((arg) => arg.startsWith('--data-dir='));
-const dataDir = dataDirArg ? path.resolve(dataDirArg.slice('--data-dir='.length)) : path.join(ROOT, '.local');
+const dataDir = dataDirArg ? path.resolve(dataDirArg.slice('--data-dir='.length)) : path.join(ROOT, 'progress');
 const shouldOpen = args.includes('--open');
+
+/** Folder that holds the saved progress, e.g. `progress/progress.db`. */
+const STORE_FILES = ['progress.db', 'progress.db-wal', 'progress.db-shm', 'progress.json'];
+
+/** One-time move of a store written by an older version (it used `.local/`). */
+function migrateLegacyStore(dir) {
+  const legacy = path.join(ROOT, '.local');
+  if (path.resolve(legacy) === path.resolve(dir)) return;
+  for (const name of STORE_FILES) {
+    const from = path.join(legacy, name);
+    const to = path.join(dir, name);
+    if (!existsSync(from) || existsSync(to)) continue;
+    try {
+      mkdirSync(dir, { recursive: true });
+      renameSync(from, to);
+      console.log(`progress: moved ${path.relative(ROOT, from).replaceAll('\\', '/')} → ${path.relative(ROOT, to).replaceAll('\\', '/')}`);
+    } catch (error) {
+      // Another server instance may still be using the old file; keep starting and try again next run.
+      console.warn(`progress: could not move ${path.relative(ROOT, from).replaceAll('\\', '/')} (${error.code ?? error.message}) — it stays where it is; stop the other server instance and restart to migrate it.`);
+    }
+  }
+}
+
+migrateLegacyStore(dataDir);
 
 /** Shared progress for every browser on this machine (`/api/progress`). */
 const progressStore = createProgressStore({ dir: dataDir });

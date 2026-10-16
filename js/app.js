@@ -32,6 +32,7 @@ const dom = {
   sort: document.getElementById('sort'),
   clearFilters: document.getElementById('clear-filters'),
   randomButton: document.getElementById('random-question'),
+  starredFilter: document.getElementById('filter-starred'),
   topicFilter: document.getElementById('topic-filter'),
   exportButton: document.getElementById('export-progress'),
   importInput: document.getElementById('import-progress'),
@@ -90,6 +91,28 @@ function openRandomQuestion() {
   return choice;
 }
 
+/** Show only the starred questions (or all again) — the button reports the count. */
+function toggleStarredFilter() {
+  const stats = solvedStats(problems, state.progress);
+  if (stats.starred === 0 && state.status !== 'starred') return;
+  state.status = state.status === 'starred' ? '' : 'starred';
+  dom.status.value = state.status;
+  renderList();
+}
+
+function renderStarredFilter() {
+  const stats = solvedStats(problems, state.progress);
+  const active = state.status === 'starred';
+  dom.starredFilter.textContent = `★ Starred (${stats.starred})`;
+  dom.starredFilter.classList.toggle('is-active', active);
+  dom.starredFilter.disabled = stats.starred === 0 && !active;
+  dom.starredFilter.title = stats.starred === 0 && !active
+    ? 'Star a question first — use ☆ Star on its page, or the status cell in the table'
+    : active
+      ? `Showing the ${stats.starred} starred question(s) — click to show all again`
+      : `Show only the ${stats.starred} starred question(s)`;
+}
+
 function renderStats() {
   const stats = solvedStats(problems, state.progress);
   dom.progressFill.style.width = `${Math.round((stats.solved / stats.total) * 100)}%`;
@@ -104,8 +127,15 @@ function renderStats() {
       el('span', { class: 'stat-label', text: 'solved' }),
     ]),
     el('div', { class: 'stat-breakdown' }, [part('easy'), part('medium'), part('hard')]),
-    el('div', { class: 'stat-starred', text: `★ ${stats.starred} starred` }),
+    el('button', {
+      class: 'stat-starred stat-link',
+      type: 'button',
+      text: `★ ${stats.starred} starred`,
+      title: stats.starred === 0 ? 'Star a question to collect it here' : 'Show only the starred questions',
+      onclick: toggleStarredFilter,
+    }),
   );
+  renderStarredFilter();
 }
 
 function renderTags() {
@@ -206,6 +236,7 @@ function renderList() {
   if (rows.length === 0) {
     dom.list.append(el('tr', {}, [el('td', { class: 'empty', colspan: '5', text: 'No question matches the current filters.' })]));
   }
+  renderStarredFilter();
 }
 
 const BASE_TITLE = `SQL Practice IDE — ${problems.length} PostgreSQL problems`;
@@ -271,6 +302,7 @@ for (const [key, node] of [['source', dom.source], ['difficulty', dom.difficulty
 }
 dom.clearFilters.addEventListener('click', clearFilters);
 dom.randomButton.addEventListener('click', () => { openRandomQuestion(); });
+dom.starredFilter.addEventListener('click', toggleStarredFilter);
 
 dom.exportButton.addEventListener('click', () => {
   const filename = exportProgress(state.progress);
@@ -303,13 +335,13 @@ function showServerStopped() {
   if (document.getElementById('server-stopped-banner')) return;
   document.querySelector('.page')?.prepend(el('div', { id: 'server-stopped-banner', class: 'server-stopped' }, [
     el('strong', { text: 'Server stopped.' }),
-    el('span', { text: 'Your progress is saved in .local/progress.db. Start it again (double-click start.cmd, or run npm run dev / node serve.mjs) and reload this page.' }),
+    el('span', { text: 'Your progress is saved in the progress/ folder. Start it again (double-click start.cmd, or run npm run dev / node serve.mjs) and reload this page.' }),
   ]));
   window.scrollTo({ top: 0 });
 }
 
 dom.stopButton.addEventListener('click', async () => {
-  const confirmed = window.confirm('Stop the local server?\n\nYour progress, stars and submission history stay in .local/progress.db. Start it again with start.cmd (or npm run dev) and reload this page.');
+  const confirmed = window.confirm('Stop the local server?\n\nYour progress, stars and submission history stay in the progress/ folder. Start it again with start.cmd (or npm run dev) and reload this page.');
   if (!confirmed) return;
   try {
     const response = await fetch('/api/shutdown', { method: 'POST' });
@@ -332,7 +364,7 @@ function renderSyncStatus() {
     : `Shared store unavailable${sync.error ? ` (${sync.error})` : ''} — progress is kept in this browser only. Use Export/Import to move it.`;
   dom.stopButton.disabled = sync.mode !== 'server';
   dom.stopButton.title = sync.mode === 'server'
-    ? 'Stop the local server (your progress stays in .local/progress.db)'
+    ? 'Stop the local server (your progress stays in the progress/ folder)'
     : 'Needs the local server — start it with start.cmd or npm run dev';
 }
 

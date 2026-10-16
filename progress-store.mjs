@@ -7,7 +7,7 @@
  * (shared with the browser).
  *
  * Backend: Node's built-in SQLite (`node:sqlite`, Node >= 22.5) with an atomic
- * JSON-file fallback for older runtimes. Either way the file lives in `.local/`
+ * JSON-file fallback for older runtimes. Either way the file lives in `progress/`
  * next to this module and is git-ignored.
  */
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';

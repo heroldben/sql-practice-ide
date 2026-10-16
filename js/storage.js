@@ -4,7 +4,7 @@
  * Two layers:
  *  - `localStorage` (per browser): instant, offline-safe cache;
  *  - the local server's shared store at `/api/progress` (SQLite file under
- *    `.local/`): the real source of truth, so the same progress appears in every
+ *    `progress/`): the real source of truth, so the same progress appears in every
  *    browser on this machine. When the API is unreachable (e.g. the app is served
  *    from a static host) everything still works browser-locally.
  *
