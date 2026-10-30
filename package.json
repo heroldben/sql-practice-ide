@@ -5,10 +5,10 @@
   "type": "module",
   "description": "LeetCode-style SQL practice IDE with 220 curated PostgreSQL problems running on PGlite (in-browser Postgres). Runs with zero install; the devDependencies are only needed to regenerate catalog data.",
   "scripts": {
-    "start": "node serve.mjs --open",
-    "dev": "node serve.mjs",
-    "stop": "node stop.mjs",
-    "restart": "node stop.mjs && node serve.mjs",
+    "start": "node server/serve.mjs --open",
+    "dev": "node server/serve.mjs",
+    "stop": "node server/stop.mjs",
+    "restart": "node server/stop.mjs && node server/serve.mjs",
     "build:expected": "node scripts/build-expected.mjs",
     "validate": "node scripts/validate.mjs",
     "check:file": "node scripts/check-file.mjs"

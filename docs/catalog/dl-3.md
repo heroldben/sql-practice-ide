@@ -33,7 +33,7 @@ Fields per record: id, source: "datalemur", title, difficulty, premium, topics, 
 
 Difficulty mix for this slice: 4 easy / 13 medium / 4 hard.
 
-The titles name the underlying task (they come from the public catalogs listed in .authoring/README.md);
+The titles name the underlying task (they come from the public catalogs listed in docs/authoring.md);
 the slug in the id is a hint about the original dataset. Author every description, schema, seed data and
 solution yourself — never copy text or data.
 

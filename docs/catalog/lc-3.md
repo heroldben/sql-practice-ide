@@ -32,7 +32,7 @@ Fields per record: id, source: "leetcode", title, difficulty, premium, topics, d
 
 Difficulty mix for this slice: 8 easy / 11 medium / 1 hard.
 
-The titles name the underlying task (they come from the public catalogs listed in .authoring/README.md);
+The titles name the underlying task (they come from the public catalogs listed in docs/authoring.md);
 the slug in the id is a hint about the original dataset. Author every description, schema, seed data and
 solution yourself — never copy text or data.
 

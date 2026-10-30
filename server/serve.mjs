@@ -24,7 +24,7 @@ import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { createProgressStore, sanitizeEntries } from './progress-store.mjs';
 
-const ROOT = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const MARKER = 'SQL Practice IDE';
 const MAX_PORT_ATTEMPTS = 10;
 const MAX_BODY_BYTES = 4 * 1024 * 1024;

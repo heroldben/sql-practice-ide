@@ -21,7 +21,6 @@ progress/
 
 # legacy store location (older versions wrote here)
 .local/
-.local-*/
 
 # NOTE: vendor/ is intentionally committed. It holds the vendored PGlite engine,
 # CodeMirror and the Kumbh Sans webfont so the app works offline with no install.

@@ -335,7 +335,7 @@ function showServerStopped() {
   if (document.getElementById('server-stopped-banner')) return;
   document.querySelector('.page')?.prepend(el('div', { id: 'server-stopped-banner', class: 'server-stopped' }, [
     el('strong', { text: 'Server stopped.' }),
-    el('span', { text: 'Your progress is saved in the progress/ folder. Start it again (double-click start.cmd, or run npm run dev / node serve.mjs) and reload this page.' }),
+    el('span', { text: 'Your progress is saved in the progress/ folder. Start it again (double-click start.cmd, or run npm run dev) and reload this page.' }),
   ]));
   window.scrollTo({ top: 0 });
 }

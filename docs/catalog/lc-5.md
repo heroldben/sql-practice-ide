@@ -2,7 +2,7 @@
 
 **All 29 records are easy questions** (difficulty labels come from the source catalog — do not change them).
 
-Each record needs **3 test cases** (`seedSQL` + 2 `testCases` with a `note` each) — see `.authoring/README.md` and the finished example `lc-183-customers-who-never-order` in `js/data/problems-lc-1.js`.
+Each record needs **3 test cases** (`seedSQL` + 2 `testCases` with a `note` each) — see `docs/authoring.md` and the finished example `lc-183-customers-who-never-order` in `js/data/problems-lc-1.js`.
 
 First line of the data file MUST be exactly:
 

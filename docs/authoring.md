@@ -24,7 +24,7 @@ Ten slices, 200 problems total, aggregated by `js/data/index.js`.
 Totals: 276 problems, 99 leetcode / 74 datalemur / 103 stratascratch, 100 easy / 131 medium / 45 hard, 83 premium,
 828 test cases. The `ss-premium-*` slices are the **premium (PRO) StrataScratch questions** — every record there
 has `premium: true`, verified from the platform's `PRO` badge.
-The slice lists (`.authoring/lc-*.md`, `.authoring/dl-*.md`, `.authoring/ss-*.md`) fix the id, title,
+The slice lists (`docs/catalog/lc-*.md`, `docs/catalog/dl-*.md`, `docs/catalog/ss-*.md`) fix the id, title,
 difficulty and premium flag of every record — author exactly those rows, in the given order.
 
 ## File shape

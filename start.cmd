@@ -8,7 +8,7 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-node "%~dp0serve.mjs" --open
+node "%~dp0server\serve.mjs" --open
 set CODE=%ERRORLEVEL%
 if "%CODE%"=="3" (
   echo The IDE is already running - reuse the tab you already have.

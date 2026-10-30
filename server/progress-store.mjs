@@ -13,7 +13,7 @@
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import { mergeEntries, sanitizeEntries } from './js/progress-model.js';
+import { mergeEntries, sanitizeEntries } from '../js/progress-model.js';
 
 export { sanitizeEntries };
 

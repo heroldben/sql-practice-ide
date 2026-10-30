@@ -2,7 +2,7 @@
 
 These are **premium StrataScratch questions**: each one carries the platform's `PRO` badge (premium tier), verified from https://platform.stratascratch.com/coding, so every record has `premium: true`.
 Difficulty labels come from the StrataScratch catalog — do not change them. Company column is the interview company shown on the platform (metadata only; do not mention it in the description).
-Like every other problem, each record needs **3 test cases** (`seedSQL` + 2 `testCases` with a `note` each) — see `.authoring/README.md` and the finished example `lc-183-customers-who-never-order` in `js/data/problems-lc-1.js`.
+Like every other problem, each record needs **3 test cases** (`seedSQL` + 2 `testCases` with a `note` each) — see `docs/authoring.md` and the finished example `lc-183-customers-who-never-order` in `js/data/problems-lc-1.js`.
 
 First line of the data file MUST be exactly:
 

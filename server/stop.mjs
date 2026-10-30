@@ -2,8 +2,8 @@
 /**
  * Stop the SQL Practice IDE server from anywhere.
  *
- *   node stop.mjs              # stop the server on http://localhost:8080
- *   node stop.mjs --port=9000
+ *   node server/stop.mjs       # stop the server on http://localhost:8080
+ *   node server/stop.mjs --port=9000
  *   npm run stop
  *
  * Asks the running server to shut down through POST /api/shutdown (accepted from

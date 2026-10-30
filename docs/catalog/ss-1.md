@@ -34,7 +34,7 @@ Fields per record: id, source: "stratascratch", title, difficulty, premium, topi
 
 Difficulty mix for this slice: 0 easy / 15 medium / 7 hard.
 
-The titles name the underlying task (they come from the public catalogs listed in .authoring/README.md);
+The titles name the underlying task (they come from the public catalogs listed in docs/authoring.md);
 the slug in the id is a hint about the original dataset. Author every description, schema, seed data and
 solution yourself — never copy text or data.
 

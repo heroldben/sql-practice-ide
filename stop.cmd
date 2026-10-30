@@ -7,7 +7,7 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-node "%~dp0stop.mjs" %*
+node "%~dp0server\stop.mjs" %*
 echo.
 echo Press any key to close this window.
 pause >nul
