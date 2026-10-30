@@ -137,8 +137,9 @@ throughout.
   header shows `synced · sqlite`, or `this browser only` when the API is unreachable (e.g. the app
   served from a static host). **Export**/**Import** still move progress (including history) as JSON.
 
-Keyboard: `Ctrl/Cmd+Enter` runs the selected case, `Ctrl/Cmd+Shift+Enter` grades all cases,
-`Ctrl+Space` autocompletes.
+Keyboard: `Tab` / `Shift+Tab` indent or outdent the selected lines (with just a cursor, `Tab`
+inserts two spaces and `Shift+Tab` outdents the line), `Ctrl/Cmd+Enter` runs the selected test
+case, `Ctrl/Cmd+Shift+Enter` grades all cases, `Ctrl+Space` autocompletes.
 
 ### How answers are checked
 

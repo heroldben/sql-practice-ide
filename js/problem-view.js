@@ -191,7 +191,10 @@ export async function openProblem(panel, problemId, context) {
   let editor = null;
   let saveTimer = null;
   function attachEditor() {
-    editor = createEditor(textarea, { run: () => buttons.run(), submit: () => buttons.submit() });
+    editor = createEditor(textarea, {
+      run: () => buttons.run?.click(),
+      submit: () => buttons.submit?.click(),
+    });
     editor.onChange((value) => {
       clearTimeout(saveTimer);
       saveTimer = setTimeout(() => {

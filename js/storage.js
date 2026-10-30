@@ -17,6 +17,7 @@ import {
   emptyEntry as modelEmptyEntry,
   mergeEntries as modelMergeEntries,
   recentSubmissions as modelRecentSubmissions,
+  sanitizeEntries as modelSanitizeEntries,
   sanitizeSubmissions as modelSanitizeSubmissions,
 } from './progress-model.js';
 
@@ -251,17 +252,8 @@ export function exportProgress(progress) {
 function normalizeImported(parsed) {
   if (!parsed || typeof parsed !== 'object') return {};
   const source = parsed.progress && typeof parsed.progress === 'object' ? parsed.progress : parsed;
-  const out = {};
-  for (const [problemId, entry] of Object.entries(source)) {
-    if (!entry || typeof entry !== 'object') continue;
-    out[problemId] = {
-      solved: Boolean(entry.solved),
-      starred: Boolean(entry.starred),
-      lastQuery: typeof entry.lastQuery === 'string' ? entry.lastQuery : '',
-      updatedAt: typeof entry.updatedAt === 'string' ? entry.updatedAt : null,
-    };
-  }
-  return out;
+  // Shared sanitiser: keeps submissions, resetAt and updatedAt, drops junk ids.
+  return modelSanitizeEntries(source);
 }
 
 /** Merge an exported file into the current progress: newer `updatedAt` wins. */
