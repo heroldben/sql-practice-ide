@@ -149,7 +149,6 @@ export async function openProblem(panel, problemId, context) {
       el('div', { class: 'chips' }, [
         difficultyChip(problem.difficulty),
         el('span', { class: 'chip chip-source', text: SOURCE_LABELS[problem.source] }),
-        problem.premium ? el('span', { class: 'chip chip-premium', text: 'premium' }) : null,
         el('span', { class: 'chip chip-cases', text: `${testCases.length} test cases` }),
         solvedBadge,
       ]),

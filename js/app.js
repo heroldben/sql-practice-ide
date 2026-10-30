@@ -214,7 +214,6 @@ function renderList() {
       el('td', {}, [el('span', { class: 'source-pill', text: SOURCE_LABELS[problem.source] })]),
       el('td', { class: 'cell-title' }, [
         el('span', { class: 'title-wrap' }, [
-          problem.premium ? el('span', { class: 'pill pill-premium', text: 'P', title: 'Paywalled source catalog' }) : null,
           el('a', {
             class: 'title-link',
             href: `#problem/${encodeURIComponent(problem.id)}`,
@@ -243,12 +242,11 @@ const BASE_TITLE = `SQL Practice IDE — ${problems.length} PostgreSQL problems`
 
 /** Headline/nav/intro copy is derived from the catalog, so counts never go stale. */
 function renderCounts() {
-  const premium = problems.filter((problem) => problem.premium).length;
   const note = document.querySelector('.site-nav-note');
   if (note) note.textContent = `${problems.length} curated interview questions`;
   const intro = document.querySelector('.page-sub');
   if (intro) {
-    intro.textContent = `Practice ${problems.length} curated PostgreSQL problems from LeetCode, DataLemur and StrataScratch — ${premium} of them from paywalled/premium catalogs. Queries run against real PostgreSQL (PGlite) in your browser — no server, no account.`;
+    intro.textContent = `Practice ${problems.length} curated PostgreSQL problems from LeetCode, DataLemur and StrataScratch. Queries run against real PostgreSQL (PGlite) in your browser — no server, no account.`;
   }
   document.title = BASE_TITLE;
 }

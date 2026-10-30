@@ -34,7 +34,6 @@
   --medium: #c05621;
   --hard: #c53030;
   --star: #b7791f;
-  --premium: #b7791f;
 
   --pass-bg: #f0fff4;
   --pass-border: #9ae6b4;
@@ -86,7 +85,6 @@
   --medium: #f6ad55;
   --hard: #fc8181;
   --star: #ecc94b;
-  --premium: #f6ad55;
 
   --pass-bg: rgba(56, 161, 105, 0.16);
   --pass-border: rgba(104, 211, 145, 0.45);
@@ -359,7 +357,6 @@ input::placeholder { color: var(--muted); }
   background: var(--bg-subtle);
   vertical-align: middle;
 }
-.pill-premium { color: var(--premium); border-color: var(--warn-border); background: var(--warn-bg); }
 
 .diff { font-weight: 600; font-size: .85rem; }
 .diff-easy { color: var(--easy); }
@@ -462,7 +459,6 @@ input::placeholder { color: var(--muted); }
 .chip-medium { color: var(--medium); border-color: var(--warn-border); background: var(--warn-bg); }
 .chip-hard { color: var(--hard); border-color: var(--fail-border); background: var(--fail-bg); }
 .chip-source { color: var(--subtle); }
-.chip-premium { color: var(--premium); border-color: var(--warn-border); background: var(--warn-bg); }
 .chip-solved { color: var(--easy); border-color: var(--pass-border); background: var(--pass-bg); }
 .problem-actions { display: flex; align-items: center; gap: 8px; }
 .star-btn.is-starred { border-color: var(--star); color: var(--star); }

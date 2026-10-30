@@ -32,7 +32,8 @@ launcher can't stack up tabs. `--port=`, `--host=` and `--data-dir=` are accepte
 
 - **Index** — filter by category, difficulty, **access** (all / premium / free), status and topic,
   sort, search; **Random question** picks from whatever the filters show; **★ Starred (N)** shows
-  only your starred questions in one click.
+  only your starred questions in one click. Individual questions are not marked as premium — the
+  access filter is the only way to tell, and the flags live in the data rather than the UI.
 - **Question page** — description, schema, seeded example rows, a CodeMirror editor with a test-case
   selector, `Run` (selected case) and `Submit` (all cases), plus result, expected-answer,
   submission-history and solution tabs.
